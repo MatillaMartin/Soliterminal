@@ -29,8 +29,13 @@ namespace panda
 		/// Draws the given string at row, column
 		void draw(const std::string& str, int row, int column) const;
 
+		/// Draws the given string, with a shade under it
+		void drawStacked(const std::string& str, int row, int column) const;
+
 	private:
-		bool updateSize();
+		bool setSize();
+		bool setStyle();
+
 		void setCursorPosition(int row, int column) const;
 
 		void* m_handle = nullptr;

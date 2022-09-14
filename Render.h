@@ -15,6 +15,7 @@ namespace panda
 		void update();
 
 	private:
+		void drawCardStacked(const Card& card, int row, int column) const;
 		void drawCard(const Card& card, int row, int column) const;
 		void drawEmpty(int row, int column) const;
 

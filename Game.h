@@ -49,8 +49,18 @@ namespace panda
 		/// Returns false if was not able to move those cards
 		bool moveCards(CardStack& origin, int cardOriginIndex, CardStack& dest);
 
+		bool hasChanged()
+		{
+			if (m_isDirty)
+			{
+				m_isDirty = false;
+				return true;
+			}
+		}
+
 	private:
 		Stacks m_stacks;
 		State m_state = State::Playing;
+		bool m_isDirty = true;
 	};
 }

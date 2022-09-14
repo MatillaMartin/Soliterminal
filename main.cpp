@@ -41,6 +41,13 @@ Game createGame()
 			Card(10, Card::Suit::Spade, Card::State::Open),
 			Card(9, Card::Suit::Heart, Card::State::Open),
 			Card(8, Card::Suit::Club, Card::State::Open),
+			Card(7, Card::Suit::Heart, Card::State::Open),
+			Card(6, Card::Suit::Spade, Card::State::Open),
+			Card(5, Card::Suit::Diamond, Card::State::Open),
+			Card(4, Card::Suit::Spade, Card::State::Open),
+			Card(3, Card::Suit::Diamond, Card::State::Open),
+			Card(2, Card::Suit::Spade, Card::State::Open),
+			Card(1, Card::Suit::Diamond, Card::State::Open),
 		},
 		std::vector<Card>{
 			Card(3, Card::Suit::Club, Card::State::Open),
@@ -77,9 +84,13 @@ int main()
 		// Basic rendering cycle
 		while (true)
 		{
-			render.update();
-			std::this_thread::sleep_for(std::chrono::milliseconds(16));
+			if (!game.hasChanged())
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(16));
+				continue;
+			}
 
+			render.update();
 			if (game.state() != Game::State::Playing)
 			{
 				break;
@@ -89,6 +100,7 @@ int main()
 	catch (std::runtime_error& e)
 	{
 		std::cout << "Unexpected error: " << e.what();
+		return -1;
 	}
 
 	return 0;

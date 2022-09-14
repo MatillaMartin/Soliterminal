@@ -5,9 +5,9 @@
 #include "Game.h"
 
 #include <assert.h>
+#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 
 namespace panda
 {
@@ -21,10 +21,10 @@ namespace panda
 	{
 		m_console.begin();
 
-		int cardWidth = 3;        // 3 spaces per card width, for card like 10
-		int cardHeight = 1;        // 1 spaces per card height
-		int stackSpacing = 2;      // 1 space between stacks
-		int cardSpacing = 1;      // 1 space between cards
+		int cardWidth = 4;       // spaces per card width, for card like 10
+		int cardHeight = 3;      // spaces per card height
+		int stackSpacing = 4;    // space between stacks
+		int cardSpacing = 0;     // space between cards
 
 		/// Draw top end stacks
 		{
@@ -69,10 +69,19 @@ namespace panda
 
 			for (const auto& stack : m_game.stacks().centralStack)
 			{
-				for (const auto& card : stack.cards())
+				if (stack.cards().empty())
 				{
-					drawCard(card, x, y);
-					y += cardHeight + cardSpacing;
+					drawEmpty(x, y);
+				}
+				else
+				{
+					for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
+					{
+						drawCardStacked(*it, x, y);
+						y += cardHeight + cardSpacing;
+					}
+
+					drawCard(*std::prev(stack.cards().end()), x, y);
 				}
 
 				y = startY;
@@ -100,6 +109,8 @@ namespace panda
 		};
 
 		auto cardNumberStr = [](int number) -> std::string {
+			if (number == 1)
+				return "A";
 			if (number == 11)
 				return "J";
 			if (number == 12)
@@ -124,6 +135,13 @@ namespace panda
 		// take string from map
 		m_console.draw(cardStr(card), row, column);
 	}
+
+	void Render::drawCardStacked(const Card& card, int row, int column) const
+	{
+		// take string from map
+		m_console.drawStacked(cardStr(card), row, column);
+	}
+
 
 	void Render::drawEmpty(int row, int column) const
 	{
