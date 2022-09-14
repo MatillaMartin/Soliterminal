@@ -21,8 +21,8 @@ namespace panda
 
 		void flip();
 
-		int m_number = 0;
-		Suit m_suit = Suit::Club;
-		State m_state = State::Open;
+		int number = 0;
+		Suit suit = Suit::Club;
+		State state = State::Open;
 	};
 }

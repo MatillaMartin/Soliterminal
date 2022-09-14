@@ -5,6 +5,7 @@ set(Sources
 	main.cpp
 	Card.cpp
 	CardStack.cpp
+	Console.cpp
 	Game.cpp
 	Render.cpp
 )
@@ -12,6 +13,7 @@ set(Sources
 set(Headers
 	Card.h
 	CardStack.h
+	Console.h
 	Game.h
 	Render.h
 )

@@ -1,16 +1,15 @@
 #pragma once
-#include <list>
+#include "Card.h"
+
 #include <optional>
 #include <vector>
 
 namespace panda
 {
-	class Card;
-
 	class CardStack
 	{
 	public:
-		CardStack(const std::vector<Card>& cards);
+		CardStack(std::vector<Card>&& cards);
 
 		// Takes all cards after index, including index
 		// Returns empty optional if no cards can be taken
@@ -19,6 +18,12 @@ namespace panda
 		// Takes top card of stack
 		// Returns empty optional if no cards can be taken
 		std::optional<CardStack> takeTop();
+
+		// Returns the card at the top
+		std::optional<Card> top() const;
+
+		// Returns all the cards in the stack
+		const std::vector<Card>& cards() const;
 
 		// Appends stack at the end of the current stack
 		// Returns false if operation fails
@@ -34,6 +39,6 @@ namespace panda
 		int size();
 
 	private:
-		std::list<Card> m_cards;
+		std::vector<Card> m_cards;
 	};
 }

@@ -3,17 +3,17 @@
 namespace panda
 {
 	Card::Card(int number, Suit suit, State state)
-		: m_number(number)
-		, m_suit(suit)
-		, m_state(state)
+		: number(number)
+		, suit(suit)
+		, state(state)
 	{
 	}
 
 	void Card::flip()
 	{
-		if (m_state == State::Open)
-			m_state = State::Closed;
-		else if (m_state == State::Closed)
-			m_state = State::Open;
+		if (state == State::Open)
+			state = State::Closed;
+		else if (state == State::Closed)
+			state = State::Open;
 	}
 }

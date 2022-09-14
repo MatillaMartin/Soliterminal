@@ -4,8 +4,8 @@
 
 namespace panda
 {
-	CardStack::CardStack(const std::vector<Card>& cards)
-		: m_cards(cards.begin(), cards.end())
+	CardStack::CardStack(std::vector<Card>&& cards)
+		: m_cards(cards)
 	{
 	}
 
@@ -24,12 +24,22 @@ namespace panda
 		if (m_cards.empty())
 			return {};
 
-		return take(m_cards.size() - 1);
+		return take(static_cast<int>(m_cards.size()) - 1);
 	}
 
-	bool CardStack::append(CardStack&& stack) 
+	std::optional<Card> CardStack::top() const
 	{
-		m_cards.splice(m_cards.end(), stack.m_cards); 
+		if (m_cards.empty())
+			return {};
+
+		return m_cards.back();
+	}
+
+	const std::vector<Card>& CardStack::cards() const { return m_cards; }
+
+	bool CardStack::append(CardStack&& stack)
+	{
+		m_cards.insert(m_cards.end(), std::make_move_iterator(stack.m_cards.begin()), std::make_move_iterator(stack.m_cards.end()));
 		return true;
 	}
 
@@ -47,5 +57,5 @@ namespace panda
 		m_cards.back().flip();
 	}
 
-	int CardStack::size() { return m_cards.size(); }
+	int CardStack::size() { return static_cast<int>(m_cards.size()); }
 }
