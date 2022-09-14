@@ -1,4 +1,4 @@
-#include "Console.h"
+﻿#include "Console.h"
 
 #ifdef WIN32
 #	define WIN32_LEAN_AND_MEAN
@@ -64,9 +64,12 @@ namespace panda
 
 	void Console::draw(const std::string& str, int row, int column) const
 	{
+		SetConsoleTextAttribute(m_handle, 240);
+
 		// Step through with a debugger, or insert sleeps, to see the effect.
 		setCursorPosition(row, column);
 		std::cout << str;
+					 
 	}
 
 	bool Console::updateSize()

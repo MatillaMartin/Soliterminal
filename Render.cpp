@@ -21,13 +21,15 @@ namespace panda
 	{
 		m_console.begin();
 
-		int cardWidth = 3;    // 2 spaces per card, for card like 10
-		int spacing = 2;      // 1 space between stacks
+		int cardWidth = 3;        // 3 spaces per card width, for card like 10
+		int cardHeight = 1;        // 1 spaces per card height
+		int stackSpacing = 2;      // 1 space between stacks
+		int cardSpacing = 1;      // 1 space between cards
 
 		/// Draw top end stacks
 		{
-			int x = spacing;
-			int y = spacing;
+			int x = stackSpacing;
+			int y = stackSpacing;
 			for (const auto& stack : m_game.stacks().endStack)
 			{
 				if (std::optional<Card> card = stack.top())
@@ -35,14 +37,14 @@ namespace panda
 				else
 					drawEmpty(x, y);
 
-				x += spacing + cardWidth;
+				x += stackSpacing + cardWidth;
 			}
 		}
 
 		/// Draw closed stack
 		{
-			int x = spacing + (spacing + cardWidth) * 5;
-			int y = spacing;
+			int x = stackSpacing + (stackSpacing + cardWidth) * 5;
+			int y = stackSpacing;
 			if (std::optional<Card> card = m_game.stacks().closedStack.top())
 				drawCard(*card, x, y);
 			else
@@ -51,8 +53,8 @@ namespace panda
 
 		/// Draw open stack
 		{
-			int x = spacing + (spacing + cardWidth) * 6;
-			int y = spacing;
+			int x = stackSpacing + (stackSpacing + cardWidth) * 6;
+			int y = stackSpacing;
 			if (std::optional<Card> card = m_game.stacks().openStack.top())
 				drawCard(*card, x, y);
 			else
@@ -61,8 +63,8 @@ namespace panda
 
 		/// Draw central stacks
 		{
-			int x = spacing;
-			int startY = spacing + 1 + spacing;
+			int x = stackSpacing;
+			int startY = stackSpacing + cardHeight + stackSpacing;
 			int y = startY;
 
 			for (const auto& stack : m_game.stacks().centralStack)
@@ -70,11 +72,11 @@ namespace panda
 				for (const auto& card : stack.cards())
 				{
 					drawCard(card, x, y);
-					y += 1;
+					y += cardHeight + cardSpacing;
 				}
 
 				y = startY;
-				x += spacing + cardWidth;
+				x += stackSpacing + cardWidth;
 			}
 		}
 
@@ -91,10 +93,10 @@ namespace panda
 		};
 
 		static std::unordered_map<Card::Suit, std::string> suitColorMap{
-			{Card::Suit::Club, "\u001b[33m"},
+			{Card::Suit::Club, "\u001b[30m"},
 			{Card::Suit::Diamond, "\u001b[31m"},
 			{Card::Suit::Heart, "\u001b[31m"},
-			{Card::Suit::Spade, "\u001b[33m"},
+			{Card::Suit::Spade, "\u001b[30m"},
 		};
 
 		auto cardNumberStr = [](int number) -> std::string {

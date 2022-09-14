@@ -29,10 +29,18 @@ Game createGame()
 			Card(10, Card::Suit::Heart, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(1, Card::Suit::Club, Card::State::Open),
+			Card(13, Card::Suit::Diamond, Card::State::Open),
+			Card(12, Card::Suit::Club, Card::State::Open),
+			Card(11, Card::Suit::Heart, Card::State::Open),
+			Card(10, Card::Suit::Spade, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(2, Card::Suit::Club, Card::State::Open),
+			Card(13, Card::Suit::Diamond, Card::State::Open),
+			Card(12, Card::Suit::Club, Card::State::Open),
+			Card(11, Card::Suit::Heart, Card::State::Open),
+			Card(10, Card::Suit::Spade, Card::State::Open),
+			Card(9, Card::Suit::Heart, Card::State::Open),
+			Card(8, Card::Suit::Club, Card::State::Open),
 		},
 		std::vector<Card>{
 			Card(3, Card::Suit::Club, Card::State::Open),
