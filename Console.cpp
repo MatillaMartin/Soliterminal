@@ -72,48 +72,49 @@ namespace panda
 
 	int Console::height() const { return m_height; }
 
-	void Console::draw(const std::string& str, int row, int column) const
+	void Console::draw(const std::string& str, int x, int y) const
 	{
 		SetConsoleTextAttribute(m_handle, 240);
-		for (int j = 0; j < 3; ++j)
+		setCursorPosition(x, y);
+		std::cout << str;
+	}
+
+	void Console::drawRect(int x, int y, int width, int height) const
+	{
+		SetConsoleTextAttribute(m_handle, 240);
+		for (int j = 0; j < width; ++j)
 		{
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < height; ++i)
 			{
-				// draw all around the position to increase card size
-				setCursorPosition(row + i, column + j);
+				// draw all empty spaces
+				setCursorPosition(x + j, y + i);
+				std::cout << " ";
+			}
+		}
+	}
+
+	void Console::drawRectBottomShaded(int x, int y, int width, int height) const
+	{
+		if (width == 0 || height == 0)
+			return;
+
+		SetConsoleTextAttribute(m_handle, 240);
+		for (int j = 0; j < height - 1; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				// draw all empty spaces
+				setCursorPosition(x + i, y + j);
 				std::cout << " ";
 			}
 		}
 
-		// Step through with a debugger, or insert sleeps, to see the effect.
-		//SetConsoleTextAttribute(m_handle, 112);
-		setCursorPosition(row + 1, column + 1);
-		std::cout << str;
-	}
-
-	void Console::drawStacked(const std::string& str, int row, int column) const
-	{
-		char bg = ' ';
-		for (int j = 0; j < 3; ++j)
+		// draw last line with char 95 and color to add a shade effect
+		for (int j = 0; j < width; ++j)
 		{
-			if (j == 2)
-				bg = char(95);
-			else
-				bg = ' ';
-			
-			for (int i = 0; i < 4; ++i)
-			{
-				SetConsoleTextAttribute(m_handle, 240);
-				// draw all around the position to increase card size
-				setCursorPosition(row + i, column + j);
-				std::cout << "\u001b[38;5;250m" << bg;
-			}
+			setCursorPosition(x + j, y + height - 1);
+			std::cout << "\u001b[38;5;250m" << char(95);
 		}
-
-		// Step through with a debugger, or insert sleeps, to see the effect.
-		SetConsoleTextAttribute(m_handle, 240);
-		setCursorPosition(row + 1, column + 1);
-		std::cout << str;
 	}
 
 	bool Console::setSize()
@@ -169,9 +170,9 @@ namespace panda
 		return false;
 	}
 
-	void Console::setCursorPosition(int row, int column) const
+	void Console::setCursorPosition(int x, int y) const
 	{
-		COORD coord = {(SHORT)row, (SHORT)column};
+		COORD coord = {(SHORT)x, (SHORT)y};
 		SetConsoleCursorPosition(m_handle, coord);
 	}
 }

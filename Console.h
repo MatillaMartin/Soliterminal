@@ -27,10 +27,13 @@ namespace panda
 		int height() const;
 
 		/// Draws the given string at row, column
-		void draw(const std::string& str, int row, int column) const;
+		void draw(const std::string& str, int x, int y) const;
+
+		/// Draws a white rectangle at row, column
+		void drawRect(int x, int y, int width, int heigth) const;
 
 		/// Draws the given string, with a shade under it
-		void drawStacked(const std::string& str, int row, int column) const;
+		void drawRectBottomShaded(int x, int y, int width, int heigth) const;
 
 	private:
 		bool setSize();
