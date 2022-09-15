@@ -95,12 +95,6 @@ int main()
 
 			control.action(action);
 
-			if (!game.hasChanged())
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(16));
-				continue;
-			}
-
 			render.update();
 			if (game.state() != Game::State::Playing)
 			{
