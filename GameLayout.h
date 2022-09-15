@@ -15,6 +15,7 @@ namespace panda
 	public:
 		GameLayout(Game& game);
 
+		// Returns the list of stacks. Use the layout given by indexToLayout
 		const StackList& stacks() const;
 
 		// Mapping between the layout and stacks index
@@ -35,15 +36,23 @@ namespace panda
 		// Returns the index of the element right of index
 		int right(int index) const;
 
+		// Returns true if the index matches an end stack
 		bool isEndStack(int index) const;
+
+		// Returns true if the index matches a central stack
 		bool isCentralStack(int index) const;
+
+		// Returns true if the index matches the OpenStack
 		bool isOpenStack(int index) const;
+
+		// Returns true if the index matches the ClosedStack
 		bool isClosedStack(int index) const;
 
+		// Returns the index for the OpenStack
 		int openStack() const;
-		int closedStack() const;
 
-		int gridWidth() const;
+		// Returns the index for the ClosedStack
+		int closedStack() const;
 
 	private:
 		// Mapping between the grid position and stacks list

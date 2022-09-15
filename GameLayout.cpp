@@ -100,8 +100,6 @@ namespace panda
 
 	int GameLayout::closedStack() const { return 5; }
 
-	int GameLayout::gridWidth() const { return m_gridWidth; }
-
 	int GameLayout::offset(int index, int dx, int dy) const
 	{
 		auto [gridX, gridY] = indexToGrid(index);
