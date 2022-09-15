@@ -37,7 +37,7 @@ namespace panda
 		assert(m_width > 0 && m_height > 0);
 	}
 
-	void Console::begin() {}
+	void Console::begin() { clear(); }
 
 	void Console::end() { std::cout.flush(); }
 
@@ -59,7 +59,7 @@ namespace panda
 
 		// Reset the attributes of every character to the default.
 		// This clears all background colour formatting, if any.
-		FillConsoleOutputAttribute(m_handle, csbi.wAttributes, length, topLeft, &written);
+		FillConsoleOutputAttribute(m_handle, 0, length, topLeft, &written);
 
 		// Move the cursor back to the top left for the next sequence of writes
 		SetConsoleCursorPosition(m_handle, topLeft);

@@ -11,10 +11,7 @@ namespace panda
 	class GameLayout
 	{
 	public:
-		GameLayout(Game& game);
-
-		// Returns the list of stacks. Use the layout given by indexToLayout
-		const std::vector<CardStack>& stacks() const;
+		GameLayout();
 
 		// Mapping between the layout and stacks index
 		int layoutToIndex(int x, int y) const;
@@ -53,7 +50,6 @@ namespace panda
 		// Offsets the index by the given amount
 		int offset(int index, int dx, int dy) const;
 
-		Game& m_game;
 		int m_gridWidth = 6;
 
 	};

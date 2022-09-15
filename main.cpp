@@ -85,9 +85,9 @@ int main()
 	try
 	{
 		Game game = createGame();
-		GameLayout gameLayout(game);
+		GameLayout gameLayout;
 		GameControl control(game, gameLayout);
-		Render render(control, gameLayout);
+		Render render(game, control, gameLayout);
 
 		// Basic rendering cycle
 		while (true)

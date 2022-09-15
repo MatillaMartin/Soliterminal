@@ -14,7 +14,7 @@ namespace panda
 	class Render
 	{
 	public:
-		Render(const GameControl & control, const GameLayout & layout);
+		Render(const Game & game, const GameControl & control, const GameLayout & layout);
 
 		// Updates the rendering output
 		void update();
@@ -36,6 +36,7 @@ namespace panda
 		void drawEmpty(int x, int y) const;
 		void drawControl(int x, int y) const;
 
+		const Game& m_game;
 		const GameControl& m_control;
 		const GameLayout& m_layout;
 

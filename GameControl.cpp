@@ -8,7 +8,7 @@ namespace panda
 {
 	const CardStack& GameControl::stack()
 	{
-		const CardStack& stack = m_layout.stacks()[m_stackIndex];
+		const CardStack& stack = m_game.stacks()[m_stackIndex];
 		return stack;
 	}
 
@@ -17,7 +17,7 @@ namespace panda
 		, m_layout(gameLayout)
 	{
 		// start at last stack
-		m_stackIndex = static_cast<int>(m_layout.stacks().size()) - 1;
+		m_stackIndex = static_cast<int>(m_game.stacks().size()) - 1;
 	}
 
 	void GameControl::action(GameAction action)
@@ -62,7 +62,8 @@ namespace panda
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
-				m_cardIndex = std::min(m_cardIndex, stack().size() - 1);
+				int stackIndex = std::max(0, stack().size() - 1);
+				m_cardIndex = std::min(m_cardIndex, stackIndex);
 			}
 		}
 		else if (action == GameAction::Right)
@@ -72,7 +73,8 @@ namespace panda
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
-				m_cardIndex = std::min(m_cardIndex, stack().size() - 1);
+				int stackIndex = std::max(0, stack().size() - 1);
+				m_cardIndex = std::min(m_cardIndex, stackIndex);
 			}
 		}
 		else if (action == GameAction::Use)
@@ -90,7 +92,7 @@ namespace panda
 					m_state = State::Move;
 				}
 			}
-			else if(m_state == State::Move)
+			else if (m_state == State::Move)
 			{
 				bool moved = m_game.moveCards(m_markedStackIndex, m_markedCardIndex, m_stackIndex);
 				if (moved)

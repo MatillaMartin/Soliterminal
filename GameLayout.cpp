@@ -6,12 +6,8 @@
 
 namespace panda
 {
-	GameLayout::GameLayout(Game& game)
-		: m_game(game)
-	{
-	}
-
-	const std::vector<CardStack>& GameLayout::stacks() const { return m_game.stacks(); }
+	GameLayout::GameLayout()
+	{}
 
 	// Mapping between the layout and stacks index
 	int GameLayout::layoutToIndex(int x, int y) const
@@ -86,11 +82,8 @@ namespace panda
 			gridOutX = 4;
 
 		gridOutX = std::clamp(gridOutX, 0, m_gridWidth - 1);
-		gridOutY = std::clamp(gridOutY, 0, m_gridWidth - 1);
+		gridOutY = std::clamp(gridOutY, 0, 1);
 
 		return gridToIndex(gridOutX, gridOutY);
 	};
-
-	bool GameLayout::isSpread(int index) const { return m_game.isCentralStack(index); }
-
 }

@@ -12,8 +12,9 @@
 
 namespace panda
 {
-	Render::Render(const GameControl& control, const GameLayout& layout)
-		: m_control(control)
+	Render::Render(const Game& game, const GameControl& control, const GameLayout& layout)
+		: m_game(game)
+		, m_control(control)
 		, m_layout(layout)
 	{
 		update();
@@ -29,11 +30,11 @@ namespace panda
 
 	void Render::update()
 	{
-		auto isSpread = [this](int index) { return m_layout.isSpread(index); };
+		auto isSpread = [this](int index) { return m_game.isCentralStack(index); };
 
 		m_console.begin();
 
-		const std::vector<CardStack>& stacks = m_layout.stacks();
+		const std::vector<CardStack>& stacks = m_game.stacks();
 		// render game layout, with mapping to console positions
 		for (int index = 0; index < stacks.size(); ++index)
 		{
@@ -66,7 +67,7 @@ namespace panda
 			int index = m_control.stackIndex();
 			auto [x, y] = layoutToConsole(index);
 
-			const CardStack& stack = m_layout.stacks()[index];
+			const CardStack& stack = m_game.stacks()[index];
 
 			if (isSpread(index))
 			{
