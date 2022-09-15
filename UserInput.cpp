@@ -14,7 +14,7 @@ namespace panda
 	{
 		while (true)
 		{
-			int c = getch();
+			int c = _getch();
 
 			if (c == KEY_UP)
 				return GameAction::Up;

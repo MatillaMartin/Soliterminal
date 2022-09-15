@@ -1,42 +1,29 @@
 #include "GameControl.h"
 
 #include "CardStack.h"
+#include "Game.h"
 #include "GameLayout.h"
-
-#include <algorithm>
 
 namespace panda
 {
-	void GameControl::moveCursor(int dx, int dy)
-	{
-		auto [gridX, gridY] = m_layout.tableToGrid(m_stackX, m_stackY);
-		gridX += dx;
-		gridY += dy;
-		auto [tableX, tableY] = m_layout.gridToTable(gridX, gridY);
-		m_stackX = std::clamp(tableX, 0, m_tableWidth - 1);
-		m_stackY = std::clamp(tableY, 0, m_tableHeight - 1);
-	}
-
 	const CardStack& GameControl::stack()
 	{
-		const CardStack& stack = m_layout.table()[m_stackX][m_stackY]();
+		const CardStack& stack = m_layout.stacks()[m_stackIndex]();
 		return stack;
 	}
 
-	bool GameControl::isCentralStack() { return m_stackY == 1; }
-
-	GameControl::GameControl(GameLayout& gameLayout)
-		: m_layout(gameLayout)
-		, m_tableWidth(gameLayout.table().size())
-		, m_tableHeight(gameLayout.table()[0].size())
+	GameControl::GameControl(Game& game, GameLayout& gameLayout)
+		: m_game(game)
+		, m_layout(gameLayout)
 	{
-		// start top left
-		m_stackX = m_tableWidth-1;
-		m_stackY = 0;
+		// start at last stack
+		m_stackIndex = static_cast<int>(m_layout.stacks().size()) - 1;
 	}
 
 	void GameControl::action(GameAction action)
 	{
+		auto isCentralStack = [this]() -> bool { return m_layout.isCentralStack(m_stackIndex); };
+
 		// apply action map to graph
 		if (action == GameAction::Up)
 		{
@@ -45,7 +32,7 @@ namespace panda
 				if (m_cardIndex == 0)
 				{
 					// move up a stack
-					moveCursor(0, -1);
+					m_stackIndex = m_layout.up(m_stackIndex);
 				}
 				else
 				{
@@ -65,13 +52,13 @@ namespace panda
 			}
 			else
 			{
-				moveCursor(0, 1);
+				m_stackIndex = m_layout.down(m_stackIndex);
 			}
 		}
 		else if (action == GameAction::Left)
 		{
 			// move to the left
-			moveCursor(-1, 0);
+			m_stackIndex = m_layout.left(m_stackIndex);
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
@@ -81,7 +68,7 @@ namespace panda
 		else if (action == GameAction::Right)
 		{
 			// move to the right
-			moveCursor(1, 0);
+			m_stackIndex = m_layout.right(m_stackIndex);
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
@@ -90,11 +77,12 @@ namespace panda
 		}
 		else if (action == GameAction::Use)
 		{
+			m_layout.stacks()[m_stackIndex];
 			// nothing here yet
 		}
 	}
 
-	std::pair<int, int> GameControl::stackIndex() const { return {m_stackX, m_stackY}; }
+	int GameControl::stackIndex() const { return m_stackIndex; }
 
 	int GameControl::cardIndex() const { return m_cardIndex; }
 }

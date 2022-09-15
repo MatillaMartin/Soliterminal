@@ -8,14 +8,16 @@ namespace panda
 {
 	class CardStack;
 	class GameLayout;
+	class Game;
+
 	class GameControl
 	{
 	public:
-		GameControl(GameLayout& layout);
+		GameControl(Game & game, GameLayout& layout);
 
 		void action(GameAction action);
 
-		std::pair<int, int> stackIndex() const;
+		int stackIndex() const;
 		int cardIndex() const;
 
 	private:
@@ -23,11 +25,9 @@ namespace panda
 		const CardStack& stack();
 		bool isCentralStack();
 
+		const Game& m_game;
 		const GameLayout& m_layout;
 		int m_cardIndex = 0;
-		int m_stackX = 0;
-		int m_stackY = 0;
-		int m_tableWidth = 0;
-		int m_tableHeight = 0;
+		int m_stackIndex = 0;
 	};
 }

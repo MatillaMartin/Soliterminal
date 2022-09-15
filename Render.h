@@ -26,15 +26,15 @@ namespace panda
 		int m_cardSpacing = 0;     // space between cards
 
 		// Returns if the card stack should be spread
-		bool isSpread(int x, int y);
+		bool isSpread(int index);
 
 		// Returns the console position for each layout element
-		std::pair<int, int> layoutToConsole(int x, int y);
+		std::pair<int, int> layoutToConsole(int index);
 
 		int cardCenterX() const { return static_cast<int>(std::floor((m_cardWidth - 1) / 2.0)); }
 		int cardCenterY() const { return static_cast<int>(std::floor((m_cardHeight - 1) / 2.0)); }
 
-		void drawCardStacked(const Card& card, int row, int column) const;
+		void drawCardSpread(const Card& card, int row, int column) const;
 		void drawCard(const Card& card, int row, int column) const;
 		void drawEmpty(int x, int y) const;
 		void drawControl(int x, int y) const;

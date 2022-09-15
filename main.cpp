@@ -83,7 +83,7 @@ int main()
 	{
 		Game game = createGame();
 		GameLayout gameLayout(game);
-		GameControl control(gameLayout);
+		GameControl control(game, gameLayout);
 		Render render(control, gameLayout);
 
 		// Basic rendering cycle

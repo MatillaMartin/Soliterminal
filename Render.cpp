@@ -19,13 +19,13 @@ namespace panda
 		update();
 	}
 
-	bool Render::isSpread(int x, int y) { return y == 1; }
+	bool Render::isSpread(int index) { return m_layout.isCentralStack(index); }
 
-	std::pair<int, int> Render::layoutToConsole(int x, int y)
+	std::pair<int, int> Render::layoutToConsole(int index)
 	{
-		auto [gridX, gridY] = m_layout.tableToGrid(x, y);
-		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * gridX;
-		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * gridY;
+		auto [layoutX, layoutY] = m_layout.indexToLayout(index);
+		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * layoutX;
+		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * layoutY;
 		return {outX, outY};
 	}
 
@@ -33,45 +33,42 @@ namespace panda
 	{
 		m_console.begin();
 
-		const StackTable& table = m_layout.table();
+		const StackList& list = m_layout.stacks();
 		// render game layout, with mapping to console positions
-		for (int i = 0; i < table.size(); ++i)
+		for (int index = 0; index < list.size(); ++index)
 		{
-			for (int j = 0; j < table[0].size(); ++j)
+			auto [x, y] = layoutToConsole(index);
+
+			const CardStack& stack = list[index]();
+
+			if (stack.cards().empty())
 			{
-				auto [x, y] = layoutToConsole(i, j);
-
-				const CardStack& stack = table[i][j]();
-
-				if (stack.cards().empty())
+				drawEmpty(x, y);
+			}
+			else if (isSpread(index))
+			{
+				for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
 				{
-					drawEmpty(x, y);
+					drawCardSpread(*it, x, y);
+					y += m_cardHeight + m_cardSpacing;
 				}
-				else if (isSpread(i, j))
-				{
-					for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
-					{
-						drawCardStacked(*it, x, y);
-						y += m_cardHeight + m_cardSpacing;
-					}
 
-					drawCard(*std::prev(stack.cards().end()), x, y);
-				}
-				else
-				{
-					drawCard(*stack.top(), x, y);
-				}
+				drawCard(*std::prev(stack.cards().end()), x, y);
+			}
+			else
+			{
+				drawCard(*stack.top(), x, y);
 			}
 		}
 
 		// render game control
 		{
-			auto [controlX, controlY] = m_control.stackIndex();
-			auto [x, y] = layoutToConsole(controlX, controlY);
+			int index = m_control.stackIndex();
+			auto [x, y] = layoutToConsole(index);
 
-			const CardStack& stack = table[controlX][controlY]();
+			const CardStack& stack = m_layout.stacks()[index]();
 
-			if (isSpread(controlX, controlY))
+			if (isSpread(index))
 			{
 				y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
 			}
@@ -127,7 +124,7 @@ namespace panda
 		m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
 	}
 
-	void Render::drawCardStacked(const Card& card, int x, int y) const
+	void Render::drawCardSpread(const Card& card, int x, int y) const
 	{
 		m_console.drawRectBottomShaded(x, y, m_cardWidth, m_cardHeight);
 		m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
