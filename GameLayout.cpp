@@ -11,27 +11,7 @@ namespace panda
 	{
 	}
 
-	const StackList& GameLayout::stacks() const
-	{
-		// define layout of stacks as a table
-		static StackList stackTable{
-			[this]() -> const CardStack& { return m_game.stacks().endStack[0]; },
-			[this]() -> const CardStack& { return m_game.stacks().endStack[1]; },
-			[this]() -> const CardStack& { return m_game.stacks().endStack[2]; },
-			[this]() -> const CardStack& { return m_game.stacks().endStack[3]; },
-			[this]() -> const CardStack& { return m_game.stacks().openStack; },
-			[this]() -> const CardStack& { return m_game.stacks().closedStack; },
-
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[0]; },
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[1]; },
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[2]; },
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[3]; },
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[4]; },
-			[this]() -> const CardStack& { return m_game.stacks().centralStack[5]; },
-		};
-
-		return stackTable;
-	}
+	const std::vector<CardStack>& GameLayout::stacks() const { return m_game.stacks(); }
 
 	// Mapping between the layout and stacks index
 	int GameLayout::layoutToIndex(int x, int y) const
@@ -41,7 +21,7 @@ namespace panda
 	}
 
 	// Mapping between stacks index and layout
-	std::pair<int, int> GameLayout::indexToLayout(int index) const 
+	std::pair<int, int> GameLayout::indexToLayout(int index) const
 	{
 		auto [gridX, gridY] = indexToGrid(index);
 		return gridToLayout(gridX, gridY);
@@ -88,18 +68,6 @@ namespace panda
 
 	int GameLayout::right(int index) const { return offset(index, 1, 0); }
 
-	bool GameLayout::isEndStack(int index) const { return index >= 0 && index < 4; }
-
-	bool GameLayout::isCentralStack(int index) const { return index >= 6 && index < 12; }
-
-	bool GameLayout::isOpenStack(int index) const { return index == openStack(); }
-
-	bool GameLayout::isClosedStack(int index) const { return index == closedStack(); }
-
-	int GameLayout::openStack() const { return 4; };
-
-	int GameLayout::closedStack() const { return 5; }
-
 	int GameLayout::offset(int index, int dx, int dy) const
 	{
 		auto [gridX, gridY] = indexToGrid(index);
@@ -122,4 +90,7 @@ namespace panda
 
 		return gridToIndex(gridOutX, gridOutY);
 	};
+
+	bool GameLayout::isSpread(int index) const { return m_game.isCentralStack(index); }
+
 }

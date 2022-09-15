@@ -10,7 +10,7 @@ namespace panda
 	public:
 		struct Stacks
 		{
-			Stacks(std::array<CardStack, 4> endStack, std::array<CardStack, 6> centralStack, CardStack closedStack, CardStack openStack)
+			Stacks(std::array<CardStack, 4>&& endStack, std::array<CardStack, 6>&& centralStack, CardStack&& closedStack, CardStack&& openStack)
 				: endStack(endStack)
 				, centralStack(centralStack)
 				, closedStack(closedStack)
@@ -30,10 +30,9 @@ namespace panda
 			Lose
 		};
 
-		Game(Stacks state);
+		Game(Stacks&& state);
 
-		// Returns the game stacks
-		const Stacks& stacks() const;
+		const std::vector<CardStack>& stacks() const { return m_stacks; }
 
 		// Returns the game state
 		State state() const { return m_state; }
@@ -47,11 +46,34 @@ namespace panda
 
 		/// Moves cards between specified stacks
 		/// Returns false if was not able to move those cards
-		bool moveCards(CardStack& origin, int cardOriginIndex, CardStack& dest);
+		bool moveCards(int originStack, int cardOriginIndex, int destStack);
+
+		// Returns true if the index matches an end stack
+		bool isEndStack(int index) const;
+
+		// Returns true if the index matches a central stack
+		bool isCentralStack(int index) const;
+
+		// Returns true if the index matches the OpenStack
+		bool isOpenStack(int index) const;
+
+		// Returns true if the index matches the ClosedStack
+		bool isClosedStack(int index) const;
+
+		// Returns the index for the OpenStack
+		int openStackIndex() const;
+
+		// Returns the index for the ClosedStack
+		int closedStackIndex() const;	
+
+		// Returns the indices for CentralStacks
+		std::vector<int> centralStacksIndices() const;
+
+		// Returns the indices for EndStacks
+		std::vector<int> endStacksIndices() const;
 
 	private:
-		Stacks m_stacks;
+		std::vector<CardStack> m_stacks;
 		State m_state = State::Playing;
-		bool m_isDirty = true;
 	};
 }

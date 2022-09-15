@@ -8,7 +8,7 @@ namespace panda
 {
 	const CardStack& GameControl::stack()
 	{
-		const CardStack& stack = m_layout.stacks()[m_stackIndex]();
+		const CardStack& stack = m_layout.stacks()[m_stackIndex];
 		return stack;
 	}
 
@@ -22,7 +22,7 @@ namespace panda
 
 	void GameControl::action(GameAction action)
 	{
-		auto isCentralStack = [this]() -> bool { return m_layout.isCentralStack(m_stackIndex); };
+		auto isCentralStack = [this]() -> bool { return m_game.isCentralStack(m_stackIndex); };
 
 		// apply action map to graph
 		if (action == GameAction::Up)
@@ -77,12 +77,29 @@ namespace panda
 		}
 		else if (action == GameAction::Use)
 		{
-			if (m_layout.isClosedStack(m_stackIndex))
+			if (m_state == State::Select)
 			{
-				m_game.openCard();
+				if (m_game.isClosedStack(m_stackIndex))
+				{
+					m_game.openCard();
+				}
+				else
+				{
+					m_markedStackIndex = m_stackIndex;
+					m_markedCardIndex = m_cardIndex;
+					m_state = State::Move;
+				}
 			}
-
-			// nothing here yet
+			else if(m_state == State::Move)
+			{
+				bool moved = m_game.moveCards(m_markedStackIndex, m_markedCardIndex, m_stackIndex);
+				if (moved)
+				{
+					m_state = State::Select;
+					m_markedStackIndex = 0;
+					m_markedCardIndex = 0;
+				}
+			}
 		}
 	}
 

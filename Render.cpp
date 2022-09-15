@@ -19,8 +19,6 @@ namespace panda
 		update();
 	}
 
-	bool Render::isSpread(int index) { return m_layout.isCentralStack(index); }
-
 	std::pair<int, int> Render::layoutToConsole(int index)
 	{
 		auto [layoutX, layoutY] = m_layout.indexToLayout(index);
@@ -31,15 +29,17 @@ namespace panda
 
 	void Render::update()
 	{
+		auto isSpread = [this](int index) { return m_layout.isSpread(index); };
+
 		m_console.begin();
 
-		const StackList& list = m_layout.stacks();
+		const std::vector<CardStack>& stacks = m_layout.stacks();
 		// render game layout, with mapping to console positions
-		for (int index = 0; index < list.size(); ++index)
+		for (int index = 0; index < stacks.size(); ++index)
 		{
 			auto [x, y] = layoutToConsole(index);
 
-			const CardStack& stack = list[index]();
+			const CardStack& stack = stacks[index];
 
 			if (stack.cards().empty())
 			{
@@ -66,7 +66,7 @@ namespace panda
 			int index = m_control.stackIndex();
 			auto [x, y] = layoutToConsole(index);
 
-			const CardStack& stack = m_layout.stacks()[index]();
+			const CardStack& stack = m_layout.stacks()[index];
 
 			if (isSpread(index))
 			{

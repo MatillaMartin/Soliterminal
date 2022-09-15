@@ -74,10 +74,10 @@ Game createGame()
 
 	CardStack openStack{std::vector<Card>{}};
 
-	Game::Stacks state(endStack, centralStack, closedStack, openStack);
+	Game::Stacks state(std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack));
 
 	// create a fixed state for now
-	return Game(state);
+	return Game(std::move(state));
 }
 
 int main()

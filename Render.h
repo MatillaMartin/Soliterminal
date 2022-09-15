@@ -25,9 +25,6 @@ namespace panda
 		int m_stackSpacing = 4;    // space between stacks
 		int m_cardSpacing = 0;     // space between cards
 
-		// Returns if the card stack should be spread
-		bool isSpread(int index);
-
 		// Returns the console position for each layout element
 		std::pair<int, int> layoutToConsole(int index);
 
