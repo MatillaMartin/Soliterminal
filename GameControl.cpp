@@ -95,12 +95,9 @@ namespace panda
 			else if (m_state == State::Move)
 			{
 				bool moved = m_game.moveCards(m_markedStackIndex, m_markedCardIndex, m_stackIndex);
-				if (moved)
-				{
-					m_state = State::Select;
-					m_markedStackIndex = 0;
-					m_markedCardIndex = 0;
-				}
+				m_state = State::Select;
+				m_markedStackIndex = 0;
+				m_markedCardIndex = 0;
 			}
 		}
 	}
