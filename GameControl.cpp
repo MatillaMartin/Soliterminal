@@ -55,17 +55,13 @@ namespace panda
 			const CardStack& current = stack();
 			if (isCentralStack())
 			{
-				if (m_cardIndex == 0)
-				{
-					// move down a stack
-					moveCursor(0, 1);
-				}
-				else
-				{
-					// move down the cards until last
-					if (m_cardIndex < stack().size() - 1)
-						m_cardIndex++;
-				}
+				// move down the cards until last
+				if (m_cardIndex < stack().size() - 1)
+					m_cardIndex++;
+			}
+			else
+			{
+				moveCursor(0, 1);
 			}
 		}
 		else if (action == GameAction::Left)
@@ -75,7 +71,7 @@ namespace panda
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
-				m_cardIndex = std::max(m_cardIndex, stack().size() - 1);
+				m_cardIndex = std::min(m_cardIndex, stack().size() - 1);
 			}
 		}
 		else if (action == GameAction::Right)
@@ -85,7 +81,7 @@ namespace panda
 			if (isCentralStack())
 			{
 				// update the cardIndex for the new stack
-				m_cardIndex = std::max(m_cardIndex, stack().size() - 1);
+				m_cardIndex = std::min(m_cardIndex, stack().size() - 1);
 			}
 		}
 		else if (action == GameAction::Use)
