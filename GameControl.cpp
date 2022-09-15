@@ -25,14 +25,26 @@ namespace panda
 		auto isCentralStack = [this]() -> bool { return m_game.isCentralStack(m_stackIndex); };
 
 		auto changeStack = [&](int stackIndex) {
+			bool wasCentral = isCentralStack();
 			m_stackIndex = stackIndex;
-
 			int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
 			// update the cardIndex for the new stack
 			if (isCentralStack())
-				m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);    // for expanded stacks, pick closest index
+			{
+				// when coming from Central, try to keep index
+				if (wasCentral)
+				{
+					m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);
+				}
+				else
+				{
+					m_cardIndex = 0;
+				}
+			}
 			else
+			{
 				m_cardIndex = stackLastCardIndex;    // for compacted stacks, pick top card index
+			}
 		};
 
 		if (action == GameAction::Up)
