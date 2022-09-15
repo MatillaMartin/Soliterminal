@@ -11,7 +11,7 @@ namespace panda
 
 	const StackTable& GameLayout::table() const
 	{
-		// define layout of stacks, action moves between layout
+		// define layout of stacks as a table
 		static StackTable stackTable{
 			std::array<std::function<const CardStack&()>, 2>{[this]() -> const CardStack& { return m_game.stacks().endStack[0]; },
 															 [this]() -> const CardStack& { return m_game.stacks().centralStack[0]; }},
@@ -33,5 +33,25 @@ namespace panda
 		};
 
 		return stackTable;
+	}
+
+	std::pair<int, int> GameLayout::tableToGrid(int x, int y) const
+	{
+		if (x == 4 && y == 0)
+			return {5, 0};
+		if (x == 5 && y == 0)
+			return {6, 0};
+
+		return {x, y};
+	}
+
+	std::pair<int, int> GameLayout::gridToTable(int x, int y) const
+	{
+		if (x == 5 && y == 0)
+			return {4, 0};
+		if (x == 6 && y == 0)
+			return {5, 0};
+
+		return {x, y};
 	}
 }

@@ -28,9 +28,6 @@ namespace panda
 		// Returns if the card stack should be spread
 		bool isSpread(int x, int y);
 
-		// Returns the grid position for each layout element
-		std::pair<int, int> position(int x, int y);
-
 		// Returns the console position for each layout element
 		std::pair<int, int> layoutToConsole(int x, int y);
 

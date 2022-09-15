@@ -9,25 +9,29 @@ namespace panda
 {
 	void GameControl::moveCursor(int dx, int dy)
 	{
-		int nextX = m_stackX + dx;
-		int nextY = m_stackY + dy;
-		m_stackX = std::clamp(nextX, 0, m_tableWidth - 1);
-		m_stackY = std::clamp(nextY, 0, m_tableHeight - 1);
+		auto [gridX, gridY] = m_layout.tableToGrid(m_stackX, m_stackY);
+		gridX += dx;
+		gridY += dy;
+		auto [tableX, tableY] = m_layout.gridToTable(gridX, gridY);
+		m_stackX = std::clamp(tableX, 0, m_tableWidth - 1);
+		m_stackY = std::clamp(tableY, 0, m_tableHeight - 1);
 	}
 
-	const CardStack& GameControl::stack() 
+	const CardStack& GameControl::stack()
 	{
-		const CardStack& stack = m_table[m_stackX][m_stackY]();
-		return stack; 
+		const CardStack& stack = m_layout.table()[m_stackX][m_stackY]();
+		return stack;
 	}
 
 	bool GameControl::isCentralStack() { return m_stackY == 1; }
 
 	GameControl::GameControl(GameLayout& gameLayout)
-		: m_table(gameLayout.table())
+		: m_layout(gameLayout)
+		, m_tableWidth(gameLayout.table().size())
+		, m_tableHeight(gameLayout.table()[0].size())
 	{
 		// start top left
-		m_stackX = 5;
+		m_stackX = m_tableWidth-1;
 		m_stackY = 0;
 	}
 
@@ -89,8 +93,8 @@ namespace panda
 			// nothing here yet
 		}
 	}
-	
+
 	std::pair<int, int> GameControl::stackIndex() const { return {m_stackX, m_stackY}; }
-	
+
 	int GameControl::cardIndex() const { return m_cardIndex; }
 }

@@ -1,16 +1,17 @@
 #pragma once
 
 #include "GameAction.h"
-#include "GameLayout.h"
+
+#include <utility>
 
 namespace panda
 {
 	class CardStack;
-
+	class GameLayout;
 	class GameControl
 	{
 	public:
-		GameControl(GameLayout & layout);
+		GameControl(GameLayout& layout);
 
 		void action(GameAction action);
 
@@ -22,11 +23,11 @@ namespace panda
 		const CardStack& stack();
 		bool isCentralStack();
 
-		const StackTable& m_table;
+		const GameLayout& m_layout;
 		int m_cardIndex = 0;
 		int m_stackX = 0;
 		int m_stackY = 0;
-		int m_tableWidth = 6;
-		int m_tableHeight = 2;
+		int m_tableWidth = 0;
+		int m_tableHeight = 0;
 	};
 }

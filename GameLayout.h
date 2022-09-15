@@ -17,6 +17,10 @@ namespace panda
 
 		const StackTable& table() const;
 
+		// Mapping between table memory and position of the element
+		std::pair<int, int> gridToTable(int x, int y) const;
+		std::pair<int, int> tableToGrid(int x, int y) const;
+
 	private:
 		Game& m_game;
 	};

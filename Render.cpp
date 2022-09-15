@@ -21,21 +21,11 @@ namespace panda
 
 	bool Render::isSpread(int x, int y) { return y == 1; }
 
-	std::pair<int, int> Render::position(int x, int y)
-	{
-		if (x == 4 && y == 0)
-			return {5, 0};
-		if (x == 5 && y == 0)
-			return {6, 0};
-
-		return {x, y};
-	}
-
 	std::pair<int, int> Render::layoutToConsole(int x, int y)
 	{
-		auto [iPos, jPos] = position(x, y);
-		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * iPos;
-		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * jPos;
+		auto [gridX, gridY] = m_layout.tableToGrid(x, y);
+		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * gridX;
+		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * gridY;
 		return {outX, outY};
 	}
 
