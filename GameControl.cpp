@@ -24,7 +24,17 @@ namespace panda
 	{
 		auto isCentralStack = [this]() -> bool { return m_game.isCentralStack(m_stackIndex); };
 
-		// apply action map to graph
+		auto changeStack = [&](int stackIndex) {
+			m_stackIndex = stackIndex;
+
+			int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
+			// update the cardIndex for the new stack
+			if (isCentralStack())
+				m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);    // for expanded stacks, pick closest index
+			else
+				m_cardIndex = stackLastCardIndex;    // for compacted stacks, pick top card index
+		};
+
 		if (action == GameAction::Up)
 		{
 			if (isCentralStack())
@@ -32,7 +42,7 @@ namespace panda
 				if (m_cardIndex == 0)
 				{
 					// move up a stack
-					m_stackIndex = m_layout.up(m_stackIndex);
+					changeStack(m_layout.up(m_stackIndex));
 				}
 				else
 				{
@@ -52,30 +62,18 @@ namespace panda
 			}
 			else
 			{
-				m_stackIndex = m_layout.down(m_stackIndex);
+				changeStack(m_layout.down(m_stackIndex));
 			}
 		}
 		else if (action == GameAction::Left)
 		{
 			// move to the left
-			m_stackIndex = m_layout.left(m_stackIndex);
-			if (isCentralStack())
-			{
-				// update the cardIndex for the new stack
-				int stackIndex = std::max(0, stack().size() - 1);
-				m_cardIndex = std::min(m_cardIndex, stackIndex);
-			}
+			changeStack(m_layout.left(m_stackIndex));
 		}
 		else if (action == GameAction::Right)
 		{
 			// move to the right
-			m_stackIndex = m_layout.right(m_stackIndex);
-			if (isCentralStack())
-			{
-				// update the cardIndex for the new stack
-				int stackIndex = std::max(0, stack().size() - 1);
-				m_cardIndex = std::min(m_cardIndex, stackIndex);
-			}
+			changeStack(m_layout.right(m_stackIndex));
 		}
 		else if (action == GameAction::Use)
 		{
