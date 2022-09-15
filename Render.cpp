@@ -3,72 +3,55 @@
 #include "Card.h"
 #include "CardStack.h"
 #include "Game.h"
+#include "GameControl.h"
+#include "GameLayout.h"
 
 #include <assert.h>
 #include <iostream>
 #include <string>
-#include <unordered_map>
 
 namespace panda
 {
-	Render::Render(const Game& game)
-		: m_game(game)
+	Render::Render(const GameControl& control, const GameLayout& layout)
+		: m_control(control)
+		, m_layout(layout)
 	{
 		update();
 	}
+
+	bool Render::isSpread(int x, int y) { return y == 1; }
+
+	std::pair<int, int> Render::position(int x, int y)
+	{
+		if (x == 0 && y == 4)
+			return {0, 5};
+		if (x == 0 && y == 5)
+			return {0, 6};
+
+		return {x, y};
+	}
+
 
 	void Render::update()
 	{
 		m_console.begin();
 
-		/// Draw top end stacks
+		const StackTable& table = m_layout.table();
+		for (int i = 0; i < table.size(); ++i)
 		{
-			int x = m_stackSpacing;
-			int y = m_stackSpacing;
-			for (const auto& stack : m_game.stacks().endStack)
+			for (int j = 0; j < table[0].size(); ++j)
 			{
-				if (std::optional<Card> card = stack.top())
-					drawCard(*card, x, y);
-				else
-					drawEmpty(x, y);
+				auto [iPos, jPos] = position(i, j);
+				int x = m_stackSpacing + (m_stackSpacing + m_cardWidth) * iPos;
+				int y = m_stackSpacing + (m_stackSpacing + m_cardHeight) * jPos;
 
-				x += m_stackSpacing + m_cardWidth;
-			}
-		}
+				const CardStack& stack = table[i][j]();
 
-		/// Draw closed stack
-		{
-			int x = m_stackSpacing + (m_stackSpacing + m_cardWidth) * 5;
-			int y = m_stackSpacing;
-			if (std::optional<Card> card = m_game.stacks().closedStack.top())
-				drawCard(*card, x, y);
-			else
-				drawEmpty(x, y);
-		}
-
-		/// Draw open stack
-		{
-			int x = m_stackSpacing + (m_stackSpacing + m_cardWidth) * 6;
-			int y = m_stackSpacing;
-			if (std::optional<Card> card = m_game.stacks().openStack.top())
-				drawCard(*card, x, y);
-			else
-				drawEmpty(x, y);
-		}
-
-		/// Draw central stacks
-		{
-			int x = m_stackSpacing;
-			int startY = m_stackSpacing + m_cardHeight + m_stackSpacing;
-			int y = startY;
-
-			for (const auto& stack : m_game.stacks().centralStack)
-			{
 				if (stack.cards().empty())
 				{
 					drawEmpty(x, y);
 				}
-				else
+				else if (isSpread(i, j))
 				{
 					for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
 					{
@@ -78,9 +61,10 @@ namespace panda
 
 					drawCard(*std::prev(stack.cards().end()), x, y);
 				}
-
-				y = startY;
-				x += m_stackSpacing + m_cardWidth;
+				else
+				{
+					drawCard(*stack.top(), x, y);
+				}
 			}
 		}
 

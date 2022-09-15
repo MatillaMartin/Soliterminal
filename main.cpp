@@ -1,7 +1,10 @@
 #include "Card.h"
 #include "CardStack.h"
 #include "Game.h"
+#include "GameControl.h"
+#include "GameLayout.h"
 #include "Render.h"
+#include "UserInput.h"
 
 #include <array>
 #include <chrono>
@@ -79,11 +82,19 @@ int main()
 	try
 	{
 		Game game = createGame();
-		Render render(game);
+		GameLayout gameLayout(game);
+		GameControl control(gameLayout);
+		Render render(control, gameLayout);
 
 		// Basic rendering cycle
 		while (true)
 		{
+			GameAction action = UserInput::waitForInput();
+			if (action == GameAction::None)
+				continue;
+
+			control.action(action);
+
 			if (!game.hasChanged())
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(16));

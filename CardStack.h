@@ -36,7 +36,7 @@ namespace panda
 		void flipTop();
 
 		// Number of cards in stack
-		int size();
+		int size() const;
 
 	private:
 		std::vector<Card> m_cards;

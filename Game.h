@@ -56,6 +56,8 @@ namespace panda
 				m_isDirty = false;
 				return true;
 			}
+
+			return false;
 		}
 
 	private:

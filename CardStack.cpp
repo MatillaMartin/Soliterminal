@@ -64,5 +64,5 @@ namespace panda
 		m_cards.back().flip();
 	}
 
-	int CardStack::size() { return static_cast<int>(m_cards.size()); }
+	int CardStack::size() const { return static_cast<int>(m_cards.size()); }
 }

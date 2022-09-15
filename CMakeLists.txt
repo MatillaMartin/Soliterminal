@@ -7,7 +7,10 @@ set(Sources
 	CardStack.cpp
 	Console.cpp
 	Game.cpp
+	GameControl.cpp
+	GameLayout.cpp
 	Render.cpp
+	UserInput.cpp
 )
 
 set(Headers
@@ -15,7 +18,11 @@ set(Headers
 	CardStack.h
 	Console.h
 	Game.h
+	GameControl.h
+	GameAction.h
+	GameLayout.h
 	Render.h
+	UserInput.h
 )
 
 add_executable(${PROJECT_NAME} ${Sources} ${Headers})
