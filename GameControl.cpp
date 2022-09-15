@@ -15,7 +15,11 @@ namespace panda
 		m_stackY = std::clamp(nextY, 0, m_tableHeight - 1);
 	}
 
-	const CardStack& GameControl::stack() { return m_table[m_stackX][m_stackY](); }
+	const CardStack& GameControl::stack() 
+	{
+		const CardStack& stack = m_table[m_stackX][m_stackY]();
+		return stack; 
+	}
 
 	bool GameControl::isCentralStack() { return m_stackY == 1; }
 
