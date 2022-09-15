@@ -13,22 +13,31 @@ namespace panda
 
 	void Game::openCard()
 	{
-		std::optional<CardStack> top = m_stacks.openStack.takeTop();
+		std::optional<CardStack> top = m_stacks.closedStack.takeTop();
 		if (top)
 		{
 			m_stacks.openStack.append(std::move(*top));
 		}
+		else
+		{
+			resetClosedStack();
+		}
 	}
 
-	void Game::resetOpenClosedStack()
+	void Game::resetClosedStack()
 	{
-		assert(m_stacks.openStack.size() == 0);
-		if (m_stacks.openStack.size() != 0)
+		assert(m_stacks.closedStack.size() == 0);
+		if (m_stacks.closedStack.size() != 0)
 			return;
 
-		// flip stack
-		std::swap(m_stacks.openStack, m_stacks.closedStack);
+		if (m_stacks.openStack.size() == 0)
+			return;
+
 		// swap open and closed stack
+		std::swap(m_stacks.openStack, m_stacks.closedStack);
+		// invert stack
+		m_stacks.closedStack.invertOrder();
+		// flip stack
 		m_stacks.closedStack.flipAll();
 	}
 

@@ -50,6 +50,11 @@ namespace panda
 		return true;
 	}
 
+	void CardStack::invertOrder() 
+	{
+		std::reverse(m_cards.begin(), m_cards.end());
+	}
+
 	void CardStack::flipAll()
 	{
 		for (auto& card : m_cards)

@@ -43,7 +43,7 @@ namespace panda
 		void openCard();
 
 		/// Moves all the open cards from open to closed stack
-		void resetOpenClosedStack();
+		void resetClosedStack();
 
 		/// Moves cards between specified stacks
 		/// Returns false if was not able to move those cards

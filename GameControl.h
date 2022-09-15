@@ -25,7 +25,7 @@ namespace panda
 		const CardStack& stack();
 		bool isCentralStack();
 
-		const Game& m_game;
+		Game& m_game;
 		const GameLayout& m_layout;
 		int m_cardIndex = 0;
 		int m_stackIndex = 0;

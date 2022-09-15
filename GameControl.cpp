@@ -77,7 +77,11 @@ namespace panda
 		}
 		else if (action == GameAction::Use)
 		{
-			m_layout.stacks()[m_stackIndex];
+			if (m_layout.isClosedStack(m_stackIndex))
+			{
+				m_game.openCard();
+			}
+
 			// nothing here yet
 		}
 	}

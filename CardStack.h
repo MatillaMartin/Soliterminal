@@ -29,6 +29,9 @@ namespace panda
 		// Returns false if operation fails
 		bool append(CardStack&& stack);
 
+		// Inverts the order of the stack
+		void invertOrder();
+
 		// Flips all cards in the stack
 		void flipAll();
 

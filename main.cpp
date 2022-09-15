@@ -67,6 +67,9 @@ Game createGame()
 		Card(6, Card::Suit::Club, Card::State::Closed),
 		Card(7, Card::Suit::Club, Card::State::Closed),
 		Card(8, Card::Suit::Club, Card::State::Closed),
+		Card(9, Card::Suit::Club, Card::State::Closed),
+		Card(10, Card::Suit::Club, Card::State::Closed),
+		Card(11, Card::Suit::Club, Card::State::Closed),
 	}};
 
 	CardStack openStack{std::vector<Card>{}};
