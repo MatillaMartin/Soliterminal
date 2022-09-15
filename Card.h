@@ -17,7 +17,7 @@ namespace panda
 			Spade
 		};
 
-		Card(int number, Suit suit, State state);
+		Card(int number = 0, Suit suit = Suit::Club, State state = State::Open);
 
 		void flip();
 

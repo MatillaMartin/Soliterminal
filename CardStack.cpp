@@ -1,6 +1,7 @@
 #include "CardStack.h"
 
 #include "Card.h"
+#include <iterator>
 
 namespace panda
 {
@@ -14,9 +15,15 @@ namespace panda
 		if (index >= m_cards.size())
 			return {};
 
+
+		std::vector<Card> out;
 		auto first = m_cards.begin();
 		std::advance(first, index);
-		return std::vector<Card>(first, m_cards.end());
+		std::move(first, m_cards.end(), std::back_inserter(out));
+
+		// erase cards from original stack
+		m_cards.resize(index);
+		return out;
 	}
 
 	std::optional<CardStack> CardStack::takeTop()
