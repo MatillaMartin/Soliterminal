@@ -79,6 +79,35 @@ namespace panda
 		std::cout << str;
 	}
 
+	void Console::drawRectHighlight(int x, int y, int width, int height) const
+	{
+		SetConsoleTextAttribute(m_handle, 27);
+		for (int j = 0; j < width; ++j)
+		{
+			// draw all empty spaces
+			setCursorPosition(x + j, y);
+			std::cout << " ";
+		}
+		for (int j = 0; j < width; ++j)
+		{
+			// draw all empty spaces
+			setCursorPosition(x + j, y + height - 1);
+			std::cout << " ";
+		}
+		for (int i = 0; i < height; ++i)
+		{
+			// draw all empty spaces
+			setCursorPosition(x, y + i);
+			std::cout << " ";
+		}
+		for (int i = 0; i < height; ++i)
+		{
+			// draw all empty spaces
+			setCursorPosition(x + width - 1, y + i);
+			std::cout << " ";
+		}
+	}
+
 	void Console::drawRect(int x, int y, int width, int height) const
 	{
 		SetConsoleTextAttribute(m_handle, 240);

@@ -32,6 +32,9 @@ namespace panda
 		/// Draws a white rectangle at row, column
 		void drawRect(int x, int y, int width, int heigth) const;
 
+		/// Draws a highlighted rectangle at row, column
+		void drawRectHighlight(int x, int y, int width, int heigth) const;
+
 		/// Draws the given string, with a shade under it
 		void drawRectBottomShaded(int x, int y, int width, int heigth) const;
 
