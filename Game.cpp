@@ -83,40 +83,39 @@ namespace panda
 
 		CardStack& destStack = m_stacks[destStackIndex];
 
+		std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
+		if (!cardOrigin)
+			return false;
+
 		if (isCentralStack(destStackIndex))
 		{
-			std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
-			if (!cardOrigin)
+			// apply central rules to cards
+			if (!centralAppendValid(*cardOrigin, destStack))
 				return false;
-
-			if (centralAppendValid(*cardOrigin, destStack))
-			{
-				std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
-				if (!toMove)
-					return false;
-
-				bool ok = destStack.append(std::move(*toMove));
-				return ok;
-			}
 		}
-		if (isEndStack(destStackIndex))
+		else if (isEndStack(destStackIndex))
 		{
-			std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
-			if (!cardOrigin)
+			// has to be the top card in the stack
+			int stackTopIndex = std::max(0, m_stacks[originStackIndex].size() - 1);
+			if (cardOriginIndex != stackTopIndex)
 				return false;
-			if (cardOriginIndex != m_stacks[originStackIndex].size() - 1)
-				return false;
-			if (edgeAppendValid(*cardOrigin, destStack))
-			{
-				std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
-				if (!toMove)
-					return false;
 
-				bool ok = destStack.append(std::move(*toMove));
-				return ok;
-			}
+			// apply edge rules to cards
+			if (!edgeAppendValid(*cardOrigin, destStack))
+				return false;
 		}
-		return false;
+		else
+		{
+			// can't apply move operations on any other destination stacks
+			return false;
+		}
+
+		std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
+		if (!toMove)
+			return false;
+
+		bool ok = destStack.append(std::move(*toMove));
+		return ok;
 	}
 
 	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }
