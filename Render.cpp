@@ -58,23 +58,34 @@ namespace panda
 			}
 			else
 			{
-				drawCard(*stack.top(), x, y);
+				drawCard(*stack.bottom(), x, y);
 			}
 		}
 
 		// render game control
 		{
-			int index = m_control.stackIndex();
-			auto [x, y] = layoutToConsole(index);
-
-			const CardStack& stack = m_game.stacks()[index];
-
-			if (isSpread(index))
+			// Draw control select always
 			{
-				y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
+				int index = m_control.stackIndex();
+				auto [x, y] = layoutToConsole(index);
+				if (isSpread(index))
+				{
+					y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
+				}
+				drawControlSelect(x, y);
 			}
 
-			drawControl(x, y);
+			if (m_control.state() == GameControl::State::Move)
+			{
+				// Draw control select always
+				int index = m_control.markedStackIndex();
+				auto [x, y] = layoutToConsole(index);
+				if (isSpread(index))
+				{
+					y += (m_cardHeight + m_cardSpacing) * m_control.markedCardIndex();
+				}
+				drawControlMark(x, y);
+			}
 		}
 
 
@@ -84,16 +95,16 @@ namespace panda
 	std::string cardStr(const Card& card)
 	{
 		static std::unordered_map<Card::Suit, char> suitMap{
-			{Card::Suit::Club, 5},
-			{Card::Suit::Diamond, 4},
 			{Card::Suit::Heart, 3},
+			{Card::Suit::Diamond, 4},
+			{Card::Suit::Club, 5},
 			{Card::Suit::Spade, 6},
 		};
 
 		static std::unordered_map<Card::Suit, std::string> suitColorMap{
-			{Card::Suit::Club, "\u001b[30m"},
-			{Card::Suit::Diamond, "\u001b[31m"},
 			{Card::Suit::Heart, "\u001b[31m"},
+			{Card::Suit::Diamond, "\u001b[31m"},
+			{Card::Suit::Club, "\u001b[30m"},
 			{Card::Suit::Spade, "\u001b[30m"},
 		};
 
@@ -138,9 +149,15 @@ namespace panda
 		m_console.draw("[]", x + cardCenterX(), y + cardCenterY());
 	}
 
-	void Render::drawControl(int x, int y) const
+	void Render::drawControlSelect(int x, int y) const
 	{
 		// draw custom emtpy card
-		m_console.drawRectHighlight(x, y, m_cardWidth, m_cardHeight);
+		m_console.drawRectHighlightBlue(x, y, m_cardWidth, m_cardHeight);
+	}
+
+	void Render::drawControlMark(int x, int y) const
+	{
+		// draw custom emtpy card
+		m_console.drawRectHighlightGreen(x, y, m_cardWidth, m_cardHeight);
 	}
 }

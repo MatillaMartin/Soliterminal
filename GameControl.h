@@ -27,6 +27,11 @@ namespace panda
 		int stackIndex() const;
 		int cardIndex() const;
 
+		int markedStackIndex() const;
+		int markedCardIndex() const;
+
+		State state() const;
+
 	private:
 		const CardStack& stack();
 

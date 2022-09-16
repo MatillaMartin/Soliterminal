@@ -11,6 +11,9 @@ namespace panda
 	public:
 		CardStack(std::vector<Card>&& cards);
 
+		// Returns the card at the given index
+		std::optional<Card> at(int index);
+
 		// Takes all cards after index, including index
 		// Returns empty optional if no cards can be taken
 		std::optional<CardStack> take(int index);
@@ -18,6 +21,9 @@ namespace panda
 		// Takes top card of stack
 		// Returns empty optional if no cards can be taken
 		std::optional<CardStack> takeTop();
+
+		// Returns the card at the bottom
+		std::optional<Card> bottom() const;
 
 		// Returns the card at the top
 		std::optional<Card> top() const;

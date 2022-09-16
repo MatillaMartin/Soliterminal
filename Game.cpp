@@ -42,19 +42,49 @@ namespace panda
 		m_stacks[closedStackIndex()].flipAll();
 	}
 
-	bool Game::moveCards(int originStack, int cardOriginIndex, int destStack)
+	bool Game::moveCards(int originStackIndex, int cardOriginIndex, int destStackIndex)
 	{
-		if (originStack >= m_stacks.size() || originStack < 0)
+		// check if cards are compatible for appending
+		auto canAppend = [](Card& source, CardStack& dest) -> bool { 
+			std::optional<Card> destBot = dest.bottom(); 
+
+			if (destBot)
+			{
+				return !destBot->isSameColor(source) && source.isLower(*destBot);
+			}
+			if (!destBot)
+				return true;
+
 			return false;
-		if (destStack >= m_stacks.size() || destStack < 0)
+		};
+
+		if (originStackIndex >= m_stacks.size() || originStackIndex < 0)
+			return false;
+		if (destStackIndex >= m_stacks.size() || destStackIndex < 0)
+			return false;
+		if (originStackIndex == destStackIndex)
 			return false;
 
-		std::optional<CardStack> toMove = m_stacks[originStack].take(cardOriginIndex);
-		if (!toMove)
-			return false;
+		CardStack& destStack = m_stacks[destStackIndex];
 
-		bool ok = m_stacks[destStack].append(std::move(*toMove));
-		return ok;
+		if (isCentralStack(destStackIndex))
+		{
+			std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
+			if (!cardOrigin)
+				return false;
+
+			if (canAppend(*cardOrigin, destStack))
+			{
+				std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
+				if (!toMove)
+					return false;
+
+				bool ok = destStack.append(std::move(*toMove));
+				return ok;
+			}
+		}
+
+		return false;
 	}
 
 	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }

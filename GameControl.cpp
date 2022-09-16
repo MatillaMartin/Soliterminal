@@ -115,4 +115,10 @@ namespace panda
 	int GameControl::stackIndex() const { return m_stackIndex; }
 
 	int GameControl::cardIndex() const { return m_cardIndex; }
+
+	int GameControl::markedStackIndex() const { return m_markedStackIndex; }
+
+	int GameControl::markedCardIndex() const { return m_markedCardIndex; }
+
+	GameControl::State GameControl::state() const { return m_state; }
 }

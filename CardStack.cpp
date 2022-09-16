@@ -10,6 +10,14 @@ namespace panda
 	{
 	}
 
+	std::optional<Card> CardStack::at(int index)
+	{
+		if (index < 0 || index >= m_cards.size())
+			return {};
+
+		return m_cards[index];
+	}
+
 	std::optional<CardStack> CardStack::take(int index)
 	{
 		if (index >= m_cards.size())
@@ -34,12 +42,20 @@ namespace panda
 		return take(static_cast<int>(m_cards.size()) - 1);
 	}
 
-	std::optional<Card> CardStack::top() const
+	std::optional<Card> CardStack::bottom() const
 	{
 		if (m_cards.empty())
 			return {};
 
 		return m_cards.back();
+	}
+
+	std::optional<Card> CardStack::top() const
+	{
+		if (m_cards.empty())
+			return {};
+
+		return m_cards.front();
 	}
 
 	const std::vector<Card>& CardStack::cards() const { return m_cards; }

@@ -18,8 +18,8 @@ set(Headers
 	CardStack.h
 	Console.h
 	Game.h
-	GameControl.h
 	GameAction.h
+	GameControl.h
 	GameLayout.h
 	Render.h
 	UserInput.h

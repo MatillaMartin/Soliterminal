@@ -53,10 +53,10 @@ Game createGame()
 			Card(1, Card::Suit::Diamond, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(3, Card::Suit::Club, Card::State::Open),
+			Card(11, Card::Suit::Club, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(4, Card::Suit::Club, Card::State::Open),
+			Card(7, Card::Suit::Diamond, Card::State::Open),
 		},
 		std::vector<Card>{
 			Card(5, Card::Suit::Club, Card::State::Open),
@@ -64,12 +64,12 @@ Game createGame()
 	};
 
 	CardStack closedStack{std::vector<Card>{
-		Card(6, Card::Suit::Club, Card::State::Closed),
-		Card(7, Card::Suit::Club, Card::State::Closed),
-		Card(8, Card::Suit::Club, Card::State::Closed),
-		Card(9, Card::Suit::Club, Card::State::Closed),
-		Card(10, Card::Suit::Club, Card::State::Closed),
 		Card(11, Card::Suit::Club, Card::State::Closed),
+		Card(12, Card::Suit::Diamond, Card::State::Closed),
+		Card(13, Card::Suit::Club, Card::State::Closed),
+		Card(9, Card::Suit::Diamond, Card::State::Closed),
+		Card(10, Card::Suit::Club, Card::State::Closed),
+		Card(11, Card::Suit::Diamond, Card::State::Closed),
 	}};
 
 	CardStack openStack{std::vector<Card>{}};
