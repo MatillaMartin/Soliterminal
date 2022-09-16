@@ -45,18 +45,34 @@ namespace panda
 	bool Game::moveCards(int originStackIndex, int cardOriginIndex, int destStackIndex)
 	{
 		// check if cards are compatible for appending
-		auto canAppend = [](Card& source, CardStack& dest) -> bool { 
-			std::optional<Card> destBot = dest.bottom(); 
+		auto centralAppendValid = [](Card& source, CardStack& dest) -> bool { 
+			std::optional<Card> destTop = dest.top(); 
 
-			if (destBot)
+			if (destTop)
 			{
-				return !source.isSameColor(*destBot) && source.isLower(*destBot) && source.isAdjacent(*destBot);
+				return !source.isSameColor(*destTop) && source.isLower(*destTop) && source.isAdjacent(*destTop);
 			}
-			if (!destBot)
+			if (!destTop)
 				return true;
 
 			return false;
 		};
+
+		// check if cards are compatible for appending
+		auto edgeAppendValid = [](Card& source, CardStack& dest) -> bool {
+			std::optional<Card> destTop = dest.top();
+			if (destTop)
+			{
+				return source.isSameSuit(*destTop) && source.isHigher(*destTop) && source.isAdjacent(*destTop);
+			}
+			else
+			{
+				return source.number == 1;
+			}
+
+			return false;
+		};
+
 
 		if (originStackIndex >= m_stacks.size() || originStackIndex < 0)
 			return false;
@@ -73,7 +89,7 @@ namespace panda
 			if (!cardOrigin)
 				return false;
 
-			if (canAppend(*cardOrigin, destStack))
+			if (centralAppendValid(*cardOrigin, destStack))
 			{
 				std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
 				if (!toMove)
@@ -83,7 +99,23 @@ namespace panda
 				return ok;
 			}
 		}
+		if (isEndStack(destStackIndex))
+		{
+			std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
+			if (!cardOrigin)
+				return false;
+			if (cardOriginIndex != m_stacks[originStackIndex].size() - 1)
+				return false;
+			if (edgeAppendValid(*cardOrigin, destStack))
+			{
+				std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
+				if (!toMove)
+					return false;
 
+				bool ok = destStack.append(std::move(*toMove));
+				return ok;
+			}
+		}
 		return false;
 	}
 

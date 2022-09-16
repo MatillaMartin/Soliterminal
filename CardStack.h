@@ -22,10 +22,10 @@ namespace panda
 		// Returns empty optional if no cards can be taken
 		std::optional<CardStack> takeTop();
 
-		// Returns the card at the bottom
+		// Returns the card at the bottom of the stack, under the rest of the cards
 		std::optional<Card> bottom() const;
 
-		// Returns the card at the top
+		// Returns the card at the top, first card to be visible
 		std::optional<Card> top() const;
 
 		// Returns all the cards in the stack

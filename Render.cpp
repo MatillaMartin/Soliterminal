@@ -58,7 +58,7 @@ namespace panda
 			}
 			else
 			{
-				drawCard(*stack.bottom(), x, y);
+				drawCard(*stack.top(), x, y);
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace panda
 		return take(static_cast<int>(m_cards.size()) - 1);
 	}
 
-	std::optional<Card> CardStack::bottom() const
+	std::optional<Card> CardStack::top() const
 	{
 		if (m_cards.empty())
 			return {};
@@ -50,7 +50,7 @@ namespace panda
 		return m_cards.back();
 	}
 
-	std::optional<Card> CardStack::top() const
+	std::optional<Card> CardStack::bottom() const
 	{
 		if (m_cards.empty())
 			return {};
