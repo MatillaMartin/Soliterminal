@@ -59,7 +59,6 @@ Game createGame()
 			Card(7, Card::Suit::Diamond, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(5, Card::Suit::Club, Card::State::Open),
 		},
 	};
 

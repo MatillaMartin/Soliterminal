@@ -50,7 +50,7 @@ namespace panda
 
 			if (destBot)
 			{
-				return !destBot->isSameColor(source) && source.isLower(*destBot);
+				return !source.isSameColor(*destBot) && source.isLower(*destBot) && source.isAdjacent(*destBot);
 			}
 			if (!destBot)
 				return true;

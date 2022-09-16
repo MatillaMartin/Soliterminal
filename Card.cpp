@@ -1,4 +1,5 @@
 #include "Card.h"
+#include <cmath>
 
 namespace panda
 {
@@ -36,4 +37,6 @@ namespace panda
 	{ 
 		return this->number < other.number;
 	}
+
+	bool Card::isAdjacent(const Card& other) { return std::abs(this->number - other.number) == 1; }
 }

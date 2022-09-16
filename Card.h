@@ -25,6 +25,7 @@ namespace panda
 
 		bool isSameColor(const Card& other);
 		bool isLower(const Card& other);
+		bool isAdjacent(const Card& other);
 
 		int number = 0;
 		Suit suit = Suit::Club;
