@@ -34,6 +34,9 @@ namespace panda
 
 	private:
 		const CardStack& stack();
+		void changeStack(int stack);
+		void changeCard(int cardIndex, bool keepIndex);
+		bool isCentralStack();
 
 		Game& m_game;
 		const GameLayout& m_layout;

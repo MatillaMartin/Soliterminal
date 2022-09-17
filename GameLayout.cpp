@@ -3,6 +3,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <assert.h>
 
 namespace panda
 {
@@ -10,24 +11,51 @@ namespace panda
 
 	void Graph::addNode(int index, std::pair<int, int> layout) { m_nodes.emplace_back(index, std::move(layout)); }
 
-	void Graph::addHorEdge(int left, int right)
+	void Graph::addHorEdge(int left, int right) { addHorChain({left, right}); }
+
+	void Graph::addVerEdge(int top, int bot) { addVerChain({top, bot}); }
+
+	void Graph::addVerChain(const std::vector<int>& chain)
 	{
-		auto leftIt = nodeIt(left);
-		auto rightIt = nodeIt(right);
-		if (leftIt == m_nodes.end() || rightIt == m_nodes.end())
-			return;
-		leftIt->right = rightIt->index;
-		rightIt->left = leftIt->index;
+		applyChain(chain, [](Node& first, Node& second) {
+			// update relative indices
+			first.down = second.index;
+			second.up = first.index;
+		});
 	}
 
-	void Graph::addVerEdge(int top, int bot)
+	void Graph::addHorChain(const std::vector<int>& chain)
 	{
-		auto topIt = nodeIt(top);
-		auto botIt = nodeIt(bot);
-		if (topIt == m_nodes.end() || botIt == m_nodes.end())
+		applyChain(chain, [](Node& first, Node& second) {
+			// update relative indices
+			first.right = second.index;
+			second.left = first.index;
+		});
+	}
+
+	void Graph::applyChain(const std::vector<int>& chain, std::function<void(Node&, Node&)> relation)
+	{
+		if (chain.size() < 2)
 			return;
-		topIt->down = botIt->index;
-		botIt->up = topIt->index;
+
+		// init first to first index of chain
+		std::vector<Node>::iterator firstIt = nodeIt(*chain.begin());
+		for (auto second = std::next(chain.begin()); second != chain.end(); second++)
+		{
+			// second to next index in chain
+			auto secondIt = nodeIt(*second);
+
+			// Nodes could not be found
+			assert(firstIt != m_nodes.end() && secondIt != m_nodes.end());
+			if (firstIt == m_nodes.end() || secondIt == m_nodes.end())
+				continue;
+
+			// update relative indices
+			relation(*firstIt, *secondIt);
+
+			// optimize first to take second's iterator, no need to search again
+			firstIt = secondIt;
+		}
 	}
 
 	std::optional<Graph::Node> Graph::node(int index) const
@@ -84,7 +112,6 @@ namespace panda
 		m_graph.addHorEdge(9, 10);
 		m_graph.addHorEdge(10, 11);
 		m_graph.addHorEdge(11, 12);
-		m_graph.addHorEdge(12, 13);
 
 		m_graph.addVerEdge(0, 6);
 		m_graph.addVerEdge(1, 7);

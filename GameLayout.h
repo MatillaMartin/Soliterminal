@@ -43,16 +43,20 @@ namespace panda
 		void addNode(int index, std::pair<int, int> layout);
 		// Adds a horizontal relation between two nodes
 		void addHorEdge(int left, int right);
+		// Adds a vertical relation between multiple nodes
+		void addHorChain(const std::vector<int>& chain);
 		// Adds a vertical relation between two nodes
 		void addVerEdge(int top, int bot);
+		// Adds a vertical relation between multiple nodes
+		void addVerChain(const std::vector<int>& chain);
 		// Searchs for a node with its index
 		std::optional<Node> node(int index) const;
 		// Searchs for a node with its layout
 		std::optional<Node> node(std::pair<int, int> layout) const;
 
 	private:
+		void applyChain(const std::vector<int>& chain, std::function<void(Node&, Node&)> relation);
 		std::vector<Node>::iterator Graph::nodeIt(int index);
-
 		std::vector<Node> m_nodes;
 	};
 
