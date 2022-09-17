@@ -23,15 +23,15 @@ namespace panda
 	void GameControl::action(GameAction action)
 	{
 		auto isCentralStack = [this]() -> bool { return m_game.isCentralStack(m_stackIndex); };
-
-		auto changeStack = [&](int stackIndex) {
+		
+		auto changeCard = [&](int cardIndex) {
 			bool wasCentral = isCentralStack();
-			m_stackIndex = stackIndex;
+
 			int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
 			// update the cardIndex for the new stack
 			if (isCentralStack())
 			{
-				if (stackIndex < 0 || stackIndex >= m_game.stacks().size())
+				if (m_stackIndex < 0 || m_stackIndex >= m_game.stacks().size())
 					return;
 
 				// when coming from Central, try to keep index
@@ -44,7 +44,7 @@ namespace panda
 					m_cardIndex = 0;
 				}
 
-				std::optional<int> firstOpenCardIndex = m_game.stacks()[stackIndex].firstOpenCard();
+				std::optional<int> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
 				if (!firstOpenCardIndex)
 				{
 					// if all the cards are flipped, select last card in pile
@@ -62,6 +62,12 @@ namespace panda
 			}
 		};
 
+		auto changeStack = [&](int stackIndex) {
+			m_stackIndex = stackIndex;
+			changeCard(m_cardIndex); // update using last card index
+		};
+
+		
 		if (action == GameAction::Up)
 		{
 			if (isCentralStack())
@@ -74,7 +80,7 @@ namespace panda
 				else
 				{
 					// move up the cards
-					m_cardIndex--;
+					changeCard(m_cardIndex-1);
 				}
 			}
 		}
@@ -85,7 +91,9 @@ namespace panda
 			{
 				// move down the cards until last
 				if (m_cardIndex < stack().size() - 1)
-					m_cardIndex++;
+				{
+					changeCard(m_cardIndex + 1);
+				}
 			}
 			else
 			{
