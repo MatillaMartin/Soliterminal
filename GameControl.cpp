@@ -26,12 +26,14 @@ namespace panda
 	{
 		bool wasCentral = isCentralStack();
 		m_stackIndex = stackIndex;
-		changeCard(m_cardIndex, wasCentral);    // update using last card index, try to keep it
+		changeCard(m_cardIndex);    // update using last card index, try to keep it
 	}
 
-	void GameControl::changeCard(int cardIndex, bool keepIndex)
+	void GameControl::changeCard(int cardIndex)
 	{
 		int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
+
+		m_cardIndex = cardIndex;
 		// update the cardIndex for the new stack
 		if (isCentralStack())
 		{
@@ -39,14 +41,7 @@ namespace panda
 				return;
 
 			// If try to keep index, do not set to zero if possible
-			if (keepIndex)
-			{
-				m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);
-			}
-			else
-			{
-				m_cardIndex = 0;
-			}
+			m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);
 
 			std::optional<int> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
 			if (!firstOpenCardIndex)
@@ -80,7 +75,7 @@ namespace panda
 				else
 				{
 					// move up the cards
-					changeCard(m_cardIndex - 1, false);
+					changeCard(m_cardIndex - 1);
 				}
 			}
 		}
@@ -92,7 +87,7 @@ namespace panda
 				// move down the cards until last
 				if (m_cardIndex < stack().size() - 1)
 				{
-					changeCard(m_cardIndex + 1, false);
+					changeCard(m_cardIndex + 1);
 				}
 			}
 			else
