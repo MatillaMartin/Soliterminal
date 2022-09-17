@@ -43,84 +43,64 @@ namespace panda
 		m_stacks[closedStackIndex()].flipAll();
 	}
 
-	bool Game::moveCards(int originStackIndex, int cardOriginIndex, int destStackIndex)
+	bool Game::moveCards(int sourceStackIndex, int sourceCardIndex, int destStackIndex)
 	{
-		// check if cards are compatible for appending
-		auto centralAppendValid = [](Card& source, CardStack& dest) -> bool { 
-			std::optional<Card> destTop = dest.top(); 
-
-			if (destTop)
-			{
-				return !source.isSameColor(*destTop) && source.isLower(*destTop) && source.isAdjacent(*destTop);
-			}
-			if (!destTop)
-				return true;
-
-			return false;
-		};
-
-		// check if cards are compatible for appending
-		auto edgeAppendValid = [](Card& source, CardStack& dest) -> bool {
-			std::optional<Card> destTop = dest.top();
-			if (destTop)
-			{
-				return source.isSameSuit(*destTop) && source.isHigher(*destTop) && source.isAdjacent(*destTop);
-			}
-			else
-			{
-				return source.number == 1;
-			}
-
-			return false;
-		};
-
-
-		if (originStackIndex >= m_stacks.size() || originStackIndex < 0)
+		// check stack indices are inside bounds
+		if (sourceStackIndex >= m_stacks.size() || sourceStackIndex < 0)
 			return false;
 		if (destStackIndex >= m_stacks.size() || destStackIndex < 0)
 			return false;
-		if (originStackIndex == destStackIndex)
+
+		// if stack indices are the same, no moving can happen
+		if (sourceStackIndex == destStackIndex)
 			return false;
 
 		CardStack& destStack = m_stacks[destStackIndex];
+		CardStack& sourceStack = m_stacks[sourceStackIndex];
 
-		std::optional<Card> cardOrigin = m_stacks[originStackIndex].at(cardOriginIndex);
-		if (!cardOrigin)
+		// check card index is inside bounds
+		if (sourceCardIndex >= sourceStack.size() || sourceCardIndex < 0)
 			return false;
 
+		// check rules to move between stacks
 		if (isCentralStack(destStackIndex))
 		{
-			// apply central rules to cards
-			if (!centralAppendValid(*cardOrigin, destStack))
+			if (!canMoveToCentralStack(sourceStack, sourceCardIndex, destStack))
 				return false;
-		}
+		} 
 		else if (isEndStack(destStackIndex))
 		{
-			// has to be the top card in the stack
-			int stackTopIndex = std::max(0, m_stacks[originStackIndex].size() - 1);
-			if (cardOriginIndex != stackTopIndex)
-				return false;
-
-			// apply edge rules to cards
-			if (!edgeAppendValid(*cardOrigin, destStack))
+			if (!canMoveToEndStack(sourceStack, sourceCardIndex, destStack))
 				return false;
 		}
-		else
+		else    
 		{
 			// can't apply move operations on any other destination stacks
 			return false;
 		}
 
-		std::optional<CardStack> toMove = m_stacks[originStackIndex].take(cardOriginIndex);
+		// take from source stack and move to dest stack
+		std::optional<CardStack> toMove = sourceStack.take(sourceCardIndex);
 		if (!toMove)
 			return false;
 
 		bool ok = destStack.append(std::move(*toMove));
 
+		// check it the user has won
 		checkWin();
 
 		return ok;
 	}
+
+	bool Game::isFlippedCard(int stack, int cardIndex)
+	{
+		if (stack >= m_stacks.size() || stack < 0)
+			return false;
+
+		return false;
+	}
+
+	bool Game::flipCard(int stack, int cardIndex) { return false; }
 
 	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }
 
@@ -138,15 +118,15 @@ namespace panda
 
 	std::vector<int> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11}; }
 
-	void Game::checkWin() 
+	void Game::checkWin()
 	{
 		bool stacksComplete = true;
-		for(auto stackIndex : endStacksIndices())
+		for (auto stackIndex : endStacksIndices())
 		{
 			const CardStack& stack = m_stacks[stackIndex];
 			if (stack.size() != 13)
 				return;
-			if (stack.size () == 0)
+			if (stack.size() == 0)
 				return;
 
 			// iterate top to bottom
@@ -165,4 +145,45 @@ namespace panda
 		if (stacksComplete)
 			m_state = State::Win;
 	}
+	bool Game::canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
+	{
+		// Card to be moved in
+		std::optional<Card> sourceCard = sourceStack.at(sourceCardIndex);
+		if (!sourceCard)
+			return false;
+
+		std::optional<Card> destTop = destStack.top();
+		if (destTop)
+		{
+			// if dest central stack has cards, source has to be compatible
+			return !sourceCard->isSameColor(*destTop) && sourceCard->isLower(*destTop) && sourceCard->isAdjacent(*destTop);
+		}
+
+		// if the dest central stack is empty, it can be moved in
+		return true;
+	}
+
+	bool Game::canMoveToEndStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
+	{
+		// has to be the top card in the stack
+		int stackTopIndex = std::max(0, sourceStack.size() - 1);
+		if (sourceCardIndex != stackTopIndex)
+			return false;
+
+		// Card to be moved in
+		std::optional<Card> sourceCard = sourceStack.at(sourceCardIndex);
+		if (!sourceCard)
+			return false;
+
+		std::optional<Card> destTop = destStack.top();
+		if (destTop)
+		{
+			// If end stack has any cards already, source has to be compatible
+			return sourceCard->isSameSuit(*destTop) && sourceCard->isHigher(*destTop) && sourceCard->isAdjacent(*destTop);
+		}
+
+		// If no end stack has no cards, the source card has to be an ace
+		return sourceCard->number == 1;
+	}
+
 }

@@ -184,12 +184,12 @@ namespace panda
 	void Render::drawControlSelect(int x, int y) const
 	{
 		// draw oversized outline with blue color
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x09);
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x09, false);
 	}
 
 	void Render::drawControlMark(int x, int y) const
 	{
 		// draw oversized outline with a green color
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x02);
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x02, false);
 	}
 }

@@ -95,7 +95,10 @@ namespace panda
 				{
 					m_game.openCard();
 				}
-				else
+				else if (m_game.isFlippedCard(m_stackIndex, m_cardIndex) )
+				{
+					m_game.flipCard(m_stackIndex, m_cardIndex);
+				}
 				{
 					m_markedStackIndex = m_stackIndex;
 					m_markedCardIndex = m_cardIndex;

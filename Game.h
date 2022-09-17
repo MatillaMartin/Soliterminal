@@ -48,6 +48,13 @@ namespace panda
 		/// Returns false if was not able to move those cards
 		bool moveCards(int originStack, int cardOriginIndex, int destStack);
 
+		/// Returns if the card is a flipped card
+		bool isFlippedCard(int stack, int cardIndex);
+
+		/// Flips the card
+		/// Returns if the card could be flipped
+		bool flipCard(int stack, int cardIndex);
+
 		// Returns true if the index matches an end stack
 		bool isEndStack(int index) const;
 
@@ -76,6 +83,10 @@ namespace panda
 		void checkWin();
 
 	private:
+		// Moves stack to central stack
+		bool canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
+		bool canMoveToEndStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
+
 		std::vector<CardStack> m_stacks;
 		State m_state = State::Playing;
 	};
