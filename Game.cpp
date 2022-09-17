@@ -131,9 +131,9 @@ namespace panda
 
 	bool Game::isClosedStack(int index) const { return index == 0; }
 
-	CardStack& Game::openStack() { return m_stacks[4];  }
+	CardStack& Game::openStack() { return m_stacks[1];  }
 
-	CardStack& Game::closedStack() { return m_stacks[5]; };
+	CardStack& Game::closedStack() { return m_stacks[0]; };
 
 	std::array<int, 7> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11, 12}; }
 

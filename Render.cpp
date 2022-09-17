@@ -202,7 +202,7 @@ namespace panda
 	{
 		// draw custom emtpy card with arrow inside
 		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
-		m_console.draw(char(26), x + cardCenterX(), y + cardCenterY());
+		m_console.draw(char(174), x + cardCenterX(), y + cardCenterY());
 	}
 
 	void Render::drawControlSelect(int x, int y) const
