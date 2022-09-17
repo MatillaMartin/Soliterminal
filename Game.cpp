@@ -115,6 +115,9 @@ namespace panda
 			return false;
 
 		bool ok = destStack.append(std::move(*toMove));
+
+		checkWin();
+
 		return ok;
 	}
 
@@ -133,4 +136,32 @@ namespace panda
 	std::vector<int> Game::endStacksIndices() const { return {0, 1, 2, 3}; }
 
 	std::vector<int> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11}; }
+
+	void Game::checkWin() 
+	{
+		bool stacksComplete = true;
+		for(auto stackIndex : endStacksIndices())
+		{
+			const CardStack& stack = m_stacks[stackIndex];
+			if (stack.size() != 13)
+				return;
+			if (stack.size () == 0)
+				return;
+
+			// iterate top to bottom
+			for (auto it = stack.cards().begin(), end_it = std::prev(stack.cards().end()); it != end_it; ++it)
+			{
+				bool adjacent = std::next(it)->isAdjacent(*it);
+				bool increasing = std::next(it)->isHigher(*it);
+				bool sameSuit = std::next(it)->isSameSuit(*it);
+				if (!adjacent || !increasing || !sameSuit)
+					return;
+			}
+
+			stacksComplete &= true;
+		}
+
+		if (stacksComplete)
+			m_state = State::Win;
+	}
 }

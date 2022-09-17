@@ -72,6 +72,9 @@ namespace panda
 		// Returns the indices for EndStacks
 		std::vector<int> endStacksIndices() const;
 
+		// Updated the game state if the end stacks are complete
+		void checkWin();
+
 	private:
 		std::vector<CardStack> m_stacks;
 		State m_state = State::Playing;
