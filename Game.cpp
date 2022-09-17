@@ -14,11 +14,11 @@ namespace panda
 
 	void Game::openCard()
 	{
-		std::optional<CardStack> top = m_stacks[closedStackIndex()].takeTop();
+		std::optional<CardStack> top = closedStack().takeTop();
 		if (top)
 		{
 			top->flipAll();
-			m_stacks[openStackIndex()].append(std::move(*top));
+			openStack().append(std::move(*top));
 		}
 		else
 		{
@@ -28,19 +28,19 @@ namespace panda
 
 	void Game::resetClosedStack()
 	{
-		assert(m_stacks[closedStackIndex()].size() == 0);
-		if (m_stacks[closedStackIndex()].size() != 0)
+		assert(closedStack().size() == 0);
+		if (closedStack().size() != 0)
 			return;
 
-		if (m_stacks[openStackIndex()].size() == 0)
+		if (openStack().size() == 0)
 			return;
 
 		// swap open and closed stack
-		std::swap(m_stacks[openStackIndex()], m_stacks[closedStackIndex()]);
+		std::swap(openStack(), closedStack());
 		// invert stack
-		m_stacks[closedStackIndex()].invertOrder();
+		closedStack().invertOrder();
 		// flip stack
-		m_stacks[closedStackIndex()].flipAll();
+		closedStack().flipAll();
 	}
 
 	bool Game::moveCards(int sourceStackIndex, int sourceCardIndex, int destStackIndex)
@@ -67,13 +67,13 @@ namespace panda
 		{
 			if (!canMoveToCentralStack(sourceStack, sourceCardIndex, destStack))
 				return false;
-		} 
+		}
 		else if (isEndStack(destStackIndex))
 		{
 			if (!canMoveToEndStack(sourceStack, sourceCardIndex, destStack))
 				return false;
 		}
-		else    
+		else
 		{
 			// can't apply move operations on any other destination stacks
 			return false;
@@ -120,19 +120,20 @@ namespace panda
 			return false;
 
 		sourceStack.flipTop();
+		return true;
 	}
 
 	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }
 
 	bool Game::isCentralStack(int index) const { return index >= 6 && index < 12; }
 
-	bool Game::isOpenStack(int index) const { return index == openStackIndex(); }
+	bool Game::isOpenStack(int index) const { return index == 4; }
 
-	bool Game::isClosedStack(int index) const { return index == closedStackIndex(); }
+	bool Game::isClosedStack(int index) const { return index == 5; }
 
-	int Game::openStackIndex() const { return 4; };
+	CardStack& Game::openStack() { return m_stacks[4];  }
 
-	int Game::closedStackIndex() const { return 5; }
+	CardStack& Game::closedStack() { return m_stacks[5]; };
 
 	std::vector<int> Game::endStacksIndices() const { return {0, 1, 2, 3}; }
 
@@ -169,7 +170,7 @@ namespace panda
 	{
 		// Card to be moved in
 		const Card& sourceCard = sourceStack.cards()[sourceCardIndex];
-		
+
 		std::optional<Card> destTop = destStack.top();
 		if (destTop)
 		{

@@ -67,12 +67,6 @@ namespace panda
 		// Returns true if the index matches the ClosedStack
 		bool isClosedStack(int index) const;
 
-		// Returns the index for the OpenStack
-		int openStackIndex() const;
-
-		// Returns the index for the ClosedStack
-		int closedStackIndex() const;	
-
 		// Returns the indices for CentralStacks
 		std::vector<int> centralStacksIndices() const;
 
@@ -83,6 +77,12 @@ namespace panda
 		void checkWin();
 
 	private:
+		// Returns the open stack
+		CardStack& openStack();
+
+		// Returns the closed stack 
+		CardStack& closedStack();
+
 		// Moves stack to central stack
 		bool canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
 		bool canMoveToEndStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
