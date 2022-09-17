@@ -18,60 +18,15 @@ Game createGame()
 	// Empty end stack
 	std::array<CardStack, 4> endStack{
 		std::vector<Card>{
-			Card(1, Card::Suit::Club, Card::State::Open),
-			Card(2, Card::Suit::Club, Card::State::Open),
-			Card(3, Card::Suit::Club, Card::State::Open),
-			Card(4, Card::Suit::Club, Card::State::Open),
-			Card(5, Card::Suit::Club, Card::State::Open),
-			Card(6, Card::Suit::Club, Card::State::Open),
-			Card(7, Card::Suit::Club, Card::State::Open),
-			Card(8, Card::Suit::Club, Card::State::Open),
-			Card(9, Card::Suit::Club, Card::State::Open),
-			Card(10, Card::Suit::Club, Card::State::Open),
-			Card(11, Card::Suit::Club, Card::State::Open),
-			Card(12, Card::Suit::Club, Card::State::Open),
 		},
 		std::vector<Card>{
-			Card(1, Card::Suit::Heart, Card::State::Open),
-			Card(2, Card::Suit::Heart, Card::State::Open),
-			Card(3, Card::Suit::Heart, Card::State::Open),
-			Card(4, Card::Suit::Heart, Card::State::Open),
-			Card(5, Card::Suit::Heart, Card::State::Open),
-			Card(6, Card::Suit::Heart, Card::State::Open),
-			Card(7, Card::Suit::Heart, Card::State::Open),
-			Card(8, Card::Suit::Heart, Card::State::Open),
-			Card(9, Card::Suit::Heart, Card::State::Open),
-			Card(10, Card::Suit::Heart, Card::State::Open),
-			Card(11, Card::Suit::Heart, Card::State::Open),
-			Card(12, Card::Suit::Heart, Card::State::Open),
+			
 		},
 		std::vector<Card>{
-			Card(1, Card::Suit::Spade, Card::State::Open),
-			Card(2, Card::Suit::Spade, Card::State::Open),
-			Card(3, Card::Suit::Spade, Card::State::Open),
-			Card(4, Card::Suit::Spade, Card::State::Open),
-			Card(5, Card::Suit::Spade, Card::State::Open),
-			Card(6, Card::Suit::Spade, Card::State::Open),
-			Card(7, Card::Suit::Spade, Card::State::Open),
-			Card(8, Card::Suit::Spade, Card::State::Open),
-			Card(9, Card::Suit::Spade, Card::State::Open),
-			Card(10, Card::Suit::Spade, Card::State::Open),
-			Card(11, Card::Suit::Spade, Card::State::Open),
-			Card(12, Card::Suit::Spade, Card::State::Open),
+			
 		},
 		std::vector<Card>{
-			Card(1, Card::Suit::Diamond, Card::State::Open),
-			Card(2, Card::Suit::Diamond, Card::State::Open),
-			Card(3, Card::Suit::Diamond, Card::State::Open),
-			Card(4, Card::Suit::Diamond, Card::State::Open),
-			Card(5, Card::Suit::Diamond, Card::State::Open),
-			Card(6, Card::Suit::Diamond, Card::State::Open),
-			Card(7, Card::Suit::Diamond, Card::State::Open),
-			Card(8, Card::Suit::Diamond, Card::State::Open),
-			Card(9, Card::Suit::Diamond, Card::State::Open),
-			Card(10, Card::Suit::Diamond, Card::State::Open),
-			Card(11, Card::Suit::Diamond, Card::State::Open),
-			Card(12, Card::Suit::Diamond, Card::State::Open),
+			
 		},
 	};
 
@@ -82,14 +37,16 @@ Game createGame()
 
 		},
 		std::vector<Card>{
+			Card(1, Card::Suit::Heart, Card::State::Closed),
+			Card(2, Card::Suit::Heart, Card::State::Closed),
+			Card(3, Card::Suit::Heart, Card::State::Closed),
 			Card(13, Card::Suit::Spade, Card::State::Open),
-			Card(13, Card::Suit::Heart, Card::State::Open),
-			Card(10, Card::Suit::Spade, Card::State::Open),
 			Card(13, Card::Suit::Diamond, Card::State::Open),
 			Card(13, Card::Suit::Spade, Card::State::Open),
 
 		},
 		std::vector<Card>{
+			Card(13, Card::Suit::Heart, Card::State::Closed),
 			Card(13, Card::Suit::Diamond, Card::State::Open),
 
 		},

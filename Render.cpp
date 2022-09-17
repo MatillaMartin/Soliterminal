@@ -142,13 +142,11 @@ namespace panda
 		return suitColorMap[card.suit] + cardNumberStr(card.number) + suitMap[card.suit] + "\u001b[0m";
 	}
 
-	void Render::drawCardFlipped(const Card& card, int x, int y) const { m_console.drawRectRedStriped(x, y, m_cardWidth, m_cardHeight); }
-
 	void Render::drawCard(const Card& card, int x, int y) const
 	{
 		if (card.state == Card::State::Closed)
 		{
-			drawCardFlipped(card, x, y);
+			m_console.drawRectRedFancy(x, y, m_cardWidth, m_cardHeight);
 		}
 		else
 		{
@@ -159,8 +157,15 @@ namespace panda
 
 	void Render::drawCardSpread(const Card& card, int x, int y) const
 	{
-		m_console.drawRectBottomShaded(x, y, m_cardWidth, m_cardHeight);
-		m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+		if (card.state == Card::State::Closed)
+		{
+			m_console.drawRectRedFancyShaded(x, y, m_cardWidth, m_cardHeight);
+		}
+		else
+		{
+			m_console.drawRectBottomShaded(x, y, m_cardWidth, m_cardHeight);
+			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+		}
 	}
 
 	void Render::drawEmpty(int x, int y) const

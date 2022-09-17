@@ -39,10 +39,16 @@ namespace panda
 		void drawRectBottomShaded(int x, int y, int width, int heigth) const;
 
 		/// Draws a red rectangle with stripes
-		void drawRectRedStriped(int x, int y, int width, int heigth) const;
+		void drawRectRedFancy(int x, int y, int width, int heigth) const;
+
+		/// Draws a red rectangle with stripes, with a shade under it
+		void drawRectRedFancyShaded(int x, int y, int width, int heigth) const;
 
 		/// Draw a rectangle outline
-		void drawRectOutline(int x, int y, int width, int height, int color = 0x0F) const;
+		void drawRectOutline(int x, int y, int width, int height, int color = 0x0F, bool fill = true) const;
+
+		/// Draw a rectangle outline, using the double character
+		void drawCrosses(int x, int y, int width, int height, int color = 0x0F) const;
 
 	private:
 		bool setSize();

@@ -134,16 +134,7 @@ namespace panda
 		if (width == 0 || height == 0)
 			return;
 
-		SetConsoleTextAttribute(m_handle, 240);
-		for (int j = 0; j < height - 1; ++j)
-		{
-			for (int i = 0; i < width; ++i)
-			{
-				// draw all empty spaces
-				setCursorPosition(x + i, y + j);
-				std::cout << " ";
-			}
-		}
+		drawRect(x, y, width, height);
 
 		// draw last line with char 95 and color to add a shade effect
 		for (int j = 0; j < width; ++j)
@@ -153,21 +144,25 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectRedStriped(int x, int y, int width, int height) const
+	void Console::drawRectRedFancy(int x, int y, int width, int height) const
 	{
-		SetConsoleTextAttribute(m_handle, 0xC8);
-		for (int i = 0; i < width; ++i)
+		drawCrosses(x, y, width, height, 0xCF);
+	}
+
+	void Console::drawRectRedFancyShaded(int x, int y, int width, int height) const
+	{
+		drawRectRedFancy(x, y, width, height);
+
+		// draw last line with char 95 and color to add a shade effect
+		for (int j = 0; j < width; ++j)
 		{
-			for (int j = 0; j < height; ++j)
-			{
-				// draw with 176:░
-				setCursorPosition(x + i, y + j);
-				std::cout << char(176);
-			}
+			setCursorPosition(x + j, y + height - 1);
+			SetConsoleTextAttribute(m_handle, 0xC4);
+			std::cout << char(95);
 		}
 	}
 
-	void Console::drawRectOutline(int x, int y, int width, int height, int color) const
+	void Console::drawRectOutline(int x, int y, int width, int height, int color, bool fill) const
 	{
 		SetConsoleTextAttribute(m_handle, color);
 		// draw edges out of loop
@@ -203,6 +198,42 @@ namespace panda
 			std::cout << char(179);
 			setCursorPosition(x + width - 1, y + j);
 			std::cout << char(179);
+		}
+
+		if (fill)
+		{
+			for (int i = 1; i < width - 1; ++i)
+			{
+				for (int j = 1; j < height - 1; ++j)
+				{
+					setCursorPosition(x + i, y + j);
+					std::cout << " ";
+				}
+			}
+		}
+	}
+
+	void Console::drawCrosses(int x, int y, int width, int height, int color) const
+	{
+		SetConsoleTextAttribute(m_handle, color);
+		// draw top and bottom edges 205: ═
+		for (int i = 0; i < width; ++i)
+		{
+			for (int j = 0; j < height; ++j)
+			{
+				setCursorPosition(x + i, y + j);
+				std::cout << " ";
+			}
+		}
+		
+		// draw crosses in the middle
+		for (int i = 1; i < width - 1; ++i)
+		{
+			for (int j = 1; j < height - 1; ++j)
+			{
+				setCursorPosition(x+ i, y + j);
+				std::cout << char(206);
+			}
 		}
 	}
 
