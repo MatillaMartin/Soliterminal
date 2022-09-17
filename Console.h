@@ -29,17 +29,20 @@ namespace panda
 		/// Draws the given string at row, column
 		void draw(const std::string& str, int x, int y) const;
 
+		/// Draws the given char at row, column
+		void draw(char text, int x, int y) const;
+
 		/// Draws a white rectangle at row, column
 		void drawRect(int x, int y, int width, int heigth) const;
 
-		/// Draws a highlighted rectangle at row, column
-		void drawRectHighlightGreen(int x, int y, int width, int heigth) const;
-
-		/// Draws a highlighted rectangle at row, column
-		void drawRectHighlightBlue(int x, int y, int width, int heigth) const;
-
 		/// Draws the given string, with a shade under it
 		void drawRectBottomShaded(int x, int y, int width, int heigth) const;
+
+		/// Draws a red rectangle with stripes
+		void drawRectRedStriped(int x, int y, int width, int heigth) const;
+
+		/// Draw a rectangle outline
+		void drawRectOutline(int x, int y, int width, int height, int color = 0x0F) const;
 
 	private:
 		bool setSize();

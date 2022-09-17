@@ -44,7 +44,14 @@ namespace panda
 
 			if (stack.cards().empty())
 			{
-				drawEmpty(x, y);
+				if (m_game.isClosedStack(index))
+				{
+					drawEmptyClosedStack(x, y);
+				}
+				else
+				{
+					drawEmpty(x, y);
+				}
 			}
 			else if (isSpread(index))
 			{
@@ -88,6 +95,11 @@ namespace panda
 			}
 		}
 
+		//std::cout << std::endl << std::endl << std::endl << std::endl;
+		//for (int i = 0; i < 256; ++i)
+		//{
+		//	std::cout << i << ": " << char(i) << "\t";
+		//}
 
 		m_console.end();
 	}
@@ -130,10 +142,19 @@ namespace panda
 		return suitColorMap[card.suit] + cardNumberStr(card.number) + suitMap[card.suit] + "\u001b[0m";
 	}
 
+	void Render::drawCardFlipped(const Card& card, int x, int y) const { m_console.drawRectRedStriped(x, y, m_cardWidth, m_cardHeight); }
+
 	void Render::drawCard(const Card& card, int x, int y) const
 	{
-		m_console.drawRect(x, y, m_cardWidth, m_cardHeight);
-		m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+		if (card.state == Card::State::Closed)
+		{
+			drawCardFlipped(card, x, y);
+		}
+		else
+		{
+			m_console.drawRect(x, y, m_cardWidth, m_cardHeight);
+			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+		}
 	}
 
 	void Render::drawCardSpread(const Card& card, int x, int y) const
@@ -145,19 +166,25 @@ namespace panda
 	void Render::drawEmpty(int x, int y) const
 	{
 		// draw custom emtpy card
-		m_console.drawRect(x, y, m_cardWidth, m_cardHeight);
-		m_console.draw("[]", x + cardCenterX(), y + cardCenterY());
+		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
+	}
+
+	void Render::drawEmptyClosedStack(int x, int y) const
+	{
+		// draw custom emtpy card with arrow inside
+		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
+		m_console.draw(char(26), x + cardCenterX(), y + cardCenterY());
 	}
 
 	void Render::drawControlSelect(int x, int y) const
 	{
-		// draw custom emtpy card
-		m_console.drawRectHighlightBlue(x, y, m_cardWidth, m_cardHeight);
+		// draw oversized outline with blue color
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x09);
 	}
 
 	void Render::drawControlMark(int x, int y) const
 	{
-		// draw custom emtpy card
-		m_console.drawRectHighlightGreen(x, y, m_cardWidth, m_cardHeight);
+		// draw oversized outline with a green color
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x02);
 	}
 }

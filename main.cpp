@@ -78,10 +78,14 @@ Game createGame()
 	// Central stack with some cards
 	std::array<CardStack, 6> centralStack{
 		std::vector<Card>{
-			Card(13, Card::Suit::Heart, Card::State::Open),
+			Card(13, Card::Suit::Heart, Card::State::Closed),
 
 		},
 		std::vector<Card>{
+			Card(13, Card::Suit::Spade, Card::State::Open),
+			Card(13, Card::Suit::Heart, Card::State::Open),
+			Card(10, Card::Suit::Spade, Card::State::Open),
+			Card(13, Card::Suit::Diamond, Card::State::Open),
 			Card(13, Card::Suit::Spade, Card::State::Open),
 
 		},

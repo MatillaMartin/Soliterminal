@@ -17,6 +17,7 @@ namespace panda
 		std::optional<CardStack> top = m_stacks[closedStackIndex()].takeTop();
 		if (top)
 		{
+			top->flipAll();
 			m_stacks[openStackIndex()].append(std::move(*top));
 		}
 		else

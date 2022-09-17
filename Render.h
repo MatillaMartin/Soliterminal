@@ -33,7 +33,9 @@ namespace panda
 
 		void drawCardSpread(const Card& card, int row, int column) const;
 		void drawCard(const Card& card, int row, int column) const;
+		void drawCardFlipped(const Card& card, int x, int y) const;
 		void drawEmpty(int x, int y) const;
+		void drawEmptyClosedStack(int x, int y) const;
 		void drawControlSelect(int x, int y) const;
 		void drawControlMark(int x, int y) const;
 
