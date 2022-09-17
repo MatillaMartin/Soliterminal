@@ -76,6 +76,8 @@ namespace panda
 		// Updated the game state if the end stacks are complete
 		void checkWin();
 
+		void reset(Game&& other);
+
 	private:
 		// Returns the open stack
 		CardStack& openStack();

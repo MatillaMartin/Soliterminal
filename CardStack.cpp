@@ -1,6 +1,7 @@
 #include "CardStack.h"
 
 #include "Card.h"
+
 #include <iterator>
 
 namespace panda
@@ -50,6 +51,16 @@ namespace panda
 		return m_cards.front();
 	}
 
+	std::optional<int> CardStack::firstOpenCard() const
+	{
+		for (int i = 0; i < m_cards.size(); ++i)
+		{
+			if (m_cards[i].state == Card::State::Open)
+				return i;
+		}
+		return {};    // if all cards are flipped, return empty
+	}
+
 	const std::vector<Card>& CardStack::cards() const { return m_cards; }
 
 	bool CardStack::append(CardStack&& stack)
@@ -58,10 +69,7 @@ namespace panda
 		return true;
 	}
 
-	void CardStack::invertOrder() 
-	{
-		std::reverse(m_cards.begin(), m_cards.end());
-	}
+	void CardStack::invertOrder() { std::reverse(m_cards.begin(), m_cards.end()); }
 
 	void CardStack::flipAll()
 	{

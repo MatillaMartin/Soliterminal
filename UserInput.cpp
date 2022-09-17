@@ -26,6 +26,8 @@ namespace panda
 				return GameAction::Right;
 			if (c == ' ')
 				return GameAction::Use;
+			if (c == 'r')
+				return GameAction::Reset;
 		}
 
 		return GameAction::None;

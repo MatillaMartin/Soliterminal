@@ -166,6 +166,7 @@ namespace panda
 		if (stacksComplete)
 			m_state = State::Win;
 	}
+
 	bool Game::canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
 	{
 		// Card to be moved in
@@ -202,4 +203,8 @@ namespace panda
 		return sourceCard.number == 1;
 	}
 
+	void Game::reset(Game&& other) 
+	{ 
+		*this = other;
+	}
 }

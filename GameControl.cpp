@@ -31,6 +31,9 @@ namespace panda
 			// update the cardIndex for the new stack
 			if (isCentralStack())
 			{
+				if (stackIndex < 0 || stackIndex >= m_game.stacks().size())
+					return;
+
 				// when coming from Central, try to keep index
 				if (wasCentral)
 				{
@@ -39,6 +42,18 @@ namespace panda
 				else
 				{
 					m_cardIndex = 0;
+				}
+
+				std::optional<int> firstOpenCardIndex = m_game.stacks()[stackIndex].firstOpenCard();
+				if (!firstOpenCardIndex)
+				{
+					// if all the cards are flipped, select last card in pile
+					m_cardIndex = stackLastCardIndex;
+				}
+				else
+				{
+					// otherwise, select the first open card
+					m_cardIndex = std::max(m_cardIndex, *firstOpenCardIndex);    // select a non flipped card
 				}
 			}
 			else
@@ -95,7 +110,7 @@ namespace panda
 				{
 					m_game.openCard();
 				}
-				else if (m_game.isFlippedCard(m_stackIndex, m_cardIndex) )
+				else if (m_game.isFlippedCard(m_stackIndex, m_cardIndex))
 				{
 					m_game.flipCard(m_stackIndex, m_cardIndex);
 				}

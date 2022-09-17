@@ -25,6 +25,9 @@ namespace panda
 		// Returns the card at the top, first card to be visible
 		std::optional<Card> top() const;
 
+		// Returns the index of the first open card, if any
+		std::optional<int> firstOpenCard() const;
+
 		// Returns all the cards in the stack
 		const std::vector<Card>& cards() const;
 

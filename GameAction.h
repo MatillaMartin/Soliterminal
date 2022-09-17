@@ -9,6 +9,7 @@ namespace panda
 		Left,
 		Right,
 		Use,
+		Reset,
 		None
 	};
 }

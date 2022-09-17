@@ -92,6 +92,8 @@ int main()
 			GameAction action = UserInput::waitForInput();
 			if (action == GameAction::None)
 				continue;
+			if (action == GameAction::Reset)
+				game.reset(createGame());
 
 			control.action(action);
 
