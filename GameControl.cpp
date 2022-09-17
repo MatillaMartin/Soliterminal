@@ -99,6 +99,7 @@ namespace panda
 				{
 					m_game.flipCard(m_stackIndex, m_cardIndex);
 				}
+				else
 				{
 					m_markedStackIndex = m_stackIndex;
 					m_markedCardIndex = m_cardIndex;

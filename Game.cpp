@@ -97,10 +97,30 @@ namespace panda
 		if (stack >= m_stacks.size() || stack < 0)
 			return false;
 
-		return false;
+		CardStack& sourceStack = m_stacks[stack];
+		if (cardIndex >= sourceStack.size() || cardIndex < 0)
+			return false;
+
+		const Card& card = sourceStack.cards()[cardIndex];
+		return card.state == Card::State::Closed;
 	}
 
-	bool Game::flipCard(int stack, int cardIndex) { return false; }
+	bool Game::flipCard(int stack, int cardIndex)
+	{
+		if (stack >= m_stacks.size() || stack < 0)
+			return false;
+
+		CardStack& sourceStack = m_stacks[stack];
+		if (cardIndex >= sourceStack.size() || cardIndex < 0)
+			return false;
+
+		// has to be the top card in the stack
+		int stackTopIndex = std::max(0, sourceStack.size() - 1);
+		if (cardIndex != stackTopIndex)
+			return false;
+
+		sourceStack.flipTop();
+	}
 
 	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }
 
@@ -148,15 +168,13 @@ namespace panda
 	bool Game::canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
 	{
 		// Card to be moved in
-		std::optional<Card> sourceCard = sourceStack.at(sourceCardIndex);
-		if (!sourceCard)
-			return false;
-
+		const Card& sourceCard = sourceStack.cards()[sourceCardIndex];
+		
 		std::optional<Card> destTop = destStack.top();
 		if (destTop)
 		{
 			// if dest central stack has cards, source has to be compatible
-			return !sourceCard->isSameColor(*destTop) && sourceCard->isLower(*destTop) && sourceCard->isAdjacent(*destTop);
+			return !sourceCard.isSameColor(*destTop) && sourceCard.isLower(*destTop) && sourceCard.isAdjacent(*destTop);
 		}
 
 		// if the dest central stack is empty, it can be moved in
@@ -171,19 +189,16 @@ namespace panda
 			return false;
 
 		// Card to be moved in
-		std::optional<Card> sourceCard = sourceStack.at(sourceCardIndex);
-		if (!sourceCard)
-			return false;
-
+		const Card& sourceCard = sourceStack.cards()[sourceCardIndex];
 		std::optional<Card> destTop = destStack.top();
 		if (destTop)
 		{
 			// If end stack has any cards already, source has to be compatible
-			return sourceCard->isSameSuit(*destTop) && sourceCard->isHigher(*destTop) && sourceCard->isAdjacent(*destTop);
+			return sourceCard.isSameSuit(*destTop) && sourceCard.isHigher(*destTop) && sourceCard.isAdjacent(*destTop);
 		}
 
 		// If no end stack has no cards, the source card has to be an ace
-		return sourceCard->number == 1;
+		return sourceCard.number == 1;
 	}
 
 }

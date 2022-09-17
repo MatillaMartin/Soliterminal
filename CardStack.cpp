@@ -10,14 +10,6 @@ namespace panda
 	{
 	}
 
-	std::optional<Card> CardStack::at(int index)
-	{
-		if (index < 0 || index >= m_cards.size())
-			return {};
-
-		return m_cards[index];
-	}
-
 	std::optional<CardStack> CardStack::take(int index)
 	{
 		if (index >= m_cards.size())
