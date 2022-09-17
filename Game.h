@@ -10,7 +10,7 @@ namespace panda
 	public:
 		struct Stacks
 		{
-			Stacks(std::array<CardStack, 4>&& endStack, std::array<CardStack, 6>&& centralStack, CardStack&& closedStack, CardStack&& openStack)
+			Stacks(std::array<CardStack, 4>&& endStack, std::array<CardStack, 7>&& centralStack, CardStack&& closedStack, CardStack&& openStack)
 				: endStack(endStack)
 				, centralStack(centralStack)
 				, closedStack(closedStack)
@@ -18,7 +18,7 @@ namespace panda
 			{
 			}
 			std::array<CardStack, 4> endStack;
-			std::array<CardStack, 6> centralStack;
+			std::array<CardStack, 7> centralStack;
 			CardStack closedStack;
 			CardStack openStack;
 		};
@@ -68,10 +68,10 @@ namespace panda
 		bool isClosedStack(int index) const;
 
 		// Returns the indices for CentralStacks
-		std::vector<int> centralStacksIndices() const;
+		std::array<int,7> centralStacksIndices() const;
 
 		// Returns the indices for EndStacks
-		std::vector<int> endStacksIndices() const;
+		std::array<int, 4> endStacksIndices() const;
 
 		// Updated the game state if the end stacks are complete
 		void checkWin();

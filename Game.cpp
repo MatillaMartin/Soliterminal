@@ -6,9 +6,9 @@ namespace panda
 {
 	Game::Game(Stacks&& stacks)
 	{
-		m_stacks.insert(m_stacks.end(), std::make_move_iterator(stacks.endStack.begin()), std::make_move_iterator(stacks.endStack.end()));
-		m_stacks.insert(m_stacks.end(), std::move(stacks.openStack));
 		m_stacks.insert(m_stacks.end(), std::move(stacks.closedStack));
+		m_stacks.insert(m_stacks.end(), std::move(stacks.openStack));
+		m_stacks.insert(m_stacks.end(), std::make_move_iterator(stacks.endStack.begin()), std::make_move_iterator(stacks.endStack.end()));
 		m_stacks.insert(m_stacks.end(), std::make_move_iterator(stacks.centralStack.begin()), std::make_move_iterator(stacks.centralStack.end()));
 	}
 
@@ -123,21 +123,21 @@ namespace panda
 		return true;
 	}
 
-	bool Game::isEndStack(int index) const { return index >= 0 && index < 4; }
+	bool Game::isEndStack(int index) const { return index >= 2 && index < 6; }
 
-	bool Game::isCentralStack(int index) const { return index >= 6 && index < 12; }
+	bool Game::isCentralStack(int index) const { return index >= 6 && index < 13; }
 
-	bool Game::isOpenStack(int index) const { return index == 4; }
+	bool Game::isOpenStack(int index) const { return index == 1; }
 
-	bool Game::isClosedStack(int index) const { return index == 5; }
+	bool Game::isClosedStack(int index) const { return index == 0; }
 
 	CardStack& Game::openStack() { return m_stacks[4];  }
 
 	CardStack& Game::closedStack() { return m_stacks[5]; };
 
-	std::vector<int> Game::endStacksIndices() const { return {0, 1, 2, 3}; }
+	std::array<int, 7> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11, 12}; }
 
-	std::vector<int> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11}; }
+	std::array<int, 4> Game::endStacksIndices() const { return {0, 1, 2, 3}; }
 
 	void Game::checkWin()
 	{

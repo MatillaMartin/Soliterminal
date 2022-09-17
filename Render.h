@@ -2,6 +2,7 @@
 
 #include "Console.h"
 #include <cmath>
+#include <optional>
 
 namespace panda
 {
@@ -26,10 +27,15 @@ namespace panda
 		int m_cardSpacing = 0;     // space between cards
 
 		// Returns the console position for each layout element
-		std::pair<int, int> layoutToConsole(int index);
+		std::optional<std::pair<int, int>> layoutToConsole(int index);
 
 		int cardCenterX() const { return static_cast<int>(std::floor((m_cardWidth - 1) / 2.0)); }
 		int cardCenterY() const { return static_cast<int>(std::floor((m_cardHeight - 1) / 2.0)); }
+		
+		bool isSpread(int index);
+		void renderStacks();
+		void renderControlSelect();
+		void renderControlMark();
 
 		void drawCardSpread(const Card& card, int row, int column) const;
 		void drawCard(const Card& card, int row, int column) const;

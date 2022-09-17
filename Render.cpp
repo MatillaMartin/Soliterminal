@@ -20,25 +20,30 @@ namespace panda
 		update();
 	}
 
-	std::pair<int, int> Render::layoutToConsole(int index)
+	std::optional<std::pair<int, int>> Render::layoutToConsole(int index)
 	{
-		auto [layoutX, layoutY] = m_layout.indexToLayout(index);
+		auto layout = m_layout.indexToLayout(index);
+		if (!layout)
+			return {};
+		auto [layoutX, layoutY] = *layout;
 		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * layoutX;
 		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * layoutY;
-		return {outX, outY};
+		return {std::pair<int, int>{outX, outY}};
 	}
 
-	void Render::update()
+	bool Render::isSpread(int index) { return m_game.isCentralStack(index); }
+
+	void Render::renderStacks()
 	{
-		auto isSpread = [this](int index) { return m_game.isCentralStack(index); };
-
-		m_console.begin();
-
 		const std::vector<CardStack>& stacks = m_game.stacks();
+		
 		// render game layout, with mapping to console positions
 		for (int index = 0; index < stacks.size(); ++index)
 		{
-			auto [x, y] = layoutToConsole(index);
+			auto layout = layoutToConsole(index);
+			if (!layout)
+				continue;
+			auto [x, y] = *layout;
 
 			const CardStack& stack = stacks[index];
 
@@ -68,30 +73,49 @@ namespace panda
 				drawCard(*stack.top(), x, y);
 			}
 		}
+	}
 
+	void Render::renderControlSelect()
+	{
+		int index = m_control.stackIndex();
+		auto layout = layoutToConsole(index);
+		if (!layout)
+			return;
+		auto [x, y] = *layout;
+		if (isSpread(index))
+		{
+			y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
+		}
+		drawControlSelect(x, y);
+	}
+
+	void Render::renderControlMark()
+	{
+		// Draw control select always
+		int index = m_control.markedStackIndex();
+		auto layout = layoutToConsole(index);
+		if (!layout)
+			return;
+		auto [x, y] = *layout;
+		if (isSpread(index))
+		{
+			y += (m_cardHeight + m_cardSpacing) * m_control.markedCardIndex();
+		}
+		drawControlMark(x, y);
+	}
+
+	void Render::update()
+	{
+		m_console.begin();
+		renderStacks();
 		// render game control
 		{
 			// Draw control select always
-			{
-				int index = m_control.stackIndex();
-				auto [x, y] = layoutToConsole(index);
-				if (isSpread(index))
-				{
-					y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
-				}
-				drawControlSelect(x, y);
-			}
+			renderControlSelect();
 
 			if (m_control.state() == GameControl::State::Move)
 			{
-				// Draw control select always
-				int index = m_control.markedStackIndex();
-				auto [x, y] = layoutToConsole(index);
-				if (isSpread(index))
-				{
-					y += (m_cardHeight + m_cardSpacing) * m_control.markedCardIndex();
-				}
-				drawControlMark(x, y);
+				renderControlMark();
 			}
 		}
 

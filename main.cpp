@@ -15,23 +15,28 @@ using namespace panda;
 
 Game createGame()
 {
+	// start with a deck
+
+	// shuffle
+
+	//
+
 	// Empty end stack
 	std::array<CardStack, 4> endStack{
+		std::vector<Card>{},
 		std::vector<Card>{
+
 		},
 		std::vector<Card>{
-			
+
 		},
 		std::vector<Card>{
-			
-		},
-		std::vector<Card>{
-			
+
 		},
 	};
 
 	// Central stack with some cards
-	std::array<CardStack, 6> centralStack{
+	std::array<CardStack, 7> centralStack{
 		std::vector<Card>{
 			Card(13, Card::Suit::Heart, Card::State::Closed),
 
@@ -54,9 +59,8 @@ Game createGame()
 			Card(13, Card::Suit::Club, Card::State::Open),
 
 		},
-		std::vector<Card>{
-
-		},
+		std::vector<Card>{},
+		std::vector<Card>{},
 		std::vector<Card>{},
 	};
 
