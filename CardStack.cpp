@@ -16,7 +16,6 @@ namespace panda
 		if (index >= m_cards.size())
 			return {};
 
-
 		std::vector<Card> out;
 		auto first = m_cards.begin();
 		std::advance(first, index);
@@ -24,7 +23,7 @@ namespace panda
 
 		// erase cards from original stack
 		m_cards.resize(index);
-		return out;
+		return std::optional<CardStack>(std::move(out));
 	}
 
 	std::optional<CardStack> CardStack::takeTop()
@@ -42,6 +41,8 @@ namespace panda
 
 		return m_cards.back();
 	}
+
+	int CardStack::topIndex() const { return m_cards.size() - 1; }
 
 	std::optional<Card> CardStack::bottom() const
 	{

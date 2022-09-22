@@ -41,14 +41,24 @@ namespace panda
 		void addNode(Node&& node);
 		// Adds a basic node to the graph, without orientations
 		void addNode(int index, std::pair<int, int> layout);
-		// Adds a horizontal relation between two nodes
+		// Adds a bidirectional horizontal relation between two nodes
 		void addHorEdge(int left, int right);
-		// Adds a vertical relation between multiple nodes
+		// Adds a bidirectional vertical relation between multiple nodes
 		void addHorChain(const std::vector<int>& chain);
-		// Adds a vertical relation between two nodes
+		// Adds a bidirectional vertical relation between two nodes
 		void addVerEdge(int top, int bot);
-		// Adds a vertical relation between multiple nodes
+		// Adds a bidirectional vertical relation between multiple nodes
 		void addVerChain(const std::vector<int>& chain);
+
+		// Adds a directional relation
+		void addUpEdge(int from, int to);
+		// Adds a directional relation
+		void addDownEdge(int from, int to);
+		// Adds a directional relation
+		void addLeftEdge(int from, int to);
+		// Adds a directional relation
+		void addRightEdge(int from, int to);
+
 		// Searchs for a node with its index
 		std::optional<Node> node(int index) const;
 		// Searchs for a node with its layout

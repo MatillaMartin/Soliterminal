@@ -6,79 +6,102 @@
 #include "Render.h"
 #include "UserInput.h"
 
+#include <algorithm>
 #include <array>
+#include <assert.h>
 #include <chrono>
 #include <iostream>
+#include <random>
 #include <thread>
 
 using namespace panda;
 
+std::vector<Card> createDeck()
+{
+	std::vector<Card> deck(52);
+	for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
+	{
+		for (int numberIndex = 0; numberIndex < 13; ++numberIndex)
+		{
+			int cardIndex = numberIndex + suitIndex * 13;
+			assert(cardIndex >= 0 && cardIndex < deck.size());
+			Card& card = deck[cardIndex];
+			card.number = numberIndex + 1;    // card numbers start on 1
+			card.suit = static_cast<Card::Suit>(suitIndex);
+			card.state = Card::State::Closed;
+			std::cout << cardIndex;
+		}
+	}
+	return deck;
+}
+
 Game createGame()
 {
 	// start with a deck
+	auto deck = createDeck();
 
-	// shuffle
+	// random shuffle
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(deck.begin(), deck.end(), g);
 
-	//
+	// separate cards into stacks
 
 	// Empty end stack
-	std::array<CardStack, 4> endStack{
-		std::vector<Card>{},
-		std::vector<Card>{
-
-		},
-		std::vector<Card>{
-
-		},
-		std::vector<Card>{
-
-		},
-	};
+	std::array<CardStack, 4> endStack;
 
 	// Central stack with some cards
-	std::array<CardStack, 7> centralStack{
-		std::vector<Card>{
-			Card(13, Card::Suit::Heart, Card::State::Closed),
+	std::array<CardStack, 7> centralStack;
 
-		},
-		std::vector<Card>{
-			Card(1, Card::Suit::Heart, Card::State::Closed),
-			Card(2, Card::Suit::Heart, Card::State::Closed),
-			Card(3, Card::Suit::Heart, Card::State::Closed),
-			Card(13, Card::Suit::Spade, Card::State::Open),
-			Card(13, Card::Suit::Diamond, Card::State::Open),
-			Card(13, Card::Suit::Spade, Card::State::Open),
+	// take incrementally more cards, and open the first card of each
+	for (int i = 0; i < centralStack.size(); ++i)
+	{
+		int cardsToTake = i + 2;
+		std::vector<Card> cards;
+		auto cardIt = deck.end() - cardsToTake;
+		// move cards into separate vector
+		cards.insert(cards.end(), std::make_move_iterator(cardIt), std::make_move_iterator(deck.end()));
+		// remove moved cards from deck
+		deck.erase(cardIt, deck.end());
 
-		},
-		std::vector<Card>{
-			Card(13, Card::Suit::Heart, Card::State::Closed),
-			Card(13, Card::Suit::Diamond, Card::State::Open),
-			Card(13, Card::Suit::Heart, Card::State::Open),
-			Card(13, Card::Suit::Diamond, Card::State::Open),
-			Card(13, Card::Suit::Heart, Card::State::Open),
-			Card(13, Card::Suit::Diamond, Card::State::Open),
+		CardStack stack(std::move(cards));
+		stack.flipTop();
+		centralStack[i] = std::move(stack);
+	}
 
-		},
-		std::vector<Card>{
-			Card(13, Card::Suit::Club, Card::State::Open),
+	assert(deck.size() == 17);
 
-		},
-		std::vector<Card>{},
-		std::vector<Card>{},
-		std::vector<Card>{},
-	};
-
-	CardStack closedStack{std::vector<Card>{
-		Card(11, Card::Suit::Club, Card::State::Closed),
-		Card(12, Card::Suit::Diamond, Card::State::Closed),
-		Card(13, Card::Suit::Club, Card::State::Closed),
-		Card(9, Card::Suit::Diamond, Card::State::Closed),
-		Card(10, Card::Suit::Club, Card::State::Closed),
-		Card(11, Card::Suit::Diamond, Card::State::Closed),
-	}};
+	CardStack closedStack(std::move(deck));    // closed stack are the left over cards
 
 	CardStack openStack{std::vector<Card>{}};
+	Game::Stacks state(std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack));
 
+	// create a fixed state for now
+	return Game(std::move(state));
+}
+
+Game createNearEndingGame()
+{
+	// start with a deck
+	auto deck = createDeck();
+
+	// Full end stack
+	std::array<CardStack, 4> endStack;
+	for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
+	{
+		auto cardBegin = deck.begin();
+		std::advance(cardBegin, suitIndex * 13);
+		auto cardEnd = cardBegin;
+		std::advance(cardEnd, 13);
+		std::vector<Card> cards(cardBegin, cardEnd);
+		endStack[suitIndex] = CardStack(std::move(cards));
+		endStack[suitIndex].flipAll();
+	}
+
+	// Rest empty
+	std::array<CardStack, 7> centralStack;
+	CardStack closedStack;    // closed stack are the left over cards
+	CardStack openStack;
 	Game::Stacks state(std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack));
 
 	// create a fixed state for now

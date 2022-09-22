@@ -9,7 +9,7 @@ namespace panda
 	class CardStack
 	{
 	public:
-		CardStack(std::vector<Card>&& cards);
+		explicit CardStack(std::vector<Card>&& cards = {});
 
 		// Takes all cards after index, including index
 		// Returns empty optional if no cards can be taken
@@ -24,6 +24,9 @@ namespace panda
 
 		// Returns the card at the top, first card to be visible
 		std::optional<Card> top() const;
+
+		// Returns the index of the card at the top, first card to be visible
+		int topIndex() const;
 
 		// Returns the index of the first open card, if any
 		std::optional<int> firstOpenCard() const;

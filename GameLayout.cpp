@@ -33,6 +33,38 @@ namespace panda
 		});
 	}
 
+	void Graph::addUpEdge(int from, int to)
+	{
+		applyChain({from, to}, [](Node& first, Node& second) {
+			// update relative indices
+			first.up = second.index;
+		});
+	}
+
+	void Graph::addDownEdge(int from, int to)
+	{
+		applyChain({from, to}, [](Node& first, Node& second) {
+			// update relative indices
+			first.down = second.index;
+		});
+	}
+
+	void Graph::addLeftEdge(int from, int to)
+	{
+		applyChain({from, to}, [](Node& first, Node& second) {
+			// update relative indices
+			first.left = second.index;
+		});
+	}
+
+	void Graph::addRightEdge(int from, int to)
+	{
+		applyChain({from, to}, [](Node& first, Node& second) {
+			// update relative indices
+			first.right = second.index;
+		});
+	}
+
 	void Graph::applyChain(const std::vector<int>& chain, std::function<void(Node&, Node&)> relation)
 	{
 		if (chain.size() < 2)
@@ -106,11 +138,13 @@ namespace panda
 
 		m_graph.addVerEdge(0, 6);
 		m_graph.addVerEdge(1, 7);
-		m_graph.addVerEdge(1, 8);
 		m_graph.addVerEdge(2, 9);
 		m_graph.addVerEdge(3, 10);
 		m_graph.addVerEdge(4, 11);
 		m_graph.addVerEdge(5, 12);
+
+		// add an edge that only goes up
+		m_graph.addUpEdge(8, 1);
 	}
 
 	// Mapping between the layout and stacks index

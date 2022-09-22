@@ -137,7 +137,7 @@ namespace panda
 
 	std::array<int, 7> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11, 12}; }
 
-	std::array<int, 4> Game::endStacksIndices() const { return {0, 1, 2, 3}; }
+	std::array<int, 4> Game::endStacksIndices() const { return {2, 3, 4, 5}; }
 
 	void Game::checkWin()
 	{
