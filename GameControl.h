@@ -35,6 +35,7 @@ namespace panda
 	private:
 		const CardStack& stack();
 		void changeStack(int stack);
+		// Returns false if the card could not move
 		bool changeCard(int cardIndex);
 		bool isCentralStack();
 

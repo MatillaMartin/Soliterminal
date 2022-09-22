@@ -43,29 +43,29 @@ namespace panda
 			if (cardIndex > stackLastCardIndex)
 			{
 				m_cardIndex = stackLastCardIndex;
-				return true;
+				return false;
 			}
 
 			// if there are any open cards, make sure to point to the first open card only
 			std::optional<int> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
 			if (!firstOpenCardIndex)
 			{
-				// if all the cards are flipped, select last card in pile
+				// if all the cards are closed, select last card in pile
 				m_cardIndex = stackLastCardIndex;
-				return true;
+				return false;
 			}
 
 			// if we are trying to access before the last open one, do not allow
 			if (cardIndex < *firstOpenCardIndex)
 			{
 				m_cardIndex = *firstOpenCardIndex;    // select a non flipped card
-				return true;
+				return false;
 			}
 		}
 		else
 		{
 			m_cardIndex = stackLastCardIndex;    // for compacted stacks, pick top card index
-			return true;
+			return false;
 		}
 
 		m_cardIndex = cardIndex;
@@ -86,7 +86,11 @@ namespace panda
 				else
 				{
 					// move up the cards
-					changeCard(m_cardIndex - 1);
+					bool couldChange = changeCard(m_cardIndex - 1);
+					if (!couldChange)
+					{
+						changeStack(m_layout.up(m_stackIndex));
+					}
 				}
 			}
 		}
@@ -96,9 +100,10 @@ namespace panda
 			if (isCentralStack())
 			{
 				// move down the cards until last
-				if (m_cardIndex < stack().size() - 1)
+				bool couldChange = changeCard(m_cardIndex + 1);
+				if (!couldChange)
 				{
-					changeCard(m_cardIndex + 1);
+					changeStack(m_layout.down(m_stackIndex));
 				}
 			}
 			else
