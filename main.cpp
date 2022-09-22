@@ -53,6 +53,10 @@ Game createGame()
 		std::vector<Card>{
 			Card(13, Card::Suit::Heart, Card::State::Closed),
 			Card(13, Card::Suit::Diamond, Card::State::Open),
+			Card(13, Card::Suit::Heart, Card::State::Open),
+			Card(13, Card::Suit::Diamond, Card::State::Open),
+			Card(13, Card::Suit::Heart, Card::State::Open),
+			Card(13, Card::Suit::Diamond, Card::State::Open),
 
 		},
 		std::vector<Card>{

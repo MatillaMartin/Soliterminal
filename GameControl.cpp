@@ -3,7 +3,7 @@
 #include "CardStack.h"
 #include "Game.h"
 #include "GameLayout.h"
-
+#include <iostream>
 namespace panda
 {
 	const CardStack& GameControl::stack()
@@ -29,36 +29,47 @@ namespace panda
 		changeCard(m_cardIndex);    // update using last card index, try to keep it
 	}
 
-	void GameControl::changeCard(int cardIndex)
+	bool GameControl::changeCard(int cardIndex)
 	{
 		int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
 
-		m_cardIndex = cardIndex;
 		// update the cardIndex for the new stack
 		if (isCentralStack())
 		{
 			if (m_stackIndex < 0 || m_stackIndex >= m_game.stacks().size())
-				return;
+				return false;
 
-			// If try to keep index, do not set to zero if possible
-			m_cardIndex = std::min(m_cardIndex, stackLastCardIndex);
+			// If card index over our stack count, point to last
+			if (cardIndex > stackLastCardIndex)
+			{
+				m_cardIndex = stackLastCardIndex;
+				return true;
+			}
 
+			// if there are any open cards, make sure to point to the first open card only
 			std::optional<int> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
 			if (!firstOpenCardIndex)
 			{
 				// if all the cards are flipped, select last card in pile
 				m_cardIndex = stackLastCardIndex;
+				return true;
 			}
-			else
+
+			// if we are trying to access before the last open one, do not allow
+			if (cardIndex < *firstOpenCardIndex)
 			{
-				// otherwise, select the first open card
-				m_cardIndex = std::max(m_cardIndex, *firstOpenCardIndex);    // select a non flipped card
+				m_cardIndex = *firstOpenCardIndex;    // select a non flipped card
+				return true;
 			}
 		}
 		else
 		{
 			m_cardIndex = stackLastCardIndex;    // for compacted stacks, pick top card index
+			return true;
 		}
+
+		m_cardIndex = cardIndex;
+		return true;
 	}
 
 	void GameControl::action(GameAction action)
