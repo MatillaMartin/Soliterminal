@@ -101,20 +101,12 @@ namespace panda
 		m_graph.addNode(11, {5, 1});
 		m_graph.addNode(12, {6, 1});
 
-		m_graph.addHorEdge(0, 1);
-		m_graph.addHorEdge(1, 2);
-		m_graph.addHorEdge(2, 3);
-		m_graph.addHorEdge(3, 4);
-		m_graph.addHorEdge(4, 5);
-		m_graph.addHorEdge(6, 7);
-		m_graph.addHorEdge(7, 8);
-		m_graph.addHorEdge(8, 9);
-		m_graph.addHorEdge(9, 10);
-		m_graph.addHorEdge(10, 11);
-		m_graph.addHorEdge(11, 12);
+		m_graph.addHorChain({0, 1, 2, 3, 4, 5});
+		m_graph.addHorChain({6, 7, 8, 9, 10, 11, 12});
 
 		m_graph.addVerEdge(0, 6);
 		m_graph.addVerEdge(1, 7);
+		m_graph.addVerEdge(1, 8);
 		m_graph.addVerEdge(2, 9);
 		m_graph.addVerEdge(3, 10);
 		m_graph.addVerEdge(4, 11);

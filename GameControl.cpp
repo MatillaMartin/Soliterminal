@@ -135,6 +135,9 @@ namespace panda
 				}
 				else
 				{
+					if (m_game.stacks()[m_stackIndex].size() == 0)
+						return; 
+
 					m_markedStackIndex = m_stackIndex;
 					m_markedCardIndex = m_cardIndex;
 					m_state = State::Move;
