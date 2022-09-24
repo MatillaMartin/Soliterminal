@@ -16,8 +16,9 @@ namespace panda
 		: m_game(game)
 		, m_layout(gameLayout)
 	{
-		// start at last stack
-		m_stackIndex = static_cast<int>(m_game.stacks().size()) - 1;
+		// start at closed stack
+		m_stackIndex = 0;
+		m_cardIndex = 0;
 	}
 
 	bool GameControl::isCentralStack() { return m_game.isCentralStack(m_stackIndex); }
