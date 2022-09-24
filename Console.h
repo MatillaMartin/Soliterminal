@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace panda
 {
@@ -51,12 +52,19 @@ namespace panda
 		void drawCrosses(int x, int y, int width, int height, int color = 0x0F) const;
 
 	private:
+		void writeBuffer(const std::string& str) const;
+		void writeBuffer(char c) const;
+
 		bool setSize();
 		bool setStyle();
 
 		void setCursorPosition(int row, int column) const;
 
-		void* m_handle = nullptr;
+		void swapBuffers();
+
+		void* m_firstBuffer = nullptr;
+		void* m_secondBuffer = nullptr;
+		void* m_backBuffer = nullptr;
 		int m_width = 0;
 		int m_height = 0;
 	};

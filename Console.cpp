@@ -15,17 +15,23 @@ namespace panda
 		, m_height(999)
 	{
 #ifdef WIN32
-		// Get the Win32 handle representing standard output.
-		// This generally only has to be done once, so we make it static.
-		m_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-		if (!m_handle)
+
+		// Get the intial console buffer.
+		m_firstBuffer = GetStdHandle(STD_OUTPUT_HANDLE);
+		// Create an additional buffer for switching.
+		m_secondBuffer =
+			CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, nullptr, CONSOLE_TEXTMODE_BUFFER, nullptr);
+		// Initialize back buffer
+		m_backBuffer = m_secondBuffer;
+
+		if (!m_backBuffer)
 			throw std::runtime_error("Could not console handle");
 #endif
 		bool ok = false;
 
 		ok = setSize();
 		if (!ok)
-			throw std::runtime_error("Couldf not set console size");
+			throw std::runtime_error("Could not set console size");
 
 		ok = setStyle();
 		if (!ok)
@@ -39,14 +45,14 @@ namespace panda
 
 	void Console::begin() { clear(); }
 
-	void Console::end() { std::cout.flush(); }
+	void Console::end() { swapBuffers(); }
 
 	bool Console::clear()
 	{
 #ifdef WIN32
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		// Figure out the current width and height of the console window
-		if (!GetConsoleScreenBufferInfo(m_handle, &csbi))
+		if (!GetConsoleScreenBufferInfo(m_backBuffer, &csbi))
 		{
 			return false;
 		}
@@ -55,14 +61,14 @@ namespace panda
 		DWORD written;
 
 		// Flood-fill the console with spaces to clear it
-		FillConsoleOutputCharacter(m_handle, TEXT(' '), length, topLeft, &written);
+		FillConsoleOutputCharacter(m_backBuffer, TEXT(' '), length, topLeft, &written);
 
 		// Reset the attributes of every character to the default.
 		// This clears all background colour formatting, if any.
-		FillConsoleOutputAttribute(m_handle, 0, length, topLeft, &written);
+		FillConsoleOutputAttribute(m_backBuffer, 0, length, topLeft, &written);
 
 		// Move the cursor back to the top left for the next sequence of writes
-		SetConsoleCursorPosition(m_handle, topLeft);
+		SetConsoleCursorPosition(m_backBuffer, topLeft);
 		return true;
 #endif
 		return false;
@@ -74,28 +80,28 @@ namespace panda
 
 	void Console::draw(const std::string& str, int x, int y) const
 	{
-		SetConsoleTextAttribute(m_handle, 240);
+		SetConsoleTextAttribute(m_backBuffer, 240);
 		setCursorPosition(x, y);
-		std::cout << str;
+		writeBuffer(str);
 	}
 
 	void Console::draw(char text, int x, int y) const
 	{
-		SetConsoleTextAttribute(m_handle, 0x0F);
+		SetConsoleTextAttribute(m_backBuffer, 0x0F);
 		setCursorPosition(x, y);
-		std::cout << text;
+		writeBuffer(text);
 	}
 
 	void Console::drawRect(int x, int y, int width, int height) const
 	{
-		SetConsoleTextAttribute(m_handle, 240);
+		SetConsoleTextAttribute(m_backBuffer, 240);
 		for (int i = 0; i < width; ++i)
 		{
 			for (int j = 0; j < height; ++j)
 			{
 				// draw all empty spaces
 				setCursorPosition(x + i, y + j);
-				std::cout << " ";
+				writeBuffer(" ");
 			}
 		}
 	}
@@ -111,14 +117,11 @@ namespace panda
 		for (int j = 0; j < width; ++j)
 		{
 			setCursorPosition(x + j, y + height - 1);
-			std::cout << "\u001b[38;5;250m" << char(95);
+			writeBuffer("\u001b[38;5;250m" + char(95));
 		}
 	}
 
-	void Console::drawRectRedFancy(int x, int y, int width, int height) const
-	{
-		drawCrosses(x, y, width, height, 0xCF);
-	}
+	void Console::drawRectRedFancy(int x, int y, int width, int height) const { drawCrosses(x, y, width, height, 0xCF); }
 
 	void Console::drawRectRedFancyShaded(int x, int y, int width, int height) const
 	{
@@ -128,47 +131,47 @@ namespace panda
 		for (int j = 0; j < width; ++j)
 		{
 			setCursorPosition(x + j, y + height - 1);
-			SetConsoleTextAttribute(m_handle, 0xC4);
-			std::cout << char(95);
+			SetConsoleTextAttribute(m_backBuffer, 0xC4);
+			writeBuffer(char(95));
 		}
 	}
 
 	void Console::drawRectOutline(int x, int y, int width, int height, int color, bool fill) const
 	{
-		SetConsoleTextAttribute(m_handle, color);
+		SetConsoleTextAttribute(m_backBuffer, color);
 		// draw edges out of loop
 		// top left 218: ┌
 		setCursorPosition(x, y);
-		std::cout << char(218);
+		writeBuffer(char(218));
 
 		// top right 191: ┐
 		setCursorPosition(x + width - 1, y);
-		std::cout << char(191);
+		writeBuffer(char(191));
 
 		// bottom left 192: └
 		setCursorPosition(x, y + height - 1);
-		std::cout << char(192);
+		writeBuffer(char(192));
 
 		// bottom right 217: ┘
 		setCursorPosition(x + width - 1, y + height - 1);
-		std::cout << char(217);
+		writeBuffer(char(217));
 
 		// draw top and bottom edges 196: ─
 		for (int i = 1; i < width - 1; ++i)
 		{
 			setCursorPosition(x + i, y);
-			std::cout << char(196);
+			writeBuffer(char(196));
 			setCursorPosition(x + i, y + height - 1);
-			std::cout << char(196);
+			writeBuffer(char(196));
 		}
 
 		// draw left and right edges 179: │
 		for (int j = 1; j < height - 1; ++j)
 		{
 			setCursorPosition(x, y + j);
-			std::cout << char(179);
+			writeBuffer(char(179));
 			setCursorPosition(x + width - 1, y + j);
-			std::cout << char(179);
+			writeBuffer(char(179));
 		}
 
 		if (fill)
@@ -178,7 +181,7 @@ namespace panda
 				for (int j = 1; j < height - 1; ++j)
 				{
 					setCursorPosition(x + i, y + j);
-					std::cout << " ";
+					writeBuffer(" ");
 				}
 			}
 		}
@@ -186,26 +189,39 @@ namespace panda
 
 	void Console::drawCrosses(int x, int y, int width, int height, int color) const
 	{
-		SetConsoleTextAttribute(m_handle, color);
+		SetConsoleTextAttribute(m_backBuffer, color);
 		// draw top and bottom edges 205: ═
 		for (int i = 0; i < width; ++i)
 		{
 			for (int j = 0; j < height; ++j)
 			{
 				setCursorPosition(x + i, y + j);
-				std::cout << " ";
+				writeBuffer(" ");
 			}
 		}
-		
+
 		// draw crosses in the middle
 		for (int i = 1; i < width - 1; ++i)
 		{
 			for (int j = 1; j < height - 1; ++j)
 			{
-				setCursorPosition(x+ i, y + j);
-				std::cout << char(206);
+				setCursorPosition(x + i, y + j);
+				writeBuffer(char(206));
 			}
 		}
+	}
+
+	void Console::writeBuffer(const std::string& str) const
+	{
+		// write to back buffer
+		DWORD written;
+		WriteConsole(m_backBuffer, str.c_str(), str.length(), &written, nullptr);
+	}
+
+	void Console::writeBuffer(char c) const
+	{
+		DWORD written;
+		WriteConsole(m_backBuffer, &c, 1, &written, nullptr);
 	}
 
 	bool Console::setSize()
@@ -219,7 +235,7 @@ namespace panda
 		// Adjust buffer to match console size
 		CONSOLE_SCREEN_BUFFER_INFO scrBufferInfo;
 
-		if (!GetConsoleScreenBufferInfo(m_handle, &scrBufferInfo))
+		if (!GetConsoleScreenBufferInfo(m_backBuffer, &scrBufferInfo))
 			return false;
 
 		// current window size
@@ -236,8 +252,12 @@ namespace panda
 		newSize.Y = winHeight;
 
 		// set the new screen buffer dimensions
-		if (SetConsoleScreenBufferSize(m_handle, newSize) == 0)
+		if (SetConsoleScreenBufferSize(m_firstBuffer, newSize) == 0)
 			return false;
+		// set the new screen buffer dimensions
+		if (SetConsoleScreenBufferSize(m_secondBuffer, newSize) == 0)
+			return false;
+
 		return true;
 #endif
 		return false;
@@ -251,11 +271,15 @@ namespace panda
 		lStyle &= ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX);
 		SetWindowLong(consoleWindow, GWL_STYLE, lStyle);
 
-		// Hide cursor
-		CONSOLE_CURSOR_INFO cursorInfo;
-		GetConsoleCursorInfo(m_handle, &cursorInfo);
-		cursorInfo.bVisible = false;
-		SetConsoleCursorInfo(m_handle, &cursorInfo);
+		// Hide cursor in both buffers
+		auto hideCursor = [](void* handle) {
+			CONSOLE_CURSOR_INFO cursorInfo;
+			GetConsoleCursorInfo(handle, &cursorInfo);
+			cursorInfo.bVisible = false;
+			SetConsoleCursorInfo(handle, &cursorInfo);
+		};
+		hideCursor(m_firstBuffer);
+		hideCursor(m_secondBuffer);
 		return true;
 #endif
 		return false;
@@ -264,6 +288,12 @@ namespace panda
 	void Console::setCursorPosition(int x, int y) const
 	{
 		COORD coord = {(SHORT)x, (SHORT)y};
-		SetConsoleCursorPosition(m_handle, coord);
+		SetConsoleCursorPosition(m_backBuffer, coord);
+	}
+
+	void Console::swapBuffers()
+	{
+		SetConsoleActiveScreenBuffer(m_backBuffer);
+		m_backBuffer = m_backBuffer == m_firstBuffer ? m_secondBuffer : m_firstBuffer;
 	}
 }
