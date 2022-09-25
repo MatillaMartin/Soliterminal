@@ -17,7 +17,7 @@ namespace panda
 		, m_control(control)
 		, m_layout(layout)
 	{
-		m_console.setBackgroundColor(0x2F);
+		m_console.setClearColor(m_clearColor);
 		update();
 	}
 
@@ -170,62 +170,78 @@ namespace panda
 		return suitColorMap[card.suit] + cardNumberStr(card.number) + suitMap[card.suit] + "\u001b[0m";
 	}
 
-	void Render::drawCard(const Card& card, int x, int y) const
+	void Render::drawCard(const Card& card, int x, int y)
 	{
 		if (card.state == Card::State::Closed)
 		{
-			m_console.drawRectRedWithCrosses(x, y, m_cardWidth, m_cardHeight);
+			m_console.setDrawColor(m_closedColorFg, m_closedColorBg);
+			m_console.drawRectWithCrosses(x, y, m_cardWidth, m_cardHeight);
 		}
 		else
 		{
+			m_console.setDrawColor(0x0, m_openColorFg);
 			m_console.drawRect(x, y, m_cardWidth, m_cardHeight);
 			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
 		}
 	}
 
-	void Render::drawCardSpread(const Card& card, int x, int y) const
+	void Render::drawCardSpread(const Card& card, int x, int y)
 	{
+		drawCard(card, x, y);
+
 		if (card.state == Card::State::Closed)
 		{
-			m_console.drawRectRedWithCrossesShaded(x, y, m_cardWidth, m_cardHeight);
+			m_console.setDrawColor(0x0, m_closedColorBg);
+			drawShade(x, y);
 		}
 		else
 		{
-			m_console.drawRectShaded(x, y, m_cardWidth, m_cardHeight);
-			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+			m_console.setDrawColor(0x0, m_openColorFg);
+			drawShade(x, y);
 		}
 	}
 
-	void Render::drawEmpty(char text, int x, int y) const
+	void Render::drawEmpty(char text, int x, int y)
 	{
 		// draw custom emtpy card
+		m_console.setDrawColor(m_emptyColorFg);
 		drawEmpty(x, y);
 		m_console.draw(text, x + cardCenterX(), y + cardCenterY());
 	}
 
-	void Render::drawEmpty(int x, int y) const
+	void Render::drawEmpty(int x, int y)
 	{
 		// draw custom emtpy card
+		m_console.setDrawColor(m_emptyColorFg);
 		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
 	}
 
 
-	void Render::drawEmptyClosedStack(int x, int y) const
+	void Render::drawEmptyClosedStack(int x, int y)
 	{
 		// draw custom emtpy card with arrow inside
+		m_console.setDrawColor(m_emptyColorFg);
 		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
 		m_console.draw(char(174), x + cardCenterX(), y + cardCenterY());
 	}
 
-	void Render::drawControlSelect(int x, int y) const
+	void Render::drawControlSelect(int x, int y)
 	{
 		// draw oversized outline with blue color
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x09, false);
+		m_console.setDrawColor(m_selectColor);
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, false);
 	}
 
-	void Render::drawControlMark(int x, int y) const
+	void Render::drawControlMark(int x, int y)
 	{
 		// draw oversized outline with a green color
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, 0x02, false);
+		m_console.setDrawColor(m_markColor);
+		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, false);
+	}
+
+	void Render::drawShade(int x, int y)
+	{
+		for (int i = 0; i < m_cardWidth; ++i)
+			m_console.draw("_", x + i, y + m_cardHeight - 1);
 	}
 }

@@ -35,19 +35,20 @@ namespace panda
 		if (!ok)
 			throw std::runtime_error("Could not set console style");
 
-		ok = clear();
-		if (!ok)
-			throw std::runtime_error("Could not clear the console");
 		assert(m_width > 0 && m_height > 0);
 	}
 
-	void Console::setBackgroundColor(int color) { m_bgColor = color; }
+	void Console::setClearColor(int color) { m_clearColor = color; }
 
-	void Console::begin() { clear(); }
+	void Console::begin() { clear(m_clearColor); }
 
-	void Console::end() { swapBuffers(); }
+	void Console::end()
+	{
+		printColors();
+		swapBuffers();
+	}
 
-	bool Console::clear()
+	bool Console::clear(int color)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		// Figure out the current width and height of the console window
@@ -59,14 +60,13 @@ namespace panda
 		DWORD length = csbi.dwSize.X * csbi.dwSize.Y;
 		DWORD written;
 
-		SetConsoleTextAttribute(m_backBuffer, m_bgColor);
-
 		// Flood-fill the console with spaces to clear it
-		FillConsoleOutputCharacter(m_backBuffer, 'a', length, topLeft, &written);
+		FillConsoleOutputCharacter(m_backBuffer, ' ', length, topLeft, &written);
 
-		// Reset the attributes of every character to the default.
-		// This clears all background colour formatting, if any.
-		FillConsoleOutputAttribute(m_backBuffer, 0, length, topLeft, &written);
+		WORD attribute;
+		attribute = this->color(0, color);    // change the background color
+		FillConsoleOutputAttribute(m_backBuffer, attribute, length, topLeft, &written);
+
 
 		// Move the cursor back to the top left for the next sequence of writes
 		SetConsoleCursorPosition(m_backBuffer, topLeft);
@@ -77,23 +77,31 @@ namespace panda
 
 	int Console::height() const { return m_height; }
 
+	void Console::setDrawColor(int fgColor, int bgColor)
+	{
+		m_fgColor = fgColor;
+		m_bgColor = bgColor;
+	}
+
+	void Console::setDrawColor(int fgColor) { setDrawColor(fgColor, m_clearColor); }
+
 	void Console::draw(const std::string& str, int x, int y) const
 	{
-		SetConsoleTextAttribute(m_backBuffer, 240);
+		setupColor();
 		setCursorPosition(x, y);
 		writeBuffer(str);
 	}
 
 	void Console::draw(char text, int x, int y) const
 	{
-		SetConsoleTextAttribute(m_backBuffer, 0x0F);
+		setupColor();
 		setCursorPosition(x, y);
 		writeBuffer(text);
 	}
 
 	void Console::drawRect(int x, int y, int width, int height) const
 	{
-		SetConsoleTextAttribute(m_backBuffer, 240);
+		setupColor();
 		for (int i = 0; i < width; ++i)
 		{
 			for (int j = 0; j < height; ++j)
@@ -105,26 +113,9 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectShaded(int x, int y, int width, int height) const
+	void Console::drawRectWithCrosses(int x, int y, int width, int height) const
 	{
-		if (width == 0 || height == 0)
-			return;
-
-		drawRect(x, y, width, height);
-
-		// draw last line with char 95 '_'
-		SetConsoleTextAttribute(m_backBuffer, 0xF8);
-		for (int j = 0; j < width; ++j)
-		{
-			setCursorPosition(x + j, y + height - 1);
-			writeBuffer(char(95));
-		}
-	}
-
-	void Console::drawRectRedWithCrosses(int x, int y, int width, int height) const
-	{
-		SetConsoleTextAttribute(m_backBuffer, 0xCF);
-		// draw top and bottom edges 205: ═
+		setupColor();
 		for (int i = 0; i < width; ++i)
 		{
 			for (int j = 0; j < height; ++j)
@@ -145,22 +136,9 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectRedWithCrossesShaded(int x, int y, int width, int height) const
+	void Console::drawRectOutline(int x, int y, int width, int height, bool fill) const
 	{
-		drawRectRedWithCrosses(x, y, width, height);
-
-		// draw last line with char 95 and color to add a shade effect
-		for (int j = 0; j < width; ++j)
-		{
-			setCursorPosition(x + j, y + height - 1);
-			SetConsoleTextAttribute(m_backBuffer, 0xC4);
-			writeBuffer(char(95));
-		}
-	}
-
-	void Console::drawRectOutline(int x, int y, int width, int height, int color, bool fill) const
-	{
-		SetConsoleTextAttribute(m_backBuffer, color);
+		setupColor();
 		// draw edges out of loop
 		// top left 218: ┌
 		setCursorPosition(x, y);
@@ -216,9 +194,14 @@ namespace panda
 			SetConsoleTextAttribute(m_backBuffer, i);
 			std::stringstream stream;
 			stream << std::hex << i;
-			writeBuffer(stream.str());
+			//writeBuffer(stream.str());
+			writeBuffer(std::to_string(i % 16));
 		}
 	}
+
+	void Console::setupColor() const { SetConsoleTextAttribute(m_backBuffer, color(m_fgColor, m_bgColor)); }
+
+	int Console::color(int foreground, int background) const { return foreground + background * 16; }
 
 	void Console::writeBuffer(const std::string& str) const
 	{

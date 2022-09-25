@@ -28,6 +28,14 @@ namespace panda
 		int m_cardSpacing = 0;         // space between cards
 		int m_cardSpreadHeight = 1;    // spaces per card height for spread cards
 
+		int m_openColorFg = 0xF;
+		int m_closedColorFg = 0xF;
+		int m_closedColorBg = 0x3;
+		int m_emptyColorFg = 0xF;
+		int m_selectColor = 0x9;
+		int m_markColor = 0x5;
+		int m_clearColor = 0x0;
+
 		// Returns the console position for each layout element
 		std::optional<std::pair<int, int>> layoutToConsole(int index);
 
@@ -38,13 +46,15 @@ namespace panda
 		void renderControlSelect();
 		void renderControlMark();
 
-		void drawCardSpread(const Card& card, int row, int column) const;
-		void drawCard(const Card& card, int row, int column) const;
-		void drawEmpty(int x, int y) const;
-		void drawEmpty(char text, int x, int y) const;
-		void drawEmptyClosedStack(int x, int y) const;
-		void drawControlSelect(int x, int y) const;
-		void drawControlMark(int x, int y) const;
+		void drawCardSpread(const Card& card, int row, int column);
+		void drawCard(const Card& card, int row, int column);
+		void drawEmpty(int x, int y);
+		void drawEmpty(char text, int x, int y);
+		void drawEmptyClosedStack(int x, int y);
+		void drawControlSelect(int x, int y);
+		void drawControlMark(int x, int y);
+
+		void drawShade(int x, int y);
 
 		const Game& m_game;
 		const GameControl& m_control;
