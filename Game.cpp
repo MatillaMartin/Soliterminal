@@ -131,7 +131,7 @@ namespace panda
 
 	bool Game::isClosedStack(int index) const { return index == 0; }
 
-	CardStack& Game::openStack() { return m_stacks[1];  }
+	CardStack& Game::openStack() { return m_stacks[1]; }
 
 	CardStack& Game::closedStack() { return m_stacks[0]; };
 
@@ -179,7 +179,12 @@ namespace panda
 			return !sourceCard.isSameColor(*destTop) && sourceCard.isLower(*destTop) && sourceCard.isAdjacent(*destTop);
 		}
 
-		// if the dest central stack is empty, it can be moved in
+		// if the dest central stack is empty, it can be moved in if it's a K
+		if (destStack.size() == 0)
+		{
+			return sourceCard.number == 13;
+		}
+
 		return true;
 	}
 
@@ -203,8 +208,5 @@ namespace panda
 		return sourceCard.number == 1;
 	}
 
-	void Game::reset(Game&& other) 
-	{ 
-		*this = other;
-	}
+	void Game::reset(Game&& other) { *this = other; }
 }

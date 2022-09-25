@@ -3,6 +3,7 @@
 #include "CardStack.h"
 #include "Game.h"
 #include "GameLayout.h"
+
 #include <iostream>
 namespace panda
 {
@@ -23,7 +24,7 @@ namespace panda
 
 	bool GameControl::isCentralStack() { return m_game.isCentralStack(m_stackIndex); }
 
-	void GameControl::changeStack(int stackIndex) 
+	void GameControl::changeStack(int stackIndex)
 	{
 		bool wasCentral = isCentralStack();
 		m_stackIndex = stackIndex;
@@ -137,7 +138,7 @@ namespace panda
 				else
 				{
 					if (m_game.stacks()[m_stackIndex].size() == 0)
-						return; 
+						return;
 
 					m_markedStackIndex = m_stackIndex;
 					m_markedCardIndex = m_cardIndex;
@@ -146,7 +147,7 @@ namespace panda
 			}
 			else if (m_state == State::Move)
 			{
-				bool moved = m_game.moveCards(m_markedStackIndex, m_markedCardIndex, m_stackIndex);
+				m_game.moveCards(m_markedStackIndex, m_markedCardIndex, m_stackIndex);
 				m_state = State::Select;
 				m_markedStackIndex = 0;
 				m_markedCardIndex = 0;
