@@ -41,7 +41,7 @@ namespace panda
 
 		if (m_game.isCentralStack(stackIndex))
 		{
-			y += cardIndex * (m_cardHeight + m_cardSpacing);
+			y += cardIndex * (m_cardSpreadHeight + m_cardSpacing);
 		}
 
 		return vec2i{x, y};
@@ -254,6 +254,6 @@ namespace panda
 	void Render::drawShade(vec2i pos)
 	{
 		for (int i = 0; i < m_cardWidth; ++i)
-			m_console.draw("_", pos.first + i, pos.second + m_cardHeight - 1);
+			m_console.draw("_", pos.first + i, pos.second + m_cardSpreadHeight - 1);
 	}
 }
