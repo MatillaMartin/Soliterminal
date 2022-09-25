@@ -34,7 +34,6 @@ namespace panda
 		int cardCenterX() const { return static_cast<int>(std::floor((m_cardWidth - 1) / 2.0)); }
 		int cardCenterY() const { return static_cast<int>(std::floor((m_cardHeight - 1) / 2.0)); }
 
-		bool isSpread(int index);
 		void renderStacks();
 		void renderControlSelect();
 		void renderControlMark();
@@ -42,6 +41,7 @@ namespace panda
 		void drawCardSpread(const Card& card, int row, int column) const;
 		void drawCard(const Card& card, int row, int column) const;
 		void drawEmpty(int x, int y) const;
+		void drawEmpty(char text, int x, int y) const;
 		void drawEmptyClosedStack(int x, int y) const;
 		void drawControlSelect(int x, int y) const;
 		void drawControlMark(int x, int y) const;

@@ -31,8 +31,6 @@ namespace panda
 		return {std::pair<int, int>{outX, outY}};
 	}
 
-	bool Render::isSpread(int index) { return m_game.isCentralStack(index); }
-
 	void Render::renderStacks()
 	{
 		const std::vector<CardStack>& stacks = m_game.stacks();
@@ -55,10 +53,15 @@ namespace panda
 				}
 				else
 				{
-					drawEmpty(x, y);
+					if (m_game.isCentralStack(index))
+						drawEmpty('K', x, y);
+					else if (m_game.isEndStack(index))
+						drawEmpty('A', x, y);
+					else
+						drawEmpty(x, y);
 				}
 			}
-			else if (isSpread(index))
+			else if (m_game.isCentralStack(index))
 			{
 				for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
 				{
@@ -82,7 +85,7 @@ namespace panda
 		if (!layout)
 			return;
 		auto [x, y] = *layout;
-		if (isSpread(index))
+		if (m_game.isCentralStack(index))
 		{
 			y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
 		}
@@ -97,7 +100,7 @@ namespace panda
 		if (!layout)
 			return;
 		auto [x, y] = *layout;
-		if (isSpread(index))
+		if (m_game.isCentralStack(index))
 		{
 			y += (m_cardHeight + m_cardSpacing) * m_control.markedCardIndex();
 		}
@@ -192,11 +195,19 @@ namespace panda
 		}
 	}
 
+	void Render::drawEmpty(char text, int x, int y) const
+	{
+		// draw custom emtpy card
+		drawEmpty(x, y);
+		m_console.draw(text, x + cardCenterX(), y + cardCenterY());
+	}
+
 	void Render::drawEmpty(int x, int y) const
 	{
 		// draw custom emtpy card
 		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
 	}
+
 
 	void Render::drawEmptyClosedStack(int x, int y) const
 	{
