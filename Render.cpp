@@ -21,7 +21,7 @@ namespace panda
 		update();
 	}
 
-	std::optional<std::pair<int, int>> Render::layoutToConsole(int index)
+	std::optional<vec2i> Render::layoutToConsole(int index)
 	{
 		auto layout = m_layout.indexToLayout(index);
 		if (!layout)
@@ -29,7 +29,22 @@ namespace panda
 		auto [layoutX, layoutY] = *layout;
 		int outX = m_stackSpacing + (m_stackSpacing + m_cardWidth) * layoutX;
 		int outY = m_stackSpacing + (m_stackSpacing + m_cardHeight) * layoutY;
-		return {std::pair<int, int>{outX, outY}};
+		return {vec2i{outX, outY}};
+	}
+
+	std::optional<vec2i> Render::position(int stackIndex, int cardIndex)
+	{
+		auto layout = layoutToConsole(stackIndex);
+		if (!layout)
+			return {};
+		auto [x, y] = *layout;
+
+		if (m_game.isCentralStack(stackIndex))
+		{
+			y += cardIndex * (m_cardHeight + m_cardSpacing);
+		}
+
+		return vec2i{x, y};
 	}
 
 	void Render::renderStacks()
@@ -39,73 +54,69 @@ namespace panda
 		// render game layout, with mapping to console positions
 		for (int index = 0; index < stacks.size(); ++index)
 		{
-			auto layout = layoutToConsole(index);
-			if (!layout)
-				continue;
-			auto [x, y] = *layout;
-
 			const CardStack& stack = stacks[index];
 
 			if (stack.cards().empty())
 			{
+				auto pos = position(index, 0);
+				if (!pos)
+					continue;
+
 				if (m_game.isClosedStack(index))
 				{
-					drawEmptyClosedStack(x, y);
+					drawEmptyClosedStack(*pos);
 				}
 				else
 				{
 					if (m_game.isCentralStack(index))
-						drawEmpty('K', x, y);
+						drawEmpty('K', *pos);
 					else if (m_game.isEndStack(index))
-						drawEmpty('A', x, y);
+						drawEmpty('A', *pos);
 					else
-						drawEmpty(x, y);
+						drawEmpty(*pos);
 				}
 			}
 			else if (m_game.isCentralStack(index))
 			{
+				int cardIndex = 0;
 				for (auto it = stack.cards().begin(); it != std::prev(stack.cards().end()); it++)
 				{
-					drawCardSpread(*it, x, y);
-					y += m_cardHeight + m_cardSpacing;
+					auto pos = position(index, cardIndex);
+					if (!pos)
+						continue;
+					drawCardSpread(*it, *pos);
+					cardIndex++;
 				}
 
-				drawCard(*std::prev(stack.cards().end()), x, y);
+				auto pos = position(index, cardIndex);
+				if (!pos)
+					continue;
+				drawCard(*std::prev(stack.cards().end()), *pos);
 			}
 			else
 			{
-				drawCard(*stack.top(), x, y);
+				auto pos = position(index, 0);
+				if (!pos)
+					continue;
+				drawCard(*stack.top(), *pos);
 			}
 		}
 	}
 
 	void Render::renderControlSelect()
 	{
-		int index = m_control.stackIndex();
-		auto layout = layoutToConsole(index);
-		if (!layout)
+		auto pos = position(m_control.stackIndex(), m_control.cardIndex());
+		if (!pos)
 			return;
-		auto [x, y] = *layout;
-		if (m_game.isCentralStack(index))
-		{
-			y += (m_cardHeight + m_cardSpacing) * m_control.cardIndex();
-		}
-		drawControlSelect(x, y);
+		drawControlSelect(*pos);
 	}
 
 	void Render::renderControlMark()
 	{
-		// Draw control select always
-		int index = m_control.markedStackIndex();
-		auto layout = layoutToConsole(index);
-		if (!layout)
+		auto pos = position(m_control.markedStackIndex(), m_control.markedCardIndex());
+		if (!pos)
 			return;
-		auto [x, y] = *layout;
-		if (m_game.isCentralStack(index))
-		{
-			y += (m_cardHeight + m_cardSpacing) * m_control.markedCardIndex();
-		}
-		drawControlMark(x, y);
+		drawControlMark(*pos);
 	}
 
 	void Render::update()
@@ -122,12 +133,6 @@ namespace panda
 				renderControlMark();
 			}
 		}
-
-		//std::cout << std::endl << std::endl << std::endl << std::endl;
-		//for (int i = 0; i < 256; ++i)
-		//{
-		//	std::cout << i << ": " << char(i) << "\t";
-		//}
 
 		m_console.end();
 	}
@@ -170,84 +175,85 @@ namespace panda
 		return suitColorMap[card.suit] + cardNumberStr(card.number) + suitMap[card.suit] + "\u001b[0m";
 	}
 
-	void Render::drawCard(const Card& card, int x, int y)
+	void Render::drawCard(const Card& card, vec2i pos)
 	{
 		if (card.state == Card::State::Closed)
 		{
 			m_console.setDrawColor(m_closedColorFg, m_closedColorBg);
-			m_console.drawRectWithCrosses(x, y, m_cardWidth, m_cardHeight);
+			m_console.drawRectWithCrosses(pos.first, pos.second, m_cardWidth, m_cardHeight);
 		}
 		else
 		{
 			m_console.setDrawColor(0x0, m_openColorFg);
-			m_console.drawRect(x, y, m_cardWidth, m_cardHeight);
-			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
+			m_console.drawRect(pos.first, pos.second, m_cardWidth, m_cardHeight);
+			m_console.draw(cardStr(card), pos.first + cardCenterX(), pos.second + cardCenterY());
 		}
 	}
 
-	void Render::drawCardSpread(const Card& card, int x, int y)
+	void Render::drawCardSpread(const Card& card, vec2i pos)
 	{
-		drawCard(card, x, y);
+		drawCard(card, pos);
 
 		if (card.state == Card::State::Closed)
 		{
 			m_console.setDrawColor(0x0, m_closedColorBg);
-			drawShade(x, y);
+			drawShade(pos);
 		}
 		else
 		{
 			m_console.setDrawColor(0x0, m_openColorFg);
-			drawShade(x, y);
+			drawShade(pos);
 		}
 	}
 
-	void Render::drawEmpty(char text, int x, int y)
+	void Render::drawEmpty(char text, vec2i pos)
 	{
 		// draw custom emtpy card
 		m_console.setDrawColor(m_emptyColorFg);
-		drawEmpty(x, y);
-		m_console.draw(text, x + cardCenterX(), y + cardCenterY());
+		drawEmpty(pos);
+		m_console.draw(text, pos.first + cardCenterX(), pos.second + cardCenterY());
 	}
 
-	void Render::drawEmpty(int x, int y)
+	void Render::drawEmpty(vec2i pos)
 	{
 		// draw custom emtpy card
 		m_console.setDrawColor(m_emptyColorFg);
-		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
+		m_console.drawRectOutline(pos.first, pos.second, m_cardWidth, m_cardHeight);
 	}
 
 
-	void Render::drawEmptyClosedStack(int x, int y)
+	void Render::drawEmptyClosedStack(vec2i pos)
 	{
 		// draw custom emtpy card with arrow inside
 		m_console.setDrawColor(m_emptyColorFg);
-		m_console.drawRectOutline(x, y, m_cardWidth, m_cardHeight);
-		m_console.draw(char(174), x + cardCenterX(), y + cardCenterY());
+		m_console.drawRectOutline(pos.first, pos.second, m_cardWidth, m_cardHeight);
+		m_console.draw(char(174), pos.first + cardCenterX(), pos.second + cardCenterY());
 	}
 
-	void Render::drawControlSelect(int x, int y)
+	void Render::drawControlSelect(vec2i pos)
 	{
 		// draw control with select color
 		m_console.setDrawColor(m_selectColor);
-		drawControl(x, y);
+		drawControl(pos);
 	}
 
-	void Render::drawControlMark(int x, int y)
+	void Render::drawControlMark(vec2i pos)
 	{
 		// draw control with mark color
 		m_console.setDrawColor(m_markColor);
-		drawControl(x, y);
+		drawControl(pos);
 	}
 
-	void Render::drawControl(int x, int y)
+	void Render::drawControl(vec2i pos)
 	{
-		m_console.draw(char(16), x - 1, y + cardCenterY());
-		m_console.draw(char(17), x + m_cardWidth, y + cardCenterY());
+		// draw control as arrows pointing to card
+		m_console.draw(char(16), pos.first - 1, pos.second + cardCenterY());
+		m_console.draw(char(17), pos.first + m_cardWidth, pos.second + cardCenterY());
 	}
 
-	void Render::drawShade(int x, int y)
+	void Render::drawShade(vec2i pos)
 	{
 		for (int i = 0; i < m_cardWidth; ++i)
-			m_console.draw("_", x + i, y + m_cardHeight - 1);
+			m_console.draw("_", pos.first + i, pos.second + m_cardHeight - 1);
 	}
 }

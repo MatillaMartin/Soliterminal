@@ -13,6 +13,8 @@ namespace panda
 	struct Card;
 	class Stack;
 
+	typedef std::pair<int, int> vec2i;
+
 	class Render
 	{
 	public:
@@ -46,16 +48,17 @@ namespace panda
 		void renderControlSelect();
 		void renderControlMark();
 
-		void drawCardSpread(const Card& card, int row, int column);
-		void drawCard(const Card& card, int row, int column);
-		void drawEmpty(int x, int y);
-		void drawEmpty(char text, int x, int y);
-		void drawEmptyClosedStack(int x, int y);
-		void drawControlSelect(int x, int y);
-		void drawControlMark(int x, int y);
-		void drawControl(int x, int y);
+		std::optional<vec2i> position(int stackIndex, int cardIndex);
 
-		void drawShade(int x, int y);
+		void drawCardSpread(const Card& card, vec2i pos);
+		void drawCard(const Card& card, vec2i pos);
+		void drawEmpty(vec2i pos);
+		void drawEmpty(char text, vec2i pos);
+		void drawEmptyClosedStack(vec2i pos);
+		void drawControlSelect(vec2i pos);
+		void drawControlMark(vec2i pos);
+		void drawControl(vec2i pos);
+		void drawShade(vec2i pos);
 
 		const Game& m_game;
 		const GameControl& m_control;
