@@ -32,8 +32,8 @@ namespace panda
 		int m_closedColorFg = 0xF;
 		int m_closedColorBg = 0x3;
 		int m_emptyColorFg = 0xF;
-		int m_selectColor = 0x9;
-		int m_markColor = 0x5;
+		int m_selectColor = 0xF;
+		int m_markColor = 0xA;
 		int m_clearColor = 0x0;
 
 		// Returns the console position for each layout element
@@ -53,6 +53,7 @@ namespace panda
 		void drawEmptyClosedStack(int x, int y);
 		void drawControlSelect(int x, int y);
 		void drawControlMark(int x, int y);
+		void drawControl(int x, int y);
 
 		void drawShade(int x, int y);
 

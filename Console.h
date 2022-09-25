@@ -50,6 +50,9 @@ namespace panda
 		// Helper method, prints the color number for foreground/backround colors
 		void printColors() const;
 
+		// Helper method, prints an ascii table
+		void printAscii() const;
+
 		/// Clears the console
 		/// Returns false if action failed
 		bool clear(int color);
@@ -69,15 +72,19 @@ namespace panda
 
 		void swapBuffers();
 
+		// Two buffers and the pointer to the back buffer
 		void* m_firstBuffer = nullptr;
 		void* m_secondBuffer = nullptr;
 		void* m_backBuffer = nullptr;
-		int m_width = 500;
-		int m_height = 800;
 
+		// Window parameters
+		std::pair<int, int> m_topLeft = {100, 20};
+		int m_width = 500;
+		int m_height = 1000;
+
+		// Render colors
 		int m_fgColor = 0xF;
 		int m_bgColor = 0x0;
-
 		int m_clearColor = 0x0;
 	};
 }

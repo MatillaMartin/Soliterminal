@@ -44,7 +44,8 @@ namespace panda
 
 	void Console::end()
 	{
-		printColors();
+		//printColors();
+		//printAscii();
 		swapBuffers();
 	}
 
@@ -199,6 +200,16 @@ namespace panda
 		}
 	}
 
+	void Console::printAscii() const
+	{
+		for (int i = 0; i < 256; ++i)
+		{
+			writeBuffer(std::to_string(i) + ": ");
+			writeBuffer(char(i));
+			writeBuffer("\t");
+		}
+	}
+
 	void Console::setupColor() const { SetConsoleTextAttribute(m_backBuffer, color(m_fgColor, m_bgColor)); }
 
 	int Console::color(int foreground, int background) const { return foreground + background * 16; }
@@ -264,7 +275,7 @@ namespace panda
 		}
 
 		// Set console window position and size for both buffers
-		RECT rect = {100, 100, m_width + 100, m_height + 100};
+		RECT rect = {m_topLeft.first, m_topLeft.second, m_width + m_topLeft.first, m_height + m_topLeft.second};
 		{
 			HWND hwnd = GetConsoleWindow();
 			MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);

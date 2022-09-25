@@ -227,16 +227,22 @@ namespace panda
 
 	void Render::drawControlSelect(int x, int y)
 	{
-		// draw oversized outline with blue color
+		// draw control with select color
 		m_console.setDrawColor(m_selectColor);
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, false);
+		drawControl(x, y);
 	}
 
 	void Render::drawControlMark(int x, int y)
 	{
-		// draw oversized outline with a green color
+		// draw control with mark color
 		m_console.setDrawColor(m_markColor);
-		m_console.drawRectOutline(x - 1, y - 1, m_cardWidth + 2, m_cardHeight + 2, false);
+		drawControl(x, y);
+	}
+
+	void Render::drawControl(int x, int y)
+	{
+		m_console.draw(char(16), x - 1, y + cardCenterY());
+		m_console.draw(char(17), x + m_cardWidth, y + cardCenterY());
 	}
 
 	void Render::drawShade(int x, int y)
