@@ -27,7 +27,6 @@ namespace panda
 		int m_cardWidth = 4;           // spaces per card width, for card like 10
 		int m_cardHeight = 3;          // spaces per card height
 		int m_stackSpacing = 4;        // space between stacks
-		int m_cardSpacing = 0;         // space between cards
 		int m_cardSpreadHeight = 1;    // spaces per card height for spread cards
 
 		int m_openColorFg = 0xF;
@@ -58,7 +57,7 @@ namespace panda
 		void drawControlSelect(vec2i pos);
 		void drawControlMark(vec2i pos);
 		void drawControl(vec2i pos);
-		void drawShade(vec2i pos);
+		void drawShade(int x, int y);
 
 		const Game& m_game;
 		const GameControl& m_control;

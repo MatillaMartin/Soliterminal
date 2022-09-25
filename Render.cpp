@@ -39,9 +39,30 @@ namespace panda
 			return {};
 		auto [x, y] = *layout;
 
+		const std::vector<CardStack>& stacks = m_game.stacks();
+		const CardStack& stack = stacks[stackIndex];
+
 		if (m_game.isCentralStack(stackIndex))
 		{
-			y += cardIndex * (m_cardSpreadHeight + m_cardSpacing);
+			auto openCardIndex = stack.firstOpenCard();
+			if (!openCardIndex)    // all closed
+			{
+				y += cardIndex * m_cardSpreadHeight;
+			}
+			else    // some closed, some open
+			{
+				if (cardIndex > *openCardIndex)
+				{
+					// add up the closed cards
+					y += *openCardIndex * m_cardSpreadHeight;
+					// add up the open cards
+					y += (cardIndex - *openCardIndex) * m_cardHeight;
+				}
+				else
+				{
+					y += cardIndex * m_cardSpreadHeight;
+				}
+			}
 		}
 
 		return vec2i{x, y};
@@ -197,12 +218,12 @@ namespace panda
 		if (card.state == Card::State::Closed)
 		{
 			m_console.setDrawColor(0x0, m_closedColorBg);
-			drawShade(pos);
+			drawShade(pos.first, pos.second);
 		}
 		else
 		{
 			m_console.setDrawColor(0x0, m_openColorFg);
-			drawShade(pos);
+			drawShade(pos.first, pos.second + m_cardHeight - 1);
 		}
 	}
 
@@ -251,9 +272,9 @@ namespace panda
 		m_console.draw(char(17), pos.first + m_cardWidth, pos.second + cardCenterY());
 	}
 
-	void Render::drawShade(vec2i pos)
+	void Render::drawShade(int x, int y)
 	{
 		for (int i = 0; i < m_cardWidth; ++i)
-			m_console.draw("_", pos.first + i, pos.second + m_cardSpreadHeight - 1);
+			m_console.draw("_", x + i, y);
 	}
 }
