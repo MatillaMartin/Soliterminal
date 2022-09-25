@@ -17,6 +17,7 @@ namespace panda
 		, m_control(control)
 		, m_layout(layout)
 	{
+		m_console.setBackgroundColor(0x2F);
 		update();
 	}
 

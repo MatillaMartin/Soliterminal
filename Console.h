@@ -11,6 +11,9 @@ namespace panda
 		/// Creates a console abstraction
 		Console();
 
+		/// Sets the color with which the background is cleared
+		void setBackgroundColor(int color);
+
 		/// Starts drawing characters
 		void begin();
 
@@ -49,6 +52,9 @@ namespace panda
 		void drawRectOutline(int x, int y, int width, int height, int color = 0x0F, bool fill = true) const;
 
 	private:
+		// Helper method, prints the color number for foreground/backround colors
+		void printColors() const;
+
 		void writeBuffer(const std::string& str) const;
 		void writeBuffer(char c) const;
 
@@ -64,5 +70,6 @@ namespace panda
 		void* m_backBuffer = nullptr;
 		int m_width = 500;
 		int m_height = 800;
+		int m_bgColor = 0x00;
 	};
 }

@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <sstream>
 
 namespace panda
 {
@@ -40,6 +41,8 @@ namespace panda
 		assert(m_width > 0 && m_height > 0);
 	}
 
+	void Console::setBackgroundColor(int color) { m_bgColor = color; }
+
 	void Console::begin() { clear(); }
 
 	void Console::end() { swapBuffers(); }
@@ -56,8 +59,10 @@ namespace panda
 		DWORD length = csbi.dwSize.X * csbi.dwSize.Y;
 		DWORD written;
 
+		SetConsoleTextAttribute(m_backBuffer, m_bgColor);
+
 		// Flood-fill the console with spaces to clear it
-		FillConsoleOutputCharacter(m_backBuffer, TEXT(' '), length, topLeft, &written);
+		FillConsoleOutputCharacter(m_backBuffer, 'a', length, topLeft, &written);
 
 		// Reset the attributes of every character to the default.
 		// This clears all background colour formatting, if any.
@@ -201,6 +206,17 @@ namespace panda
 					writeBuffer(" ");
 				}
 			}
+		}
+	}
+
+	void Console::printColors() const
+	{
+		for (int i = 0; i < 0xFF; ++i)
+		{
+			SetConsoleTextAttribute(m_backBuffer, i);
+			std::stringstream stream;
+			stream << std::hex << i;
+			writeBuffer(stream.str());
 		}
 	}
 
