@@ -36,7 +36,7 @@ namespace panda
 	void Render::renderStacks()
 	{
 		const std::vector<CardStack>& stacks = m_game.stacks();
-		
+
 		// render game layout, with mapping to console positions
 		for (int index = 0; index < stacks.size(); ++index)
 		{
@@ -170,7 +170,7 @@ namespace panda
 	{
 		if (card.state == Card::State::Closed)
 		{
-			m_console.drawRectRedFancy(x, y, m_cardWidth, m_cardHeight);
+			m_console.drawRectRedWithCrosses(x, y, m_cardWidth, m_cardHeight);
 		}
 		else
 		{
@@ -183,11 +183,11 @@ namespace panda
 	{
 		if (card.state == Card::State::Closed)
 		{
-			m_console.drawRectRedFancyShaded(x, y, m_cardWidth, m_cardHeight);
+			m_console.drawRectRedWithCrossesShaded(x, y, m_cardWidth, m_cardHeight);
 		}
 		else
 		{
-			m_console.drawRectBottomShaded(x, y, m_cardWidth, m_cardHeight);
+			m_console.drawRectShaded(x, y, m_cardWidth, m_cardHeight);
 			m_console.draw(cardStr(card), x + cardCenterX(), y + cardCenterY());
 		}
 	}

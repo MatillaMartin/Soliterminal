@@ -37,19 +37,16 @@ namespace panda
 		void drawRect(int x, int y, int width, int heigth) const;
 
 		/// Draws the given string, with a shade under it
-		void drawRectBottomShaded(int x, int y, int width, int heigth) const;
+		void drawRectShaded(int x, int y, int width, int heigth) const;
 
 		/// Draws a red rectangle with stripes
-		void drawRectRedFancy(int x, int y, int width, int heigth) const;
+		void drawRectRedWithCrosses(int x, int y, int width, int heigth) const;
 
 		/// Draws a red rectangle with stripes, with a shade under it
-		void drawRectRedFancyShaded(int x, int y, int width, int heigth) const;
+		void drawRectRedWithCrossesShaded(int x, int y, int width, int heigth) const;
 
 		/// Draw a rectangle outline
 		void drawRectOutline(int x, int y, int width, int height, int color = 0x0F, bool fill = true) const;
-
-		/// Draw a rectangle outline, using the double character
-		void drawCrosses(int x, int y, int width, int height, int color = 0x0F) const;
 
 	private:
 		void writeBuffer(const std::string& str) const;
@@ -65,7 +62,7 @@ namespace panda
 		void* m_firstBuffer = nullptr;
 		void* m_secondBuffer = nullptr;
 		void* m_backBuffer = nullptr;
-		int m_width = 0;
-		int m_height = 0;
+		int m_width = 500;
+		int m_height = 800;
 	};
 }

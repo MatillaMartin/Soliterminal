@@ -11,10 +11,8 @@
 namespace panda
 {
 	Console::Console()
-		: m_width(1500)
-		, m_height(999)
 	{
-#ifdef WIN32
+		SetConsoleTitle("Console Solitaire");
 
 		// Get the intial console buffer.
 		m_firstBuffer = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -26,7 +24,6 @@ namespace panda
 
 		if (!m_backBuffer)
 			throw std::runtime_error("Could not console handle");
-#endif
 		bool ok = false;
 
 		ok = setSize();
@@ -49,7 +46,6 @@ namespace panda
 
 	bool Console::clear()
 	{
-#ifdef WIN32
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		// Figure out the current width and height of the console window
 		if (!GetConsoleScreenBufferInfo(m_backBuffer, &csbi))
@@ -70,8 +66,6 @@ namespace panda
 		// Move the cursor back to the top left for the next sequence of writes
 		SetConsoleCursorPosition(m_backBuffer, topLeft);
 		return true;
-#endif
-		return false;
 	}
 
 	int Console::width() const { return m_width; }
@@ -106,26 +100,49 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectBottomShaded(int x, int y, int width, int height) const
+	void Console::drawRectShaded(int x, int y, int width, int height) const
 	{
 		if (width == 0 || height == 0)
 			return;
 
 		drawRect(x, y, width, height);
 
-		// draw last line with char 95 and color to add a shade effect
+		// draw last line with char 95 '_'
+		SetConsoleTextAttribute(m_backBuffer, 0xF8);
 		for (int j = 0; j < width; ++j)
 		{
 			setCursorPosition(x + j, y + height - 1);
-			writeBuffer("\u001b[38;5;250m" + char(95));
+			writeBuffer(char(95));
 		}
 	}
 
-	void Console::drawRectRedFancy(int x, int y, int width, int height) const { drawCrosses(x, y, width, height, 0xCF); }
-
-	void Console::drawRectRedFancyShaded(int x, int y, int width, int height) const
+	void Console::drawRectRedWithCrosses(int x, int y, int width, int height) const
 	{
-		drawRectRedFancy(x, y, width, height);
+		SetConsoleTextAttribute(m_backBuffer, 0xCF);
+		// draw top and bottom edges 205: ═
+		for (int i = 0; i < width; ++i)
+		{
+			for (int j = 0; j < height; ++j)
+			{
+				setCursorPosition(x + i, y + j);
+				writeBuffer(" ");
+			}
+		}
+
+		// draw crosses in the middle
+		for (int i = 1; i < width - 1; ++i)
+		{
+			for (int j = 1; j < height - 1; ++j)
+			{
+				setCursorPosition(x + i, y + j);
+				writeBuffer(char(206));
+			}
+		}
+	}
+
+	void Console::drawRectRedWithCrossesShaded(int x, int y, int width, int height) const
+	{
+		drawRectRedWithCrosses(x, y, width, height);
 
 		// draw last line with char 95 and color to add a shade effect
 		for (int j = 0; j < width; ++j)
@@ -187,30 +204,6 @@ namespace panda
 		}
 	}
 
-	void Console::drawCrosses(int x, int y, int width, int height, int color) const
-	{
-		SetConsoleTextAttribute(m_backBuffer, color);
-		// draw top and bottom edges 205: ═
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				setCursorPosition(x + i, y + j);
-				writeBuffer(" ");
-			}
-		}
-
-		// draw crosses in the middle
-		for (int i = 1; i < width - 1; ++i)
-		{
-			for (int j = 1; j < height - 1; ++j)
-			{
-				setCursorPosition(x + i, y + j);
-				writeBuffer(char(206));
-			}
-		}
-	}
-
 	void Console::writeBuffer(const std::string& str) const
 	{
 		// write to back buffer
@@ -226,46 +219,69 @@ namespace panda
 
 	bool Console::setSize()
 	{
-#ifdef WIN32
-		HWND consoleWindow = GetConsoleWindow();
-
-		// Place the window, set size
-		MoveWindow(consoleWindow, 100, 10, m_width, m_height, TRUE);
-
-		// Adjust buffer to match console size
+		/// Set buffer to match size so there are no scrollbars
+		// Retrieve screen buffer info
 		CONSOLE_SCREEN_BUFFER_INFO scrBufferInfo;
-
-		if (!GetConsoleScreenBufferInfo(m_backBuffer, &scrBufferInfo))
+		bool ok = GetConsoleScreenBufferInfo(m_firstBuffer, &scrBufferInfo);
+		if (!ok)
+		{
+			int error = GetLastError();
+			std::string message = std::system_category().message(error);
+			std::cout << message << std::endl;
 			return false;
+		}
 
-		// current window size
-		short winWidth = scrBufferInfo.srWindow.Right - scrBufferInfo.srWindow.Left + 1;
+		// current window and buffer size
 		short winHeight = scrBufferInfo.srWindow.Bottom - scrBufferInfo.srWindow.Top + 1;
-
-		// current screen buffer size
 		short scrBufferWidth = scrBufferInfo.dwSize.X;
-		short scrBufferHeight = scrBufferInfo.dwSize.Y;
 
 		// to remove the scrollbar, make sure the window height matches the screen buffer height
 		COORD newSize;
 		newSize.X = scrBufferWidth;
 		newSize.Y = winHeight;
 
-		// set the new screen buffer dimensions
-		if (SetConsoleScreenBufferSize(m_firstBuffer, newSize) == 0)
-			return false;
-		// set the new screen buffer dimensions
-		if (SetConsoleScreenBufferSize(m_secondBuffer, newSize) == 0)
-			return false;
+		//Change the internal buffer size:
+		{
+			bool ok = SetConsoleScreenBufferSize(m_firstBuffer, newSize);
+			if (!ok)
+				return false;
+		}
+		{
+			bool ok = SetConsoleScreenBufferSize(m_secondBuffer, newSize);
+			if (!ok)
+				return false;
+		}
+
+		SMALL_RECT windowInfo = {0, 0, newSize.X - 1, newSize.Y - 1};
+		{
+			bool ok = SetConsoleWindowInfo(m_firstBuffer, TRUE, &windowInfo);
+			if (!ok)
+				return false;
+		}
+		{
+			bool ok = SetConsoleWindowInfo(m_secondBuffer, TRUE, &windowInfo);
+			if (!ok)
+				return false;
+		}
+
+		// Set console window position and size for both buffers
+		RECT rect = {100, 100, m_width + 100, m_height + 100};
+		{
+			HWND hwnd = GetConsoleWindow();
+			MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+		}
+		swapBuffers();
+		{
+			HWND hwnd = GetConsoleWindow();
+			MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+		}
+		swapBuffers();    // reset state
 
 		return true;
-#endif
-		return false;
 	}
 
 	bool Console::setStyle()
 	{
-#ifdef WIN32
 		HWND consoleWindow = GetConsoleWindow();
 		LONG lStyle = GetWindowLong(consoleWindow, GWL_STYLE);
 		lStyle &= ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX);
@@ -281,8 +297,6 @@ namespace panda
 		hideCursor(m_firstBuffer);
 		hideCursor(m_secondBuffer);
 		return true;
-#endif
-		return false;
 	}
 
 	void Console::setCursorPosition(int x, int y) const

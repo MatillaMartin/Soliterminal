@@ -29,7 +29,6 @@ std::vector<Card> createDeck()
 			card.number = numberIndex + 1;    // card numbers start on 1
 			card.suit = static_cast<Card::Suit>(suitIndex);
 			card.state = Card::State::Closed;
-			std::cout << cardIndex;
 		}
 	}
 	return deck;
