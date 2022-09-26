@@ -158,6 +158,22 @@ namespace panda
 		m_console.end();
 	}
 
+	std::optional<int> cardColor(const Card& card) 
+	{
+		static std::unordered_map<Card::Suit, int> suitColorMap{
+			{Card::Suit::Heart, 0x4},
+			{Card::Suit::Diamond, 0x4},
+			{Card::Suit::Club, 0x0},
+			{Card::Suit::Spade, 0x0},
+		};
+
+		assert(suitColorMap.find(card.suit) != suitColorMap.end());
+		auto it = suitColorMap.find(card.suit); 
+		if (it== suitColorMap.end())
+			return {};
+		return it->second;
+	}
+
 	std::string cardStr(const Card& card)
 	{
 		static std::unordered_map<Card::Suit, char> suitMap{
@@ -165,13 +181,6 @@ namespace panda
 			{Card::Suit::Diamond, 4},
 			{Card::Suit::Club, 5},
 			{Card::Suit::Spade, 6},
-		};
-
-		static std::unordered_map<Card::Suit, std::string> suitColorMap{
-			{Card::Suit::Heart, "\u001b[31m"},
-			{Card::Suit::Diamond, "\u001b[31m"},
-			{Card::Suit::Club, "\u001b[30m"},
-			{Card::Suit::Spade, "\u001b[30m"},
 		};
 
 		auto cardNumberStr = [](int number) -> std::string {
@@ -189,11 +198,8 @@ namespace panda
 		assert(suitMap.find(card.suit) != suitMap.end());
 		if (suitMap.find(card.suit) == suitMap.end())
 			return "";
-		assert(suitColorMap.find(card.suit) != suitColorMap.end());
-		if (suitColorMap.find(card.suit) == suitColorMap.end())
-			return "";
 
-		return suitColorMap[card.suit] + cardNumberStr(card.number) + suitMap[card.suit] + "\u001b[0m";
+		return cardNumberStr(card.number) + suitMap[card.suit];
 	}
 
 	void Render::drawCard(const Card& card, vec2i pos)
@@ -205,7 +211,10 @@ namespace panda
 		}
 		else
 		{
-			m_console.setDrawColor(0x0, m_openColorFg);
+			auto fgColor = cardColor(card);
+			if (!fgColor)
+				return;
+			m_console.setDrawColor(*fgColor, m_openColorFg);
 			m_console.drawRect(pos.first, pos.second, m_cardWidth, m_cardHeight);
 			m_console.draw(cardStr(card), pos.first + cardCenterX(), pos.second + cardCenterY());
 		}
