@@ -114,29 +114,6 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectWithCrosses(int x, int y, int width, int height) const
-	{
-		setupColor();
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				setCursorPosition(x + i, y + j);
-				writeBuffer(" ");
-			}
-		}
-
-		// draw crosses in the middle
-		for (int i = 1; i < width - 1; ++i)
-		{
-			for (int j = 1; j < height - 1; ++j)
-			{
-				setCursorPosition(x + i, y + j);
-				writeBuffer(char(206));
-			}
-		}
-	}
-
 	void Console::drawRectOutline(int x, int y, int width, int height, bool fill) const
 	{
 		setupColor();
@@ -278,14 +255,42 @@ namespace panda
 		RECT rect = {m_topLeft.first, m_topLeft.second, m_width + m_topLeft.first, m_height + m_topLeft.second};
 		{
 			HWND hwnd = GetConsoleWindow();
-			MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+			if (!ok)
+			{
+				int error = GetLastError();
+				std::string message = std::system_category().message(error);
+				std::cout << message << std::endl;
+				return false;
+			}
 		}
 		swapBuffers();
 		{
 			HWND hwnd = GetConsoleWindow();
-			MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+			if (!ok)
+			{
+				int error = GetLastError();
+				std::string message = std::system_category().message(error);
+				std::cout << message << std::endl;
+				return false;
+			}
 		}
-		swapBuffers();    // reset state
+		swapBuffers();
+
+		// reset a third time because reasons.. seems to fix the issue with one of the buffers not being the correct size
+		{
+			HWND hwnd = GetConsoleWindow();
+			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+			if (!ok)
+			{
+				int error = GetLastError();
+				std::string message = std::system_category().message(error);
+				std::cout << message << std::endl;
+				return false;
+			}
+		}
+		swapBuffers();    
 
 		return true;
 	}
@@ -317,7 +322,15 @@ namespace panda
 
 	void Console::swapBuffers()
 	{
-		SetConsoleActiveScreenBuffer(m_backBuffer);
+		bool ok = SetConsoleActiveScreenBuffer(m_backBuffer);
+		if (!ok)
+		{
+			int error = GetLastError();
+			std::string message = std::system_category().message(error);
+			std::cout << message << std::endl;
+			throw std::runtime_error("Could not swap buffers");
+		}
+
 		m_backBuffer = m_backBuffer == m_firstBuffer ? m_secondBuffer : m_firstBuffer;
 	}
 }

@@ -40,9 +40,6 @@ namespace panda
 		/// Draws a rectangle at row, column
 		void drawRect(int x, int y, int width, int heigth) const;
 
-		/// Draws a red rectangle with stripes
-		void drawRectWithCrosses(int x, int y, int width, int heigth) const;
-
 		/// Draw a rectangle outline
 		void drawRectOutline(int x, int y, int width, int height, bool fill = true) const;
 

@@ -88,8 +88,8 @@ namespace panda
 				else
 				{
 					// move up the cards
-					bool couldChange = changeCard(m_cardIndex - 1);
-					if (!couldChange)
+					bool accepted = changeCard(m_cardIndex - 1);
+					if (!accepted)
 					{
 						changeStack(m_layout.up(m_stackIndex));
 					}
@@ -102,8 +102,8 @@ namespace panda
 			if (isCentralStack())
 			{
 				// move down the cards until last
-				bool couldChange = changeCard(m_cardIndex + 1);
-				if (!couldChange)
+				bool accepted = changeCard(m_cardIndex + 1);
+				if (!accepted)
 				{
 					changeStack(m_layout.down(m_stackIndex));
 				}

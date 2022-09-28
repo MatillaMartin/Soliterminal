@@ -158,7 +158,7 @@ namespace panda
 		m_console.end();
 	}
 
-	std::optional<int> cardColor(const Card& card) 
+	std::optional<int> cardColor(const Card& card)
 	{
 		static std::unordered_map<Card::Suit, int> suitColorMap{
 			{Card::Suit::Heart, 0x4},
@@ -168,8 +168,8 @@ namespace panda
 		};
 
 		assert(suitColorMap.find(card.suit) != suitColorMap.end());
-		auto it = suitColorMap.find(card.suit); 
-		if (it== suitColorMap.end())
+		auto it = suitColorMap.find(card.suit);
+		if (it == suitColorMap.end())
 			return {};
 		return it->second;
 	}
@@ -207,7 +207,9 @@ namespace panda
 		if (card.state == Card::State::Closed)
 		{
 			m_console.setDrawColor(m_closedColorFg, m_closedColorBg);
-			m_console.drawRectWithCrosses(pos.first, pos.second, m_cardWidth, m_cardHeight);
+			m_console.drawRect(pos.first, pos.second, m_cardWidth, m_cardHeight);
+			m_console.draw(char(206), pos.first + cardCenterX(), pos.second + cardCenterY());
+			m_console.draw(char(206), pos.first + cardCenterX()+1, pos.second + cardCenterY());
 		}
 		else
 		{
