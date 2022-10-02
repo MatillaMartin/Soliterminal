@@ -112,18 +112,21 @@ Game createNearEndingGame()
 	return Game(std::move(state));
 }
 
+std::unique_ptr<Console> consoleProxy()
+{
+#ifdef WIN32
+	return std::make_unique<ConsoleWindows>();
+#else
+	return std::make_unique<ConsoleLinux>();
+#endif
+	return {};
+}
+
 int main()
 {
 	try
 	{
-		Console* console = nullptr;
-#ifdef WIN32
-		ConsoleWindows consoleWin;
-		console = &consoleWin;
-#else
-		ConsoleLinux consoleLinux;
-		console = &consoleLinux;
-#endif
+		std::unique_ptr<Console> console = consoleProxy();
 		assert(console != nullptr); // Console not initialized
 		if (!console)
 			return -1;
