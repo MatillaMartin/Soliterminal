@@ -1,4 +1,4 @@
-project(SolitaireConsole)
+project(Soliterminal)
 cmake_minimum_required(VERSION 3.9.4)
 
 set(Sources 
