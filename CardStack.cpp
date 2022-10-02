@@ -42,7 +42,7 @@ namespace panda
 		return m_cards.back();
 	}
 
-	int CardStack::topIndex() const { return m_cards.size() - 1; }
+	int CardStack::topIndex() const { return static_cast<int>(m_cards.size()) - 1; }
 
 	std::optional<Card> CardStack::bottom() const
 	{

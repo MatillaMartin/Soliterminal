@@ -195,7 +195,7 @@ namespace panda
 	{
 		// write to back buffer
 		DWORD written;
-		WriteConsole(m_backBuffer, str.c_str(), str.length(), &written, nullptr);
+		WriteConsole(m_backBuffer, str.c_str(), static_cast<int>(str.length()), &written, nullptr);
 	}
 
 	void Console::writeBuffer(char c) const
