@@ -111,10 +111,11 @@ int main()
 {
 	try
 	{
+		Console console;
 		Game game = createGame();
 		GameLayout gameLayout;
 		GameControl control(game, gameLayout);
-		Render render(game, control, gameLayout);
+		Render render(game, control, gameLayout, console);
 
 		// Basic rendering cycle
 		while (true)
@@ -125,7 +126,10 @@ int main()
 			if (action == GameAction::Reset)
 				game.reset(createGame());
 			if (action == GameAction::Exit)
+			{
+				console.clear();
 				return 0;
+			}
 
 			control.action(action);
 

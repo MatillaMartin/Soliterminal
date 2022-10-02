@@ -165,6 +165,8 @@ namespace panda
 		}
 	}
 
+	void Console::clear() { system("cls"); }
+
 	void Console::printColors() const
 	{
 		for (int i = 0; i < 0xFF; ++i)
@@ -290,7 +292,7 @@ namespace panda
 				return false;
 			}
 		}
-		swapBuffers();    
+		swapBuffers();
 
 		return true;
 	}

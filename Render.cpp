@@ -12,10 +12,11 @@
 
 namespace panda
 {
-	Render::Render(const Game& game, const GameControl& control, const GameLayout& layout)
+	Render::Render(const Game& game, const GameControl& control, const GameLayout& layout, Console& console)
 		: m_game(game)
 		, m_control(control)
 		, m_layout(layout)
+		, m_console(console)
 	{
 		m_console.setClearColor(m_clearColor);
 		update();

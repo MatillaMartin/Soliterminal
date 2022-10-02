@@ -43,6 +43,9 @@ namespace panda
 		/// Draw a rectangle outline
 		void drawRectOutline(int x, int y, int width, int height, bool fill = true) const;
 
+		/// Clears the console from all output
+		void clear();
+
 	private:
 		// Helper method, prints the color number for foreground/backround colors
 		void printColors() const;
