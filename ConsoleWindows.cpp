@@ -11,6 +11,16 @@
 
 namespace panda
 {
+	namespace
+	{
+		void printLastError(const std::string_view& context)
+		{
+			int error = GetLastError();
+			std::string message = std::system_category().message(error);
+			std::cout << context << ": " << message << std::endl;
+		}
+	}
+
 	ConsoleWindows::ConsoleWindows()
 	{
 		SetConsoleTitle("Soliterminal");
@@ -38,7 +48,7 @@ namespace panda
 		assert(m_width > 0 && m_height > 0);
 	}
 
-	ConsoleWindows::~ConsoleWindows() 
+	ConsoleWindows::~ConsoleWindows()
 	{
 		if (m_secondBuffer)
 			CloseHandle(m_secondBuffer);
@@ -220,9 +230,7 @@ namespace panda
 		bool ok = GetConsoleScreenBufferInfo(m_firstBuffer, &scrBufferInfo);
 		if (!ok)
 		{
-			int error = GetLastError();
-			std::string message = std::system_category().message(error);
-			std::cout << message << std::endl;
+			printLastError("GetConsoleScreenBufferInfo");
 			return false;
 		}
 
@@ -239,24 +247,36 @@ namespace panda
 		{
 			bool ok = SetConsoleScreenBufferSize(m_firstBuffer, newSize);
 			if (!ok)
+			{
+				printLastError("SetConsoleScreenBufferSize first buffer");
 				return false;
+			}
 		}
 		{
 			bool ok = SetConsoleScreenBufferSize(m_secondBuffer, newSize);
 			if (!ok)
+			{
+				printLastError("SetConsoleScreenBufferSize second buffer");
 				return false;
+			}
 		}
 
 		SMALL_RECT windowInfo = {0, 0, newSize.X - 1, newSize.Y - 1};
 		{
 			bool ok = SetConsoleWindowInfo(m_firstBuffer, TRUE, &windowInfo);
 			if (!ok)
+			{
+				printLastError("SetConsoleWindowInfo first buffer");
 				return false;
+			}
 		}
 		{
 			bool ok = SetConsoleWindowInfo(m_secondBuffer, TRUE, &windowInfo);
 			if (!ok)
+			{
+				printLastError("SetConsoleWindowInfo second buffer");
 				return false;
+			}
 		}
 
 		// Set console window position and size for both buffers
@@ -266,9 +286,7 @@ namespace panda
 			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 			if (!ok)
 			{
-				int error = GetLastError();
-				std::string message = std::system_category().message(error);
-				std::cout << message << std::endl;
+				printLastError("GetConsoleWindow");
 				return false;
 			}
 		}
@@ -278,9 +296,7 @@ namespace panda
 			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 			if (!ok)
 			{
-				int error = GetLastError();
-				std::string message = std::system_category().message(error);
-				std::cout << message << std::endl;
+				printLastError("GetConsoleWindow");
 				return false;
 			}
 		}
@@ -292,9 +308,7 @@ namespace panda
 			bool ok = MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 			if (!ok)
 			{
-				int error = GetLastError();
-				std::string message = std::system_category().message(error);
-				std::cout << message << std::endl;
+				printLastError("GetConsoleWindow");
 				return false;
 			}
 		}

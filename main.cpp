@@ -115,7 +115,15 @@ Game createNearEndingGame()
 std::unique_ptr<Console> consoleProxy()
 {
 #ifdef WIN32
-	return std::make_unique<ConsoleWindows>();
+	try
+	{
+		return std::make_unique<ConsoleWindows>();
+	}
+	catch (const std::runtime_error& e) 
+	{
+		std::cout << "Failed to create windows console proxy: " << e.what();
+		return {};
+	}
 #else
 	return std::make_unique<ConsoleLinux>();
 #endif
