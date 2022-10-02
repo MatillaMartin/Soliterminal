@@ -1,4 +1,4 @@
-﻿#include "Console.h"
+﻿#include "ConsoleWindows.h"
 
 #ifdef WIN32
 #	define WIN32_LEAN_AND_MEAN
@@ -11,9 +11,9 @@
 
 namespace panda
 {
-	Console::Console()
+	ConsoleWindows::ConsoleWindows()
 	{
-		SetConsoleTitle("Console Solitaire");
+		SetConsoleTitle("Soliterminal");
 
 		// Get the intial console buffer.
 		m_firstBuffer = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -38,18 +38,24 @@ namespace panda
 		assert(m_width > 0 && m_height > 0);
 	}
 
-	void Console::setClearColor(int color) { m_clearColor = color; }
+	ConsoleWindows::~ConsoleWindows() 
+	{
+		if (m_secondBuffer)
+			CloseHandle(m_secondBuffer);
+	}
 
-	void Console::begin() { clear(m_clearColor); }
+	void ConsoleWindows::setClearColor(int color) { m_clearColor = color; }
 
-	void Console::end()
+	void ConsoleWindows::begin() { clear(m_clearColor); }
+
+	void ConsoleWindows::end()
 	{
 		//printColors();
 		//printAscii();
 		swapBuffers();
 	}
 
-	bool Console::clear(int color)
+	bool ConsoleWindows::clear(int color)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		// Figure out the current width and height of the console window
@@ -74,33 +80,33 @@ namespace panda
 		return true;
 	}
 
-	int Console::width() const { return m_width; }
+	int ConsoleWindows::width() const { return m_width; }
 
-	int Console::height() const { return m_height; }
+	int ConsoleWindows::height() const { return m_height; }
 
-	void Console::setDrawColor(int fgColor, int bgColor)
+	void ConsoleWindows::setDrawColor(int fgColor, int bgColor)
 	{
 		m_fgColor = fgColor;
 		m_bgColor = bgColor;
 	}
 
-	void Console::setDrawColor(int fgColor) { setDrawColor(fgColor, m_clearColor); }
+	void ConsoleWindows::setDrawColor(int fgColor) { setDrawColor(fgColor, m_clearColor); }
 
-	void Console::draw(const std::string& str, int x, int y) const
+	void ConsoleWindows::draw(const std::string& str, int x, int y) const
 	{
 		setupColor();
 		setCursorPosition(x, y);
 		writeBuffer(str);
 	}
 
-	void Console::draw(char text, int x, int y) const
+	void ConsoleWindows::draw(char text, int x, int y) const
 	{
 		setupColor();
 		setCursorPosition(x, y);
 		writeBuffer(text);
 	}
 
-	void Console::drawRect(int x, int y, int width, int height) const
+	void ConsoleWindows::drawRect(int x, int y, int width, int height) const
 	{
 		setupColor();
 		for (int i = 0; i < width; ++i)
@@ -114,7 +120,7 @@ namespace panda
 		}
 	}
 
-	void Console::drawRectOutline(int x, int y, int width, int height, bool fill) const
+	void ConsoleWindows::drawRectOutline(int x, int y, int width, int height, bool fill) const
 	{
 		setupColor();
 		// draw edges out of loop
@@ -165,9 +171,9 @@ namespace panda
 		}
 	}
 
-	void Console::clear() { system("cls"); }
+	void ConsoleWindows::clear() { system("cls"); }
 
-	void Console::printColors() const
+	void ConsoleWindows::printColors() const
 	{
 		for (int i = 0; i < 0xFF; ++i)
 		{
@@ -179,7 +185,7 @@ namespace panda
 		}
 	}
 
-	void Console::printAscii() const
+	void ConsoleWindows::printAscii() const
 	{
 		for (int i = 0; i < 256; ++i)
 		{
@@ -189,24 +195,24 @@ namespace panda
 		}
 	}
 
-	void Console::setupColor() const { SetConsoleTextAttribute(m_backBuffer, color(m_fgColor, m_bgColor)); }
+	void ConsoleWindows::setupColor() const { SetConsoleTextAttribute(m_backBuffer, color(m_fgColor, m_bgColor)); }
 
-	int Console::color(int foreground, int background) const { return foreground + background * 16; }
+	int ConsoleWindows::color(int foreground, int background) const { return foreground + background * 16; }
 
-	void Console::writeBuffer(const std::string& str) const
+	void ConsoleWindows::writeBuffer(const std::string& str) const
 	{
 		// write to back buffer
 		DWORD written;
 		WriteConsole(m_backBuffer, str.c_str(), static_cast<int>(str.length()), &written, nullptr);
 	}
 
-	void Console::writeBuffer(char c) const
+	void ConsoleWindows::writeBuffer(char c) const
 	{
 		DWORD written;
 		WriteConsole(m_backBuffer, &c, 1, &written, nullptr);
 	}
 
-	bool Console::setSize()
+	bool ConsoleWindows::setSize()
 	{
 		/// Set buffer to match size so there are no scrollbars
 		// Retrieve screen buffer info
@@ -297,7 +303,7 @@ namespace panda
 		return true;
 	}
 
-	bool Console::setStyle()
+	bool ConsoleWindows::setStyle()
 	{
 		HWND consoleWindow = GetConsoleWindow();
 		LONG lStyle = GetWindowLong(consoleWindow, GWL_STYLE);
@@ -316,13 +322,13 @@ namespace panda
 		return true;
 	}
 
-	void Console::setCursorPosition(int x, int y) const
+	void ConsoleWindows::setCursorPosition(int x, int y) const
 	{
 		COORD coord = {(SHORT)x, (SHORT)y};
 		SetConsoleCursorPosition(m_backBuffer, coord);
 	}
 
-	void Console::swapBuffers()
+	void ConsoleWindows::swapBuffers()
 	{
 		bool ok = SetConsoleActiveScreenBuffer(m_backBuffer);
 		if (!ok)

@@ -5,6 +5,11 @@
 #include "GameLayout.h"
 #include "Render.h"
 #include "UserInput.h"
+#ifdef WIN32
+#	include "ConsoleWindows.h"
+#else
+#	include "ConsoleLinux.h"
+#endif
 
 #include <algorithm>
 #include <array>
@@ -111,11 +116,22 @@ int main()
 {
 	try
 	{
-		Console console;
+		Console* console = nullptr;
+#ifdef WIN32
+		ConsoleWindows consoleWin;
+		console = &consoleWin;
+#else
+		ConsoleLinux consoleLinux;
+		console = &consoleLinux;
+#endif
+		assert(console != nullptr); // Console not initialized
+		if (!console)
+			return -1;
+
 		Game game = createGame();
 		GameLayout gameLayout;
 		GameControl control(game, gameLayout);
-		Render render(game, control, gameLayout, console);
+		Render render(game, control, gameLayout, *console);
 
 		// Basic rendering cycle
 		while (true)
@@ -127,7 +143,7 @@ int main()
 				game.reset(createGame());
 			if (action == GameAction::Exit)
 			{
-				console.clear();
+				console->clear();
 				return 0;
 			}
 

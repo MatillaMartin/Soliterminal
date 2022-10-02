@@ -5,7 +5,6 @@ set(Sources
 	main.cpp
 	Card.cpp
 	CardStack.cpp
-	Console.cpp
 	Game.cpp
 	GameControl.cpp
 	GameLayout.cpp
@@ -24,6 +23,16 @@ set(Headers
 	Render.h
 	UserInput.h
 )
+
+if(WIN32)
+	list(APPEND Sources ConsoleWindows.cpp)
+	list(APPEND Headers ConsoleWindows.h)
+else()
+	list(APPEND Sources ConsoleLinux.cpp)
+	list(APPEND Headers ConsoleLinux.h)
+endif()
+
+
 
 add_executable(${PROJECT_NAME} ${Sources} ${Headers})
 

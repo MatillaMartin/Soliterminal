@@ -8,83 +8,40 @@ namespace panda
 	class Console
 	{
 	public:
-		/// Creates a console abstraction
-		Console();
-
-		void setClearColor(int color);
+		/// Sets the color to clear the screen with
+		virtual void setClearColor(int color) = 0;
 
 		/// Starts drawing characters
-		void begin();
+		virtual void begin() = 0;
 
 		/// Ends drawing character
-		void end();
+		virtual void end() = 0;
 
 		/// Returns the console width
-		int width() const;
+		virtual int width() const = 0;
 
 		/// Returns the console height
-		int height() const;
+		virtual int height() const = 0;
 
 		/// Sets the colors to be used in the next draw call
-		void setDrawColor(int fgColor, int bgColor);
+		virtual void setDrawColor(int fgColor, int bgColor) = 0;
 
 		/// Sets the colors to be used in the next draw call, uses clear color for background
-		void setDrawColor(int fgColor);
+		virtual void setDrawColor(int fgColor) = 0;
 
 		/// Draws the given string at row, column
-		void draw(const std::string& str, int x, int y) const;
+		virtual void draw(const std::string& str, int x, int y) const = 0;
 
 		/// Draws the given char at row, column
-		void draw(char text, int x, int y) const;
+		virtual void draw(char text, int x, int y) const = 0;
 
 		/// Draws a rectangle at row, column
-		void drawRect(int x, int y, int width, int heigth) const;
+		virtual void drawRect(int x, int y, int width, int heigth) const = 0;
 
 		/// Draw a rectangle outline
-		void drawRectOutline(int x, int y, int width, int height, bool fill = true) const;
+		virtual void drawRectOutline(int x, int y, int width, int height, bool fill = true) const = 0;
 
 		/// Clears the console from all output
-		void clear();
-
-	private:
-		// Helper method, prints the color number for foreground/backround colors
-		void printColors() const;
-
-		// Helper method, prints an ascii table
-		void printAscii() const;
-
-		/// Clears the console
-		/// Returns false if action failed
-		bool clear(int color);
-
-		// Sets up the color for the next draw call
-		void setupColor() const;
-
-		int color(int foreground, int background) const;
-
-		void writeBuffer(const std::string& str) const;
-		void writeBuffer(char c) const;
-
-		bool setSize();
-		bool setStyle();
-
-		void setCursorPosition(int row, int column) const;
-
-		void swapBuffers();
-
-		// Two buffers and the pointer to the back buffer
-		void* m_firstBuffer = nullptr;
-		void* m_secondBuffer = nullptr;
-		void* m_backBuffer = nullptr;
-
-		// Window parameters
-		std::pair<int, int> m_topLeft = {100, 20};
-		int m_width = 500;
-		int m_height = 1000;
-
-		// Render colors
-		int m_fgColor = 0xF;
-		int m_bgColor = 0x0;
-		int m_clearColor = 0x0;
+		virtual void clear() = 0;
 	};
 }
