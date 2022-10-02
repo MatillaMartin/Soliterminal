@@ -10,6 +10,7 @@ namespace panda
 		Right,
 		Use,
 		Reset,
-		None
+		None,
+		Exit
 	};
 }

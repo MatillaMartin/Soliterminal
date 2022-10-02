@@ -124,6 +124,8 @@ int main()
 				continue;
 			if (action == GameAction::Reset)
 				game.reset(createGame());
+			if (action == GameAction::Exit)
+				return 0;
 
 			control.action(action);
 

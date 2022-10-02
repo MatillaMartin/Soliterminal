@@ -209,7 +209,7 @@ namespace panda
 			m_console.setDrawColor(m_closedColorFg, m_closedColorBg);
 			m_console.drawRect(pos.first, pos.second, m_cardWidth, m_cardHeight);
 			m_console.draw(char(206), pos.first + cardCenterX(), pos.second + cardCenterY());
-			m_console.draw(char(206), pos.first + cardCenterX()+1, pos.second + cardCenterY());
+			m_console.draw(char(206), pos.first + cardCenterX() + 1, pos.second + cardCenterY());
 		}
 		else
 		{
