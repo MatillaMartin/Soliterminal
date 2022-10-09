@@ -7,6 +7,7 @@ set(Sources
 	CardStack.cpp
 	Game.cpp
 	GameControl.cpp
+	GameFileIO.cpp
 	GameLayout.cpp
 	Render.cpp
 	UserInput.cpp
@@ -19,6 +20,7 @@ set(Headers
 	Game.h
 	GameAction.h
 	GameControl.h
+	GameFileIO.h
 	GameLayout.h
 	Render.h
 	UserInput.h
