@@ -17,6 +17,7 @@ set(Headers
 	Card.h
 	CardStack.h
 	Console.h
+	FilesystemUtils.h
 	Game.h
 	GameAction.h
 	GameControl.h
