@@ -5,10 +5,11 @@ set(Sources
 	main.cpp
 	Card.cpp
 	CardStack.cpp
+	FilesystemUtils.cpp
 	Game.cpp
 	GameControl.cpp
 	GameFileIO.cpp
-	GameLayout.cpp
+	Layout.cpp
 	Render.cpp
 	UserInput.cpp
 )
@@ -22,7 +23,7 @@ set(Headers
 	GameAction.h
 	GameControl.h
 	GameFileIO.h
-	GameLayout.h
+	Layout.h
 	Render.h
 	UserInput.h
 )

@@ -30,7 +30,7 @@ namespace panda
 			}
 
 			int index = -1;
-			std::pair<int, int> layout = {-1,-1};
+			std::pair<int, int> layout = {-1, -1};
 			std::optional<int> up;
 			std::optional<int> down;
 			std::optional<int> left;
@@ -70,10 +70,10 @@ namespace panda
 		std::vector<Node> m_nodes;
 	};
 
-	class GameLayout
+	class Layout
 	{
 	public:
-		GameLayout();
+		Layout(Graph graph);
 
 		// Mapping between the layout and stacks index
 		std::optional<int> layoutToIndex(int x, int y) const;
@@ -94,8 +94,6 @@ namespace panda
 		int right(int index) const;
 
 	private:
-		// Offsets the index by the given amount
-		int offset(int index, int dx, int dy) const;
 		Graph m_graph;
 	};
 }

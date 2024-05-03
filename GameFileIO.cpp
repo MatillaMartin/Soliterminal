@@ -1,3 +1,4 @@
+
 #include "GameFileIO.h"
 
 #include "picojson/picojson.h"
@@ -23,9 +24,9 @@ namespace panda
 			for (const auto& card : cards)
 			{
 				picojson::object cardJson;
-				cardJson["number"].set(card.number);
-				cardJson["state"].set(card.state);
-				cardJson["suit"].set(card.suit);
+				cardJson["number"].set(static_cast<int64_t>(card.number));
+				cardJson["state"].set(static_cast<int64_t>(card.state));
+				cardJson["suit"].set(static_cast<int64_t>(card.suit));
 				cardsJson.emplace_back(std::move(cardJson));
 			}
 			stackJson.emplace_back(cardsJson);
@@ -39,6 +40,7 @@ namespace panda
 			return false;
 
 		file << gameJson;
+		return true;
 	}
 
 	std::optional<Game> loadGame()

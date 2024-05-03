@@ -2,7 +2,7 @@
 
 #include "CardStack.h"
 #include "Game.h"
-#include "GameLayout.h"
+#include "Layout.h"
 
 #include <iostream>
 namespace panda
@@ -13,7 +13,7 @@ namespace panda
 		return stack;
 	}
 
-	GameControl::GameControl(Game& game, GameLayout& gameLayout)
+	GameControl::GameControl(Game& game, Layout& gameLayout)
 		: m_game(game)
 		, m_layout(gameLayout)
 	{

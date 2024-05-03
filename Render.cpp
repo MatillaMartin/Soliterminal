@@ -4,7 +4,7 @@
 #include "CardStack.h"
 #include "Game.h"
 #include "GameControl.h"
-#include "GameLayout.h"
+#include "Layout.h"
 
 #include <assert.h>
 #include <iostream>
@@ -12,7 +12,7 @@
 
 namespace panda
 {
-	Render::Render(const Game& game, const GameControl& control, const GameLayout& layout, Console& console)
+	Render::Render(const Game& game, const GameControl& control, const Layout& layout, Console& console)
 		: m_game(game)
 		, m_control(control)
 		, m_layout(layout)
