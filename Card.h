@@ -7,7 +7,7 @@ namespace panda
 	{
 		enum class State
 		{
-			Open,
+			Open = 0,
 			Closed
 		};
 		enum class Suit

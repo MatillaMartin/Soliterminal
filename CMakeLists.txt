@@ -39,5 +39,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${Sources} ${Headers})
 
+set_source_files_properties(GameFileIO.cpp PROPERTIES COMPILE_DEFINITIONS PICOJSON_USE_INT64)
+
 # Add support for C++17
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
