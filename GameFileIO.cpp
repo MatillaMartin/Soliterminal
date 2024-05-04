@@ -20,9 +20,11 @@ namespace panda
 			json gameJson = game;
 
 			// open file to write
-			auto path = FilesystemUtils::appDataPath() / "soliterminal.sav";
+			auto pathDir = FilesystemUtils::appDataPath() / "Soliterminal";
+			std::filesystem::create_directory(pathDir);
+			auto fullPath = pathDir.append("saveFile.json");
 			std::ofstream file;
-			file.open(path);
+			file.open(fullPath);
 			if (!file.is_open())
 				return false;
 
@@ -33,11 +35,11 @@ namespace panda
 		std::optional<Game> loadGame()
 		{
 			// save to file in appdata
-			auto path = FilesystemUtils::appDataPath() / "soliterminal.sav";
-
+			auto pathDir = FilesystemUtils::appDataPath() / "Soliterminal";
+			auto fullPath = pathDir.append("saveFile.json");
 			// open file to read
 			std::ifstream file;
-			file.open(path);
+			file.open(fullPath);
 			if (!file.is_open())
 				return std::nullopt;
 
