@@ -4,7 +4,7 @@
 #include "GameControl.h"
 #include "GameFileIO.h"
 #include "Layout.h"
-#include "Render.h"
+#include "GameRender.h"
 #include "UserInput.h"
 #ifdef WIN32
 #	include "ConsoleWindows.h"
@@ -193,7 +193,7 @@ int main()
 
 		Layout gameLayout = createGameLayout();
 		GameControl control(game, gameLayout);
-		Render render(game, control, gameLayout, *console);
+		GameRender render(game, control, gameLayout, *console);
 
 		// Basic rendering cycle
 		while (true)

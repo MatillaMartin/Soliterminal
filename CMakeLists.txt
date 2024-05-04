@@ -10,7 +10,7 @@ set(Sources
 	GameControl.cpp
 	GameFileIO.cpp
 	Layout.cpp
-	Render.cpp
+	GameRender.cpp
 	UserInput.cpp
 )
 
@@ -24,7 +24,7 @@ set(Headers
 	GameControl.h
 	GameFileIO.h
 	Layout.h
-	Render.h
+	GameRender.h
 	UserInput.h
 )
 

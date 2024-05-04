@@ -15,10 +15,10 @@ namespace panda
 
 	typedef std::pair<int, int> vec2i;
 
-	class Render
+	class GameRender
 	{
 	public:
-		Render(const Game& game, const GameControl& control, const Layout& layout, Console& console);
+		GameRender(const Game& game, const GameControl& control, const Layout& layout, Console& console);
 
 		// Updates the rendering output
 		void update();
