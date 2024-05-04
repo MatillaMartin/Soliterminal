@@ -9,16 +9,16 @@ namespace panda
 {
 	class Game;
 	class GameControl;
-	class GameLayout;
+	class Layout;
 	struct Card;
 	class Stack;
 
 	typedef std::pair<int, int> vec2i;
 
-	class Render
+	class GameRender
 	{
 	public:
-		Render(const Game& game, const GameControl& control, const GameLayout& layout, Console& console);
+		GameRender(const Game& game, const GameControl& control, const Layout& layout, Console& console);
 
 		// Updates the rendering output
 		void update();
@@ -61,7 +61,7 @@ namespace panda
 
 		const Game& m_game;
 		const GameControl& m_control;
-		const GameLayout& m_layout;
+		const Layout& m_layout;
 		Console& m_console;
 	};
 }

@@ -10,6 +10,7 @@ namespace panda
 	public:
 		struct Stacks
 		{
+			Stacks() = default;
 			Stacks(std::array<CardStack, 4>&& endStack, std::array<CardStack, 7>&& centralStack, CardStack&& closedStack, CardStack&& openStack)
 				: endStack(endStack)
 				, centralStack(centralStack)
@@ -68,7 +69,7 @@ namespace panda
 		bool isClosedStack(int index) const;
 
 		// Returns the indices for CentralStacks
-		std::array<int,7> centralStacksIndices() const;
+		std::array<int, 7> centralStacksIndices() const;
 
 		// Returns the indices for EndStacks
 		std::array<int, 4> endStacksIndices() const;
@@ -82,7 +83,7 @@ namespace panda
 		// Returns the open stack
 		CardStack& openStack();
 
-		// Returns the closed stack 
+		// Returns the closed stack
 		CardStack& closedStack();
 
 		// Moves stack to central stack

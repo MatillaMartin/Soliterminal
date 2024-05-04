@@ -1,8 +1,9 @@
+#include "GameRender.h"
+
 #include "Card.h"
 #include "CardStack.h"
 #include "Game.h"
 #include "GameControl.h"
-#include "GameRender.h"
 #include "Layout.h"
 
 #include <assert.h>

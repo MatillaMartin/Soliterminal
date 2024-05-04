@@ -1,4 +1,4 @@
-#include "GameLayout.h"
+#include "Layout.h"
 
 #include "Game.h"
 
@@ -111,44 +111,13 @@ namespace panda
 		return std::find_if(m_nodes.begin(), m_nodes.end(), [&index](const Node& node) -> bool { return node.index == index; });
 	}
 
-	GameLayout::GameLayout()
+	Layout::Layout(Graph graph)
+		: m_graph(std::move(graph))
 	{
-		// map game to the layout, where top row contains open, closed, end stacks, and bottom row contains central stacks
-		// bottom row is one index down
-		// layout is as follows:
-		// 0:closed	| 1:open	| -			| 2:end0	| 3:end1	| 4:end2	| 5:end3	|
-		// 6:cen0	| 7:cen1	| 8:cen2	| 9:cen3	| 10:cen4	| 11:cen5	| 12:cen6	|
-
-		m_graph.addNode(0, {0, 0});
-		m_graph.addNode(1, {1, 0});
-		m_graph.addNode(2, {3, 0});
-		m_graph.addNode(3, {4, 0});
-		m_graph.addNode(4, {5, 0});
-		m_graph.addNode(5, {6, 0});
-		m_graph.addNode(6, {0, 1});
-		m_graph.addNode(7, {1, 1});
-		m_graph.addNode(8, {2, 1});
-		m_graph.addNode(9, {3, 1});
-		m_graph.addNode(10, {4, 1});
-		m_graph.addNode(11, {5, 1});
-		m_graph.addNode(12, {6, 1});
-
-		m_graph.addHorChain({0, 1, 2, 3, 4, 5});
-		m_graph.addHorChain({6, 7, 8, 9, 10, 11, 12});
-
-		m_graph.addVerEdge(0, 6);
-		m_graph.addVerEdge(1, 7);
-		m_graph.addVerEdge(2, 9);
-		m_graph.addVerEdge(3, 10);
-		m_graph.addVerEdge(4, 11);
-		m_graph.addVerEdge(5, 12);
-
-		// add an edge that only goes up
-		m_graph.addUpEdge(8, 1);
 	}
 
 	// Mapping between the layout and stacks index
-	std::optional<int> GameLayout::layoutToIndex(int x, int y) const
+	std::optional<int> Layout::layoutToIndex(int x, int y) const
 	{
 		if (auto node = m_graph.node({x, y}))
 			return node->index;
@@ -156,14 +125,14 @@ namespace panda
 	}
 
 	// Mapping between stacks index and layout
-	std::optional<std::pair<int, int>> GameLayout::indexToLayout(int index) const
+	std::optional<std::pair<int, int>> Layout::indexToLayout(int index) const
 	{
 		if (auto node = m_graph.node(index))
 			return node->layout;
 		return {};
 	}
 
-	int GameLayout::up(int index) const
+	int Layout::up(int index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -173,7 +142,7 @@ namespace panda
 		return *node->up;
 	}
 
-	int GameLayout::down(int index) const
+	int Layout::down(int index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -183,7 +152,7 @@ namespace panda
 		return *node->down;
 	}
 
-	int GameLayout::left(int index) const
+	int Layout::left(int index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -193,7 +162,7 @@ namespace panda
 		return *node->left;
 	}
 
-	int GameLayout::right(int index) const
+	int Layout::right(int index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)

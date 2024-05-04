@@ -2,13 +2,13 @@
 
 #include "GameAction.h"
 
-#include <utility>
 #include <optional>
+#include <utility>
 
 namespace panda
 {
 	class CardStack;
-	class GameLayout;
+	class Layout;
 	class Game;
 
 	class GameControl
@@ -20,7 +20,7 @@ namespace panda
 			Move
 		};
 
-		GameControl(Game & game, GameLayout& layout);
+		GameControl(Game& game, Layout& layout);
 
 		void action(GameAction action);
 
@@ -40,7 +40,7 @@ namespace panda
 		bool isCentralStack();
 
 		Game& m_game;
-		const GameLayout& m_layout;
+		const Layout& m_layout;
 		int m_cardIndex = 0;
 		int m_stackIndex = 0;
 
