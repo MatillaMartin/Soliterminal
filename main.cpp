@@ -2,6 +2,7 @@
 #include "CardStack.h"
 #include "Game.h"
 #include "GameControl.h"
+#include "GameFileIO.h"
 #include "Layout.h"
 #include "Render.h"
 #include "UserInput.h"
@@ -186,7 +187,10 @@ int main()
 		if (!console)
 			return -1;
 
-		Game game = createGame();
+		// check if a saved game exists, load
+		auto loadedGame = GameFileIO::loadGame();
+		Game game = loadedGame ? std::move(*loadedGame) : createGame();
+
 		Layout gameLayout = createGameLayout();
 		GameControl control(game, gameLayout);
 		Render render(game, control, gameLayout, *console);
@@ -201,6 +205,7 @@ int main()
 				game.reset(createGame());
 			if (action == GameAction::Exit)
 			{
+				GameFileIO::saveGame(game);
 				console->clear();
 				return 0;
 			}
