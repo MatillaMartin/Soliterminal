@@ -72,7 +72,7 @@ namespace panda
 				Game game(Game::Stacks{std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack)});
 				return game;
 			}
-			catch (std::exception& e)
+			catch (std::exception&)
 			{
 			}
 			return std::nullopt;

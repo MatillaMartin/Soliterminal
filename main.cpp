@@ -3,8 +3,8 @@
 #include "Game.h"
 #include "GameControl.h"
 #include "GameFileIO.h"
-#include "Layout.h"
 #include "GameRender.h"
+#include "Layout.h"
 #include "UserInput.h"
 #ifdef WIN32
 #	include "ConsoleWindows.h"
@@ -187,11 +187,8 @@ int main()
 		if (!console)
 			return -1;
 
-		// check if a saved game exists, load
-		auto loadedGame = GameFileIO::loadGame();
-		Game game = loadedGame ? std::move(*loadedGame) : createGame();
-
 		Layout gameLayout = createGameLayout();
+		Game game = createGame();
 		GameControl control(game, gameLayout);
 		GameRender render(game, control, gameLayout, *console);
 
@@ -205,7 +202,6 @@ int main()
 				game.reset(createGame());
 			if (action == GameAction::Exit)
 			{
-				GameFileIO::saveGame(game);
 				console->clear();
 				return 0;
 			}
