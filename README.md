@@ -6,6 +6,7 @@ The classical Solitaire game, running in your terminal
 ## Getting started
 ##### Tested with Visual Studio 2022, Windows
 
+* Make sure to initialize the `json` submodule
 * Run cmake on the repository
 * Build the target
 * Run!
