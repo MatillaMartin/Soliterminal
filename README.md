@@ -1,23 +1,24 @@
 # Soliterminal
 The classical Solitaire game, running in your terminal
 
-![[Pasted image 20240504024613.png]]
+![](screen.png)
 
 ## Getting started
 ##### Tested with Visual Studio 2022, Windows
 
-* Run Cmake on the repository
+* Run cmake on the repository
 * Build the target
 * Run!
 
 ## Controls
 * Use the arrow keys to control the cursor
 * Space to select a card, or turn an upside down card. 
-	* After selecting a card, move to a new location and press space again to move that card there
+* Move to a new location and press space again to move the selected card there
 * Esc to close the game
 
 ## Roadmap
-- [-] Supporting saving and loading game
+- [x] Supporting saving and loading game
+- [ ] In-game menu
 - [ ] Support Terminal
 - [ ] Support Powershell
 - [ ] Support Linux console
