@@ -2,44 +2,47 @@ project(Soliterminal)
 cmake_minimum_required(VERSION 3.9.4)
 
 set(Sources 
-	main.cpp
-	Card.cpp
-	CardStack.cpp
-	FilesystemUtils.cpp
-	Game.cpp
-	GameControl.cpp
-	GameFileIO.cpp
-	Layout.cpp
-	GameRender.cpp
-	UserInput.cpp
+	src/main.cpp
+	src/Card.cpp
+	src/CardStack.cpp
+	src/FilesystemUtils.cpp
+	src/Game.cpp
+	src/GameControl.cpp
+	src/GameFileIO.cpp
+	src/Layout.cpp
+	src/GameRender.cpp
+	src/UserInput.cpp
 )
 
 set(Headers
-	Card.h
-	CardStack.h
-	Console.h
-	FilesystemUtils.h
-	Game.h
-	GameAction.h
-	GameControl.h
-	GameFileIO.h
-	Layout.h
-	GameRender.h
-	UserInput.h
+	include/Card.h
+	include/CardStack.h
+	include/Console.h
+	include/FilesystemUtils.h
+	include/Game.h
+	include/GameAction.h
+	include/GameControl.h
+	include/GameFileIO.h
+	include/Layout.h
+	include/GameRender.h
+	include/UserInput.h
 )
 
 if(WIN32)
-	list(APPEND Sources ConsoleWindows.cpp)
-	list(APPEND Headers ConsoleWindows.h)
+	list(APPEND Sources src/ConsoleWindows.cpp)
+	list(APPEND Headers include/ConsoleWindows.h)
 else()
-	list(APPEND Sources ConsoleLinux.cpp)
-	list(APPEND Headers ConsoleLinux.h)
+	list(APPEND Sources src/ConsoleLinux.cpp)
+	list(APPEND Headers include/ConsoleLinux.h)
 endif()
 
 
 
 add_executable(${PROJECT_NAME} ${Sources} ${Headers})
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/json/single_include/")
+target_include_directories(${PROJECT_NAME} PRIVATE 
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/json/single_include/"
+)
 set_source_files_properties(GameFileIO.cpp PROPERTIES COMPILE_DEFINITIONS PICOJSON_USE_INT64)
 
 # Add support for C++17
