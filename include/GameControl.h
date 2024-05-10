@@ -22,7 +22,7 @@ namespace panda
 
 		GameControl(Game& game, Layout& layout);
 
-		void action(GameAction action);
+		void action(Action action);
 
 		int stackIndex() const;
 		int cardIndex() const;

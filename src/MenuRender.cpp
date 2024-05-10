@@ -44,7 +44,7 @@ namespace panda
 		yLoc += ySpacing;
 
 		std::vector<int> yOptLocs;
-		for (const auto& opt : m_menu.options())
+		for (const auto& opt : m_menu.optionNames())
 		{
 			m_console.draw(opt, xLoc, yLoc);
 			yOptLocs.push_back(yLoc);
@@ -53,7 +53,7 @@ namespace panda
 
 		// draw control on top
 		int selectedOpt = m_selection.index();
-		int optWidth = m_menu.options().at(selectedOpt).size();
+		int optWidth = m_menu.optionNames().at(selectedOpt).size();
 		drawControl({xLoc, yOptLocs[selectedOpt]}, optWidth);
 
 		m_console.end();

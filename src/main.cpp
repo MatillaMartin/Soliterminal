@@ -6,6 +6,7 @@
 #include "GameRender.h"
 #include "Layout.h"
 #include "Menu.h"
+#include "MenuControl.h"
 #include "MenuRender.h"
 #include "MenuSelection.h"
 #include "UserInput.h"
@@ -192,39 +193,62 @@ int main()
 
 		Layout gameLayout = createGameLayout();
 		Game game = createGame();
-		GameControl control(game, gameLayout);
+		GameControl gameControl(game, gameLayout);
+
+		bool shouldExit = false;
+		bool showMenu = false;
 
 		Layout menuLayout = createMenuLayout();
-		Menu menu{"Soliterminal", "", {"Resume", "Save and Exit", "Exit without saving"}};
+		Menu menu{"Soliterminal",
+				  "",
+				  {{"Resume", [&showMenu]() { showMenu = false; }},
+				   {"Save and Exit",
+					[&shouldExit, &game]() {
+						GameFileIO::saveGame(game);
+						shouldExit = true;
+					}},
+				   {"Exit without saving", [&shouldExit]() { shouldExit = true; }}}};
 		MenuSelection menuSelection;
-
-		GameRender gameRender(game, control, gameLayout, *console);
+		MenuControl menuControl(menu, menuLayout, menuSelection);
+		GameRender gameRender(game, gameControl, gameLayout, *console);
 		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
 
 		// Basic rendering cycle
 		while (true)
 		{
-			GameAction action = UserInput::waitForInput();
-			if (action == GameAction::None)
+			Action action = UserInput::waitForInput();
+			if (action == Action::None)
 				continue;
-			if (action == GameAction::Reset)
+			if (action == Action::Reset)
 				game.reset(createGame());
-			if (action == GameAction::Exit)
+			if (action == Action::Exit)
 			{
-				console->clear();
-				return 0;
+				showMenu = true;
 			}
 
-			control.action(action);
-
-			gameRender.update();
+			if (showMenu)
+			{
+				menuControl.action(action);
+				menuRender.update();
+			}
+			else
+			{
+				gameControl.action(action);
+				gameRender.update();
+			}
 
 			game.checkWin();
 			if (game.state() != Game::State::Playing)
 			{
 				break;
 			}
+			if (shouldExit)
+			{
+				break;
+			}
 		}
+
+		console->clear();
 	}
 	catch (std::runtime_error& e)
 	{

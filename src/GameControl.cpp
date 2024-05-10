@@ -74,9 +74,9 @@ namespace panda
 		return true;
 	}
 
-	void GameControl::action(GameAction action)
+	void GameControl::action(Action action)
 	{
-		if (action == GameAction::Up)
+		if (action == Action::Up)
 		{
 			if (isCentralStack())
 			{
@@ -96,7 +96,7 @@ namespace panda
 				}
 			}
 		}
-		else if (action == GameAction::Down)
+		else if (action == Action::Down)
 		{
 			const CardStack& current = stack();
 			if (isCentralStack())
@@ -113,17 +113,17 @@ namespace panda
 				changeStack(m_layout.down(m_stackIndex));
 			}
 		}
-		else if (action == GameAction::Left)
+		else if (action == Action::Left)
 		{
 			// move to the left
 			changeStack(m_layout.left(m_stackIndex));
 		}
-		else if (action == GameAction::Right)
+		else if (action == Action::Right)
 		{
 			// move to the right
 			changeStack(m_layout.right(m_stackIndex));
 		}
-		else if (action == GameAction::Use)
+		else if (action == Action::Use)
 		{
 			if (m_state == State::Select)
 			{

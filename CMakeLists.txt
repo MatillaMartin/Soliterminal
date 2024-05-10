@@ -12,6 +12,7 @@ set(Sources
 	src/GameRender.cpp
 	src/Menu.cpp
 	src/Layout.cpp
+	src/MenuControl.cpp
 	src/MenuSelection.cpp
 	src/MenuRender.cpp
 	src/UserInput.cpp
@@ -29,6 +30,7 @@ set(Headers
 	include/GameRender.h
 	include/Layout.h
 	include/Menu.h
+	include/MenuControl.h
 	include/MenuSelection.h
 	include/MenuRender.h
 	include/UserInput.h
