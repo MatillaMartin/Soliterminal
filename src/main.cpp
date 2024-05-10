@@ -5,6 +5,10 @@
 #include "GameFileIO.h"
 #include "GameRender.h"
 #include "Layout.h"
+#include "Menu.h"
+#include "MenuControl.h"
+#include "MenuRender.h"
+#include "MenuSelection.h"
 #include "UserInput.h"
 #ifdef WIN32
 #	include "ConsoleWindows.h"
@@ -56,16 +60,6 @@ Layout createGameLayout()
 
 	// add an edge that only goes up
 	graph.addUpEdge(8, 1);
-	return Layout(std::move(graph));
-}
-
-Layout createMenuLayout()
-{
-	Graph graph;
-	graph.addNode(0, {0, 0});
-	graph.addNode(1, {0, 1});
-	graph.addNode(2, {0, 2});
-	graph.addVerChain({0, 1, 2, 0});
 	return Layout(std::move(graph));
 }
 
@@ -160,6 +154,16 @@ Game createNearEndingGame()
 	return Game(std::move(state));
 }
 
+Layout createMenuLayout()
+{
+	Graph graph;
+	graph.addNode(0, {0, 0});
+	graph.addNode(1, {0, 1});
+	graph.addNode(2, {0, 2});
+	graph.addVerChain({0, 1, 2, 0});
+	return Layout(std::move(graph));
+}
+
 std::unique_ptr<Console> consoleProxy()
 {
 #ifdef WIN32
@@ -189,33 +193,62 @@ int main()
 
 		Layout gameLayout = createGameLayout();
 		Game game = createGame();
-		GameControl control(game, gameLayout);
-		GameRender render(game, control, gameLayout, *console);
+		GameControl gameControl(game, gameLayout);
+
+		bool shouldExit = false;
+		bool showMenu = false;
+
+		Layout menuLayout = createMenuLayout();
+		Menu menu{"Soliterminal",
+				  "",
+				  {{"Resume", [&showMenu]() { showMenu = false; }},
+				   {"Save and Exit",
+					[&shouldExit, &game]() {
+						GameFileIO::saveGame(game);
+						shouldExit = true;
+					}},
+				   {"Exit without saving", [&shouldExit]() { shouldExit = true; }}}};
+		MenuSelection menuSelection;
+		MenuControl menuControl(menu, menuLayout, menuSelection);
+		GameRender gameRender(game, gameControl, gameLayout, *console);
+		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
 
 		// Basic rendering cycle
 		while (true)
 		{
-			GameAction action = UserInput::waitForInput();
-			if (action == GameAction::None)
+			Action action = UserInput::waitForInput();
+			if (action == Action::None)
 				continue;
-			if (action == GameAction::Reset)
+			if (action == Action::Reset)
 				game.reset(createGame());
-			if (action == GameAction::Exit)
+			if (action == Action::Exit)
 			{
-				console->clear();
-				return 0;
+				showMenu = true;
 			}
 
-			control.action(action);
-
-			render.update();
+			if (showMenu)
+			{
+				menuControl.action(action);
+				menuRender.update();
+			}
+			else
+			{
+				gameControl.action(action);
+				gameRender.update();
+			}
 
 			game.checkWin();
 			if (game.state() != Game::State::Playing)
 			{
 				break;
 			}
+			if (shouldExit)
+			{
+				break;
+			}
 		}
+
+		console->clear();
 	}
 	catch (std::runtime_error& e)
 	{

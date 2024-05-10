@@ -11,28 +11,28 @@ namespace panda
 		const int KEY_ESC = 27;
 	}
 
-	GameAction UserInput::waitForInput()
+	Action UserInput::waitForInput()
 	{
 		while (true)
 		{
 			int c = _getch();
 
 			if (c == KEY_UP)
-				return GameAction::Up;
+				return Action::Up;
 			if (c == KEY_DOWN)
-				return GameAction::Down;
+				return Action::Down;
 			if (c == KEY_LEFT)
-				return GameAction::Left;
+				return Action::Left;
 			if (c == KEY_RIGHT)
-				return GameAction::Right;
+				return Action::Right;
 			if (c == ' ')
-				return GameAction::Use;
+				return Action::Use;
 			if (c == 'r')
-				return GameAction::Reset;
+				return Action::Reset;
 			if (c == KEY_ESC)
-				return GameAction::Exit;
+				return Action::Exit;
 		}
 
-		return GameAction::None;
+		return Action::None;
 	}
 }

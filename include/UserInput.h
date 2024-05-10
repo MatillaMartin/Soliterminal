@@ -1,12 +1,13 @@
 #pragma once
-#include <conio.h>
 #include "GameAction.h"
+
+#include <conio.h>
 
 namespace panda
 {
 	class UserInput
 	{
 	public:
-		static GameAction waitForInput();
+		static Action waitForInput();
 	};
 }

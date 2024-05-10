@@ -2,7 +2,7 @@
 
 namespace panda
 {
-	enum class GameAction
+	enum class Action
 	{
 		Up,
 		Down,
