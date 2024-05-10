@@ -1,3 +1,6 @@
+#include "App.h"
+#include "AppControl.h"
+#include "AppRender.h"
 #include "Card.h"
 #include "CardStack.h"
 #include "Game.h"
@@ -10,6 +13,7 @@
 #include "MenuRender.h"
 #include "MenuSelection.h"
 #include "UserInput.h"
+
 #ifdef WIN32
 #	include "ConsoleWindows.h"
 #else
@@ -99,66 +103,40 @@ int main()
 		if (!console)
 			return -1;
 
+		App app;
+
 		Layout gameLayout = createGameLayout();
 		Game game = Game::createRandomGame();
 		GameControl gameControl(game, gameLayout);
 
-		bool shouldExit = false;
-		bool showMenu = false;
-
 		Layout menuLayout = createMenuLayout();
 		Menu menu{"Soliterminal",
 				  "",
-				  {{"Resume", [&showMenu]() { showMenu = false; }},
+				  {{"Resume", [&app]() { app.setState(App::State::Game); }},
 				   {"Save and Exit",
-					[&shouldExit, &game]() {
+					[&app, &game]() {
 						GameFileIO::saveGame(game);
-						shouldExit = true;
+						app.setState(App::State::Exit);
 					}},
-				   {"Exit without saving", [&shouldExit]() { shouldExit = true; }}}};
+				   {"Exit without saving", [&app]() { app.setState(App::State::Exit); }}}};
+
 		MenuSelection menuSelection;
 		MenuControl menuControl(menu, menuLayout, menuSelection);
 		GameRender gameRender(game, gameControl, gameLayout, *console);
 		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
 
-		// current state
-		ActionListener* actionListener = &gameControl;
-		Render* render = &gameRender;
+		AppControl appControl(app, AppControl::Controls{gameControl, menuControl});
+		AppRender appRender(app, AppRender::Renders{gameRender, menuRender});
 
-		// Basic rendering cycle
+		// Basic application cycle
 		while (true)
 		{
+			if (app.state() == App::State::Exit)
+				break;
+
 			Action action = UserInput::waitForInput();
-			if (action == Action::None)
-				continue;
-			if (action == Action::Exit)
-			{
-				showMenu = !showMenu;
-			}
-
-			if (showMenu)
-			{
-				actionListener = &menuControl;
-				render = &menuRender;
-			}
-			else
-			{
-				actionListener = &gameControl;
-				render = &gameRender;
-			}
-
-			actionListener->action(action);
-			render->update();
-
-			game.checkWin();
-			if (game.state() != Game::State::Playing)
-			{
-				break;
-			}
-			if (shouldExit)
-			{
-				break;
-			}
+			appControl.action(action);
+			appRender.update();
 		}
 
 		console->clear();

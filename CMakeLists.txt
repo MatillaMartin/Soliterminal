@@ -2,7 +2,9 @@ project(Soliterminal)
 cmake_minimum_required(VERSION 3.9.4)
 
 set(Sources 
-	src/main.cpp
+	src/App.cpp
+	src/AppControl.cpp
+	src/AppRender.cpp
 	src/Card.cpp
 	src/CardStack.cpp
 	src/FilesystemUtils.cpp
@@ -10,6 +12,7 @@ set(Sources
 	src/GameControl.cpp
 	src/GameFileIO.cpp
 	src/GameRender.cpp
+	src/main.cpp
 	src/Menu.cpp
 	src/Layout.cpp
 	src/MenuControl.cpp
@@ -19,6 +22,9 @@ set(Sources
 )
 
 set(Headers
+	include/App.h
+	include/AppControl.h
+	include/AppRender.h
 	include/Action.h
 	include/Card.h
 	include/CardStack.h
