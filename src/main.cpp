@@ -129,7 +129,7 @@ int main()
 				continue;
 			if (action == Action::Exit)
 			{
-				showMenu = true;
+				showMenu = !showMenu;
 			}
 
 			if (showMenu)
