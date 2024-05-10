@@ -5,6 +5,9 @@
 #include "GameFileIO.h"
 #include "GameRender.h"
 #include "Layout.h"
+#include "Menu.h"
+#include "MenuRender.h"
+#include "MenuSelection.h"
 #include "UserInput.h"
 #ifdef WIN32
 #	include "ConsoleWindows.h"
@@ -56,16 +59,6 @@ Layout createGameLayout()
 
 	// add an edge that only goes up
 	graph.addUpEdge(8, 1);
-	return Layout(std::move(graph));
-}
-
-Layout createMenuLayout()
-{
-	Graph graph;
-	graph.addNode(0, {0, 0});
-	graph.addNode(1, {0, 1});
-	graph.addNode(2, {0, 2});
-	graph.addVerChain({0, 1, 2, 0});
 	return Layout(std::move(graph));
 }
 
@@ -160,6 +153,16 @@ Game createNearEndingGame()
 	return Game(std::move(state));
 }
 
+Layout createMenuLayout()
+{
+	Graph graph;
+	graph.addNode(0, {0, 0});
+	graph.addNode(1, {0, 1});
+	graph.addNode(2, {0, 2});
+	graph.addVerChain({0, 1, 2, 0});
+	return Layout(std::move(graph));
+}
+
 std::unique_ptr<Console> consoleProxy()
 {
 #ifdef WIN32
@@ -190,7 +193,13 @@ int main()
 		Layout gameLayout = createGameLayout();
 		Game game = createGame();
 		GameControl control(game, gameLayout);
-		GameRender render(game, control, gameLayout, *console);
+
+		Layout menuLayout = createMenuLayout();
+		Menu menu{"Soliterminal", "", {"Resume", "Save and Exit", "Exit without saving"}};
+		MenuSelection menuSelection;
+
+		GameRender gameRender(game, control, gameLayout, *console);
+		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
 
 		// Basic rendering cycle
 		while (true)
@@ -208,7 +217,7 @@ int main()
 
 			control.action(action);
 
-			render.update();
+			gameRender.update();
 
 			game.checkWin();
 			if (game.state() != Game::State::Playing)

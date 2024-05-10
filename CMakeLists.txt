@@ -9,8 +9,11 @@ set(Sources
 	src/Game.cpp
 	src/GameControl.cpp
 	src/GameFileIO.cpp
-	src/Layout.cpp
 	src/GameRender.cpp
+	src/Menu.cpp
+	src/Layout.cpp
+	src/MenuSelection.cpp
+	src/MenuRender.cpp
 	src/UserInput.cpp
 )
 
@@ -23,8 +26,11 @@ set(Headers
 	include/GameAction.h
 	include/GameControl.h
 	include/GameFileIO.h
-	include/Layout.h
 	include/GameRender.h
+	include/Layout.h
+	include/Menu.h
+	include/MenuSelection.h
+	include/MenuRender.h
 	include/UserInput.h
 )
 
