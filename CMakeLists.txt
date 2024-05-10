@@ -19,12 +19,12 @@ set(Sources
 )
 
 set(Headers
+	include/Action.h
 	include/Card.h
 	include/CardStack.h
 	include/Console.h
 	include/FilesystemUtils.h
 	include/Game.h
-	include/GameAction.h
 	include/GameControl.h
 	include/GameFileIO.h
 	include/GameRender.h
@@ -33,6 +33,7 @@ set(Headers
 	include/MenuControl.h
 	include/MenuSelection.h
 	include/MenuRender.h
+	include/Render.h
 	include/UserInput.h
 )
 

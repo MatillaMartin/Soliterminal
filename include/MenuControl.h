@@ -1,5 +1,5 @@
 #pragma once
-#include "GameAction.h"
+#include "Action.h"
 
 #include <functional>
 
@@ -9,11 +9,11 @@ namespace panda
 	class MenuSelection;
 	class Menu;
 
-	class MenuControl
+	class MenuControl : public ActionListener
 	{
 	public:
 		MenuControl(const Menu& menu, const Layout& layout, MenuSelection& selection);
-		void action(Action action);
+		void action(const Action& action);
 
 	private:
 		const Menu& m_menu;

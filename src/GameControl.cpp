@@ -74,7 +74,7 @@ namespace panda
 		return true;
 	}
 
-	void GameControl::action(Action action)
+	void GameControl::action(const Action& action)
 	{
 		if (action == Action::Up)
 		{

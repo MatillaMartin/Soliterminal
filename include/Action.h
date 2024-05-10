@@ -13,4 +13,10 @@ namespace panda
 		None,
 		Exit
 	};
+
+	class ActionListener
+	{
+	public:
+		virtual void action(const Action& action) = 0;
+	};
 }

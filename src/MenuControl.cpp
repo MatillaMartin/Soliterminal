@@ -13,7 +13,7 @@ namespace panda
 	{
 	}
 
-	void MenuControl::action(Action action)
+	void MenuControl::action(const Action& action)
 	{
 		switch (action)
 		{

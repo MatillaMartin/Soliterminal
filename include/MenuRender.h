@@ -1,4 +1,5 @@
 #pragma once
+#include "Render.h"
 
 #include <utility>
 
@@ -11,7 +12,7 @@ namespace panda
 
 	typedef std::pair<int, int> vec2i;
 
-	class MenuRender
+	class MenuRender : public Render
 	{
 	public:
 		MenuRender(const Menu& menu, const MenuSelection& selection, const Layout& layout, Console& console);

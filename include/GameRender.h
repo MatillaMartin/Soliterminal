@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Console.h"
+#include "Render.h"
 
 #include <cmath>
 #include <optional>
-
 namespace panda
 {
 	class Game;
@@ -15,7 +15,7 @@ namespace panda
 
 	typedef std::pair<int, int> vec2i;
 
-	class GameRender
+	class GameRender : public Render
 	{
 	public:
 		GameRender(const Game& game, const GameControl& control, const Layout& layout, Console& console);

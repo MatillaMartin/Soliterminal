@@ -121,6 +121,10 @@ int main()
 		GameRender gameRender(game, gameControl, gameLayout, *console);
 		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
 
+		// current state
+		ActionListener* actionListener = &gameControl;
+		Render* render = &gameRender;
+
 		// Basic rendering cycle
 		while (true)
 		{
@@ -134,14 +138,17 @@ int main()
 
 			if (showMenu)
 			{
-				menuControl.action(action);
-				menuRender.update();
+				actionListener = &menuControl;
+				render = &menuRender;
 			}
 			else
 			{
-				gameControl.action(action);
-				gameRender.update();
+				actionListener = &gameControl;
+				render = &gameRender;
 			}
+
+			actionListener->action(action);
+			render->update();
 
 			game.checkWin();
 			if (game.state() != Game::State::Playing)

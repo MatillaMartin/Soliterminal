@@ -1,5 +1,5 @@
 #pragma once
-#include "GameAction.h"
+#include "Action.h"
 
 #include <conio.h>
 
