@@ -153,6 +153,16 @@ namespace panda
 				m_markedCardIndex = 0;
 			}
 		}
+		if (action == Action::Reset)
+		{
+			m_game.reset(Game::createRandomGame());
+			// also reset selections
+			m_state = State::Select;
+			m_cardIndex = 0;
+			m_stackIndex = 0;
+			m_markedCardIndex = 0;
+			m_markedStackIndex = 0;
+		}
 	}
 
 	int GameControl::stackIndex() const { return m_stackIndex; }
