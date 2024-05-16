@@ -116,6 +116,11 @@ int main()
 		Menu menu{"Soliterminal",
 				  "",
 				  {{"Resume", [&app]() { app.setState(App::State::Game); }},
+				   {"New Game",
+					[&app, &game]() {
+						game.reset(Game::createRandomGame());
+						app.setState(App::State::Game);
+					}},
 				   {"Save and Exit",
 					[&app, &game]() {
 						GameFileIO::saveGame(game);
