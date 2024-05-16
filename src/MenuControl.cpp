@@ -27,9 +27,8 @@ namespace panda
 		}
 	}
 
-	MenuControl::MenuControl(const Menu& menu, MenuSelection& selection)
+	MenuControl::MenuControl(const Menu& menu)
 		: m_menu(menu)
-		, m_selection(selection)
 		, m_layout(createMenuLayout(menu.options().size()))
 	{
 	}
@@ -57,5 +56,10 @@ namespace panda
 		default:
 			break;
 		}
+	}
+
+	const MenuSelection& MenuControl::selection() const
+	{
+		return m_selection;
 	}
 }
