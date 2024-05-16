@@ -11,7 +11,7 @@ namespace panda
 	{
 	}
 
-	std::optional<CardStack> CardStack::take(int index)
+	std::optional<CardStack> CardStack::take(size_t index)
 	{
 		if (index >= m_cards.size())
 			return {};
@@ -31,7 +31,7 @@ namespace panda
 		if (m_cards.empty())
 			return {};
 
-		return take(static_cast<int>(m_cards.size()) - 1);
+		return take(m_cards.size() - 1);
 	}
 
 	std::optional<Card> CardStack::top() const
@@ -42,7 +42,7 @@ namespace panda
 		return m_cards.back();
 	}
 
-	int CardStack::topIndex() const { return static_cast<int>(m_cards.size()) - 1; }
+	size_t CardStack::topIndex() const { return m_cards.size() - 1; }
 
 	std::optional<Card> CardStack::bottom() const
 	{
@@ -52,9 +52,9 @@ namespace panda
 		return m_cards.front();
 	}
 
-	std::optional<int> CardStack::firstOpenCard() const
+	std::optional<size_t> CardStack::firstOpenCard() const
 	{
-		for (int i = 0; i < m_cards.size(); ++i)
+		for (size_t i = 0; i < m_cards.size(); ++i)
 		{
 			if (m_cards[i].state == Card::State::Open)
 				return i;
@@ -86,5 +86,5 @@ namespace panda
 		m_cards.back().flip();
 	}
 
-	int CardStack::size() const { return static_cast<int>(m_cards.size()); }
+	size_t CardStack::size() const { return m_cards.size(); }
 }

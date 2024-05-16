@@ -13,7 +13,7 @@ namespace panda
 
 		// Takes all cards after index, including index
 		// Returns empty optional if no cards can be taken
-		std::optional<CardStack> take(int index);
+		std::optional<CardStack> take(size_t index);
 
 		// Takes top card of stack
 		// Returns empty optional if no cards can be taken
@@ -26,10 +26,10 @@ namespace panda
 		std::optional<Card> top() const;
 
 		// Returns the index of the card at the top, first card to be visible
-		int topIndex() const;
+		size_t topIndex() const;
 
 		// Returns the index of the first open card, if any
-		std::optional<int> firstOpenCard() const;
+		std::optional<size_t> firstOpenCard() const;
 
 		// Returns all the cards in the stack
 		const std::vector<Card>& cards() const;
@@ -48,7 +48,7 @@ namespace panda
 		void flipTop();
 
 		// Number of cards in stack
-		int size() const;
+		size_t size() const;
 
 	private:
 		std::vector<Card> m_cards;

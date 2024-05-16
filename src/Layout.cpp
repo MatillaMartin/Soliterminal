@@ -7,15 +7,27 @@
 
 namespace panda
 {
-	void Graph::addNode(Graph::Node&& node) { m_nodes.push_back(node); }
+	void Graph::addNode(Graph::Node&& node)
+	{
+		m_nodes.push_back(node);
+	}
 
-	void Graph::addNode(int index, std::pair<int, int> layout) { m_nodes.emplace_back(index, std::move(layout)); }
+	void Graph::addNode(size_t index, std::pair<size_t, size_t> layout)
+	{
+		m_nodes.emplace_back(index, std::move(layout));
+	}
 
-	void Graph::addHorEdge(int left, int right) { addHorChain({left, right}); }
+	void Graph::addHorEdge(size_t left, size_t right)
+	{
+		addHorChain({left, right});
+	}
 
-	void Graph::addVerEdge(int top, int bot) { addVerChain({top, bot}); }
+	void Graph::addVerEdge(size_t top, size_t bot)
+	{
+		addVerChain({top, bot});
+	}
 
-	void Graph::addVerChain(const std::vector<int>& chain)
+	void Graph::addVerChain(const std::vector<size_t>& chain)
 	{
 		applyChain(chain, [](Node& first, Node& second) {
 			// update relative indices
@@ -24,7 +36,7 @@ namespace panda
 		});
 	}
 
-	void Graph::addHorChain(const std::vector<int>& chain)
+	void Graph::addHorChain(const std::vector<size_t>& chain)
 	{
 		applyChain(chain, [](Node& first, Node& second) {
 			// update relative indices
@@ -33,7 +45,7 @@ namespace panda
 		});
 	}
 
-	void Graph::addUpEdge(int from, int to)
+	void Graph::addUpEdge(size_t from, size_t to)
 	{
 		applyChain({from, to}, [](Node& first, Node& second) {
 			// update relative indices
@@ -41,7 +53,7 @@ namespace panda
 		});
 	}
 
-	void Graph::addDownEdge(int from, int to)
+	void Graph::addDownEdge(size_t from, size_t to)
 	{
 		applyChain({from, to}, [](Node& first, Node& second) {
 			// update relative indices
@@ -49,7 +61,7 @@ namespace panda
 		});
 	}
 
-	void Graph::addLeftEdge(int from, int to)
+	void Graph::addLeftEdge(size_t from, size_t to)
 	{
 		applyChain({from, to}, [](Node& first, Node& second) {
 			// update relative indices
@@ -57,7 +69,7 @@ namespace panda
 		});
 	}
 
-	void Graph::addRightEdge(int from, int to)
+	void Graph::addRightEdge(size_t from, size_t to)
 	{
 		applyChain({from, to}, [](Node& first, Node& second) {
 			// update relative indices
@@ -65,7 +77,7 @@ namespace panda
 		});
 	}
 
-	void Graph::applyChain(const std::vector<int>& chain, std::function<void(Node&, Node&)> relation)
+	void Graph::applyChain(const std::vector<size_t>& chain, std::function<void(Node&, Node&)> relation)
 	{
 		if (chain.size() < 2)
 			return;
@@ -90,7 +102,7 @@ namespace panda
 		}
 	}
 
-	std::optional<Graph::Node> Graph::node(int index) const
+	std::optional<Graph::Node> Graph::node(size_t index) const
 	{
 		auto it = std::find_if(m_nodes.cbegin(), m_nodes.cend(), [&index](const Node& node) -> bool { return node.index == index; });
 		if (it == m_nodes.end())
@@ -98,7 +110,7 @@ namespace panda
 		return *it;
 	}
 
-	std::optional<Graph::Node> Graph::node(std::pair<int, int> layout) const
+	std::optional<Graph::Node> Graph::node(std::pair<size_t, size_t> layout) const
 	{
 		auto it = std::find_if(m_nodes.cbegin(), m_nodes.cend(), [&layout](const Node& node) -> bool { return node.layout == layout; });
 		if (it == m_nodes.end())
@@ -106,7 +118,7 @@ namespace panda
 		return *it;
 	}
 
-	std::vector<Graph::Node>::iterator Graph::nodeIt(int index)
+	std::vector<Graph::Node>::iterator Graph::nodeIt(size_t index)
 	{
 		return std::find_if(m_nodes.begin(), m_nodes.end(), [&index](const Node& node) -> bool { return node.index == index; });
 	}
@@ -117,7 +129,7 @@ namespace panda
 	}
 
 	// Mapping between the layout and stacks index
-	std::optional<int> Layout::layoutToIndex(int x, int y) const
+	std::optional<size_t> Layout::layoutToIndex(int x, int y) const
 	{
 		if (auto node = m_graph.node({x, y}))
 			return node->index;
@@ -125,14 +137,14 @@ namespace panda
 	}
 
 	// Mapping between stacks index and layout
-	std::optional<std::pair<int, int>> Layout::indexToLayout(int index) const
+	std::optional<std::pair<int, int>> Layout::indexToLayout(size_t index) const
 	{
 		if (auto node = m_graph.node(index))
 			return node->layout;
 		return {};
 	}
 
-	int Layout::up(int index) const
+	size_t Layout::up(size_t index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -142,7 +154,7 @@ namespace panda
 		return *node->up;
 	}
 
-	int Layout::down(int index) const
+	size_t Layout::down(size_t index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -152,7 +164,7 @@ namespace panda
 		return *node->down;
 	}
 
-	int Layout::left(int index) const
+	size_t Layout::left(size_t index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)
@@ -162,7 +174,7 @@ namespace panda
 		return *node->left;
 	}
 
-	int Layout::right(int index) const
+	size_t Layout::right(size_t index) const
 	{
 		auto node = m_graph.node(index);
 		if (!node)

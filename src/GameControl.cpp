@@ -24,16 +24,16 @@ namespace panda
 
 	bool GameControl::isCentralStack() { return m_game.isCentralStack(m_stackIndex); }
 
-	void GameControl::changeStack(int stackIndex)
+	void GameControl::changeStack(size_t stackIndex)
 	{
 		bool wasCentral = isCentralStack();
 		m_stackIndex = stackIndex;
 		changeCard(m_cardIndex);    // update using last card index, try to keep it
 	}
 
-	bool GameControl::changeCard(int cardIndex)
+	bool GameControl::changeCard(size_t cardIndex)
 	{
-		int stackLastCardIndex = std::max(0, stack().size() - 1);    // index of available cardIndex or zero
+		size_t stackLastCardIndex = std::max(static_cast<size_t>(0), stack().size() - 1);    // index of available cardIndex or zero
 
 		// update the cardIndex for the new stack
 		if (isCentralStack())
@@ -49,7 +49,7 @@ namespace panda
 			}
 
 			// if there are any open cards, make sure to point to the first open card only
-			std::optional<int> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
+			std::optional<size_t> firstOpenCardIndex = m_game.stacks()[m_stackIndex].firstOpenCard();
 			if (!firstOpenCardIndex)
 			{
 				// if all the cards are closed, select last card in pile
@@ -168,13 +168,13 @@ namespace panda
 		m_game.checkWin();
 	}
 
-	int GameControl::stackIndex() const { return m_stackIndex; }
+	size_t GameControl::stackIndex() const { return m_stackIndex; }
 
-	int GameControl::cardIndex() const { return m_cardIndex; }
+	size_t GameControl::cardIndex() const { return m_cardIndex; }
 
-	int GameControl::markedStackIndex() const { return m_markedStackIndex; }
+	size_t GameControl::markedStackIndex() const { return m_markedStackIndex; }
 
-	int GameControl::markedCardIndex() const { return m_markedCardIndex; }
+	size_t GameControl::markedCardIndex() const	{ return m_markedCardIndex;	}
 
 	GameControl::State GameControl::state() const { return m_state; }
 }

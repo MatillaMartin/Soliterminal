@@ -10,14 +10,14 @@ namespace panda
 		std::vector<Card> createDeck()
 		{
 			std::vector<Card> deck(52);
-			for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
+			for (size_t suitIndex = 0; suitIndex < 4; ++suitIndex)
 			{
-				for (int numberIndex = 0; numberIndex < 13; ++numberIndex)
+				for (size_t numberIndex = 0; numberIndex < 13; ++numberIndex)
 				{
-					int cardIndex = numberIndex + suitIndex * 13;
+					size_t cardIndex = numberIndex + suitIndex * 13;
 					assert(cardIndex >= 0 && cardIndex < deck.size());
 					Card& card = deck[cardIndex];
-					card.number = numberIndex + 1;    // card numbers start on 1
+					card.number = static_cast<int>(numberIndex + 1);    // card numbers start on 1
 					card.suit = static_cast<Card::Suit>(suitIndex);
 					card.state = Card::State::Closed;
 				}
@@ -53,9 +53,9 @@ namespace panda
 		std::array<CardStack, 7> centralStack;
 
 		// take incrementally more cards, and open the first card of each
-		for (int i = 0; i < centralStack.size(); ++i)
+		for (size_t i = 0; i < centralStack.size(); ++i)
 		{
-			int cardsToTake = i + 2;
+			size_t cardsToTake = i + 2;
 			std::vector<Card> cards;
 			auto cardIt = deck.end() - cardsToTake;
 			// move cards into separate vector
@@ -86,7 +86,7 @@ namespace panda
 
 		// Full end stack
 		std::array<CardStack, 4> endStack;
-		for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
+		for (size_t suitIndex = 0; suitIndex < 4; ++suitIndex)
 		{
 			auto cardBegin = deck.begin();
 			std::advance(cardBegin, suitIndex * 13);
@@ -138,7 +138,7 @@ namespace panda
 		closedStack().flipAll();
 	}
 
-	bool Game::moveCards(int sourceStackIndex, int sourceCardIndex, int destStackIndex)
+	bool Game::moveCards(size_t sourceStackIndex, size_t sourceCardIndex, size_t destStackIndex)
 	{
 		// check stack indices are inside bounds
 		if (sourceStackIndex >= m_stacks.size() || sourceStackIndex < 0)
@@ -187,7 +187,7 @@ namespace panda
 		return ok;
 	}
 
-	bool Game::isFlippedCard(int stack, int cardIndex)
+	bool Game::isFlippedCard(size_t stack, size_t cardIndex)
 	{
 		if (stack >= m_stacks.size() || stack < 0)
 			return false;
@@ -200,7 +200,7 @@ namespace panda
 		return card.state == Card::State::Closed;
 	}
 
-	bool Game::flipCard(int stack, int cardIndex)
+	bool Game::flipCard(size_t stack, size_t cardIndex)
 	{
 		if (stack >= m_stacks.size() || stack < 0)
 			return false;
@@ -210,7 +210,7 @@ namespace panda
 			return false;
 
 		// has to be the top card in the stack
-		int stackTopIndex = std::max(0, sourceStack.size() - 1);
+		size_t stackTopIndex = std::max(static_cast<size_t>(0), sourceStack.size() - 1);
 		if (cardIndex != stackTopIndex)
 			return false;
 
@@ -218,21 +218,21 @@ namespace panda
 		return true;
 	}
 
-	bool Game::isEndStack(int index) const { return index >= 2 && index < 6; }
+	bool Game::isEndStack(size_t index) const { return index >= 2 && index < 6; }
 
-	bool Game::isCentralStack(int index) const { return index >= 6 && index < 13; }
+	bool Game::isCentralStack(size_t index) const { return index >= 6 && index < 13; }
 
-	bool Game::isOpenStack(int index) const { return index == 1; }
+	bool Game::isOpenStack(size_t index) const { return index == 1; }
 
-	bool Game::isClosedStack(int index) const { return index == 0; }
+	bool Game::isClosedStack(size_t index) const { return index == 0; }
 
 	CardStack& Game::openStack() { return m_stacks[1]; }
 
 	CardStack& Game::closedStack() { return m_stacks[0]; };
 
-	std::array<int, 7> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11, 12}; }
+	std::array<size_t, 7> Game::centralStacksIndices() const { return {6, 7, 8, 9, 10, 11, 12}; }
 
-	std::array<int, 4> Game::endStacksIndices() const { return {2, 3, 4, 5}; }
+	std::array<size_t, 4> Game::endStacksIndices() const { return {2, 3, 4, 5}; }
 
 	void Game::checkWin()
 	{
@@ -262,7 +262,7 @@ namespace panda
 			m_state = State::Win;
 	}
 
-	bool Game::canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
+	bool Game::canMoveToCentralStack(CardStack& sourceStack, size_t sourceCardIndex, CardStack& destStack)
 	{
 		// Card to be moved in
 		const Card& sourceCard = sourceStack.cards()[sourceCardIndex];
@@ -283,10 +283,10 @@ namespace panda
 		return true;
 	}
 
-	bool Game::canMoveToEndStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack)
+	bool Game::canMoveToEndStack(CardStack& sourceStack, size_t sourceCardIndex, CardStack& destStack)
 	{
 		// has to be the top card in the stack
-		int stackTopIndex = std::max(0, sourceStack.size() - 1);
+		size_t stackTopIndex = std::max(static_cast<size_t>(0), sourceStack.size() - 1);
 		if (sourceCardIndex != stackTopIndex)
 			return false;
 

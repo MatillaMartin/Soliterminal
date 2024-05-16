@@ -24,28 +24,28 @@ namespace panda
 
 		void action(const Action& action);
 
-		int stackIndex() const;
-		int cardIndex() const;
+		size_t stackIndex() const;
+		size_t cardIndex() const;
 
-		int markedStackIndex() const;
-		int markedCardIndex() const;
+		size_t markedStackIndex() const;
+		size_t markedCardIndex() const;
 
 		State state() const;
 
 	private:
 		const CardStack& stack();
-		void changeStack(int stack);
+		void changeStack(size_t stack);
 		// Returns false if the card could not move
-		bool changeCard(int cardIndex);
+		bool changeCard(size_t cardIndex);
 		bool isCentralStack();
 
 		Game& m_game;
 		const Layout& m_layout;
-		int m_cardIndex = 0;
-		int m_stackIndex = 0;
+		size_t m_cardIndex = 0;
+		size_t m_stackIndex = 0;
 
 		State m_state = State::Select;
-		int m_markedCardIndex = 0;
-		int m_markedStackIndex = 0;
+		size_t m_markedCardIndex = 0;
+		size_t m_markedStackIndex = 0;
 	};
 }

@@ -51,32 +51,32 @@ namespace panda
 
 		/// Moves cards between specified stacks
 		/// Returns false if was not able to move those cards
-		bool moveCards(int originStack, int cardOriginIndex, int destStack);
+		bool moveCards(size_t originStack, size_t cardOriginIndex, size_t destStack);
 
 		/// Returns if the card is a flipped card
-		bool isFlippedCard(int stack, int cardIndex);
+		bool isFlippedCard(size_t stack, size_t cardIndex);
 
 		/// Flips the card
 		/// Returns if the card could be flipped
-		bool flipCard(int stack, int cardIndex);
+		bool flipCard(size_t stack, size_t cardIndex);
 
 		// Returns true if the index matches an end stack
-		bool isEndStack(int index) const;
+		bool isEndStack(size_t index) const;
 
 		// Returns true if the index matches a central stack
-		bool isCentralStack(int index) const;
+		bool isCentralStack(size_t index) const;
 
 		// Returns true if the index matches the OpenStack
-		bool isOpenStack(int index) const;
+		bool isOpenStack(size_t index) const;
 
 		// Returns true if the index matches the ClosedStack
-		bool isClosedStack(int index) const;
+		bool isClosedStack(size_t index) const;
 
 		// Returns the indices for CentralStacks
-		std::array<int, 7> centralStacksIndices() const;
+		std::array<size_t, 7> centralStacksIndices() const;
 
 		// Returns the indices for EndStacks
-		std::array<int, 4> endStacksIndices() const;
+		std::array<size_t, 4> endStacksIndices() const;
 
 		// Updated the game state if the end stacks are complete
 		void checkWin();
@@ -91,8 +91,8 @@ namespace panda
 		CardStack& closedStack();
 
 		// Moves stack to central stack
-		bool canMoveToCentralStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
-		bool canMoveToEndStack(CardStack& sourceStack, int sourceCardIndex, CardStack& destStack);
+		bool canMoveToCentralStack(CardStack& sourceStack, size_t sourceCardIndex, CardStack& destStack);
+		bool canMoveToEndStack(CardStack& sourceStack, size_t sourceCardIndex, CardStack& destStack);
 
 		std::vector<CardStack> m_stacks;
 		State m_state = State::Playing;
