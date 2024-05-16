@@ -4,12 +4,33 @@
 #include "Menu.h"
 #include "MenuSelection.h"
 
+#include <numeric>
+#include <vector>
+
 namespace panda
 {
-	MenuControl::MenuControl(const Menu& menu, const Layout& layout, MenuSelection& selection)
+	namespace
+	{
+		Layout createMenuLayout(size_t numOptions)
+		{
+			std::vector<size_t> chain;
+			chain.resize(numOptions);
+			std::iota(chain.begin(), chain.end(), 0);
+			chain.push_back(0);    // circle back to start
+			Graph graph;
+			for (size_t i = 0; i < numOptions; ++i)
+			{
+				graph.addNode(i, {0, i});
+			}
+			graph.addVerChain(chain);
+			return Layout(std::move(graph));
+		}
+	}
+
+	MenuControl::MenuControl(const Menu& menu, MenuSelection& selection)
 		: m_menu(menu)
-		, m_layout(layout)
 		, m_selection(selection)
+		, m_layout(createMenuLayout(menu.options().size()))
 	{
 	}
 

@@ -66,16 +66,6 @@ Layout createGameLayout()
 	return Layout(std::move(graph));
 }
 
-Layout createMenuLayout()
-{
-	Graph graph;
-	graph.addNode(0, {0, 0});
-	graph.addNode(1, {0, 1});
-	graph.addNode(2, {0, 2});
-	graph.addVerChain({0, 1, 2, 0});
-	return Layout(std::move(graph));
-}
-
 Game loadOrCreateGame()
 {
 	// Try to load game if one exists already
@@ -123,7 +113,6 @@ int main()
 		Layout gameLayout = createGameLayout();
 		GameControl gameControl(game, gameLayout);
 
-		Layout menuLayout = createMenuLayout();
 		Menu menu{"Soliterminal",
 				  "",
 				  {{"Resume", [&app]() { app.setState(App::State::Game); }},
@@ -135,9 +124,9 @@ int main()
 				   {"Exit without saving", [&app]() { app.setState(App::State::Exit); }}}};
 
 		MenuSelection menuSelection;
-		MenuControl menuControl(menu, menuLayout, menuSelection);
+		MenuControl menuControl(menu, menuSelection);
 		GameRender gameRender(game, gameControl, gameLayout, *console);
-		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
+		MenuRender menuRender(menu, menuSelection, *console);
 
 		AppControl appControl(app, AppControl::Controls{gameControl, menuControl});
 		AppRender appRender(app, AppRender::Renders{gameRender, menuRender});

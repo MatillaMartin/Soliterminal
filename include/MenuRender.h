@@ -8,14 +8,13 @@ namespace panda
 	class Console;
 	class Menu;
 	class MenuSelection;
-	class Layout;
 
 	typedef std::pair<int, int> vec2i;
 
 	class MenuRender : public Render
 	{
 	public:
-		MenuRender(const Menu& menu, const MenuSelection& selection, const Layout& layout, Console& console);
+		MenuRender(const Menu& menu, const MenuSelection& selection, Console& console);
 
 		// Updates the rendering output
 		void update();
@@ -25,7 +24,6 @@ namespace panda
 
 		const Menu& m_menu;
 		const MenuSelection& m_selection;
-		const Layout& m_layout;
 		Console& m_console;
 	};
 }

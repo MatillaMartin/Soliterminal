@@ -17,10 +17,9 @@ namespace panda
 	int selectColor = 0xF;
 	int markColor = 0xA;
 
-	MenuRender::MenuRender(const Menu& menu, const MenuSelection& selection, const Layout& layout, Console& console)
+	MenuRender::MenuRender(const Menu& menu, const MenuSelection& selection, Console& console)
 		: m_menu(menu)
 		, m_selection(selection)
-		, m_layout(layout)
 		, m_console(console)
 	{
 	}
