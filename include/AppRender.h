@@ -16,19 +16,8 @@ namespace panda
 			MenuRender& menuRender;
 		};
 
-		AppRender(const App& app, Renders renders)
-			: m_app(app)
-			, m_renders(std::move(renders))
-		{
-		}
-
-		void update() override
-		{
-			if (m_app.state() == App::State::Game)
-				m_renders.gameRender.update();
-			else if (m_app.state() == App::State::Pause)
-				m_renders.menuRender.update();
-		}
+		AppRender(const App& app, Renders renders);
+		void update() override;
 
 	private:
 		const App& m_app;
