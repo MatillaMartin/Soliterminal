@@ -76,6 +76,19 @@ Layout createMenuLayout()
 	return Layout(std::move(graph));
 }
 
+Game loadOrCreateGame()
+{
+	// Try to load game if one exists already
+	if (GameFileIO::hasSavedGame())
+	{
+		auto game = GameFileIO::loadGame();
+		if (game)
+			return *game;
+	}
+
+	return Game::createRandomGame();
+}
+
 std::unique_ptr<Console> consoleProxy()
 {
 #ifdef WIN32
@@ -103,10 +116,11 @@ int main()
 		if (!console)
 			return -1;
 
+		Game game = loadOrCreateGame();
+
 		App app;
 
 		Layout gameLayout = createGameLayout();
-		Game game = Game::createRandomGame();
 		GameControl gameControl(game, gameLayout);
 
 		Layout menuLayout = createMenuLayout();

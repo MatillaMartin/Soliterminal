@@ -79,6 +79,12 @@ namespace panda
 			}
 			return std::nullopt;
 		}
-		bool hasSavedGame() { return false; }
+
+		bool hasSavedGame() 
+		{
+			auto pathDir = FilesystemUtils::appDataPath() / "Soliterminal";
+			auto fullPath = pathDir.append("saveFile.json");
+			return std::filesystem::exists(fullPath);
+		}
 	}
 }
