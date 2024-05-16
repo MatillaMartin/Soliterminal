@@ -12,5 +12,9 @@ namespace panda
 
 		/// Loads the game from the local AppData file
 		std::optional<Game> loadGame();
+
+		/// Returns if there is a saved game in AppData
+		bool hasSavedGame();
+
 	}
 }

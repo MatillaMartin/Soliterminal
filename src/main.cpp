@@ -1,3 +1,6 @@
+#include "App.h"
+#include "AppControl.h"
+#include "AppRender.h"
 #include "Card.h"
 #include "CardStack.h"
 #include "Game.h"
@@ -5,7 +8,12 @@
 #include "GameFileIO.h"
 #include "GameRender.h"
 #include "Layout.h"
+#include "Menu.h"
+#include "MenuControl.h"
+#include "MenuRender.h"
+#include "MenuSelection.h"
 #include "UserInput.h"
+
 #ifdef WIN32
 #	include "ConsoleWindows.h"
 #else
@@ -17,7 +25,6 @@
 #include <assert.h>
 #include <chrono>
 #include <iostream>
-#include <random>
 #include <thread>
 
 using namespace panda;
@@ -69,95 +76,17 @@ Layout createMenuLayout()
 	return Layout(std::move(graph));
 }
 
-std::vector<Card> createDeck()
+Game loadOrCreateGame()
 {
-	std::vector<Card> deck(52);
-	for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
+	// Try to load game if one exists already
+	if (GameFileIO::hasSavedGame())
 	{
-		for (int numberIndex = 0; numberIndex < 13; ++numberIndex)
-		{
-			int cardIndex = numberIndex + suitIndex * 13;
-			assert(cardIndex >= 0 && cardIndex < deck.size());
-			Card& card = deck[cardIndex];
-			card.number = numberIndex + 1;    // card numbers start on 1
-			card.suit = static_cast<Card::Suit>(suitIndex);
-			card.state = Card::State::Closed;
-		}
-	}
-	return deck;
-}
-
-Game createGame()
-{
-	// start with a deck
-	auto deck = createDeck();
-
-	// random shuffle
-	std::random_device rd;
-	std::mt19937 g(rd());
-	std::shuffle(deck.begin(), deck.end(), g);
-
-	// separate cards into stacks
-
-	// Empty end stack
-	std::array<CardStack, 4> endStack;
-
-	// Central stack with some cards
-	std::array<CardStack, 7> centralStack;
-
-	// take incrementally more cards, and open the first card of each
-	for (int i = 0; i < centralStack.size(); ++i)
-	{
-		int cardsToTake = i + 2;
-		std::vector<Card> cards;
-		auto cardIt = deck.end() - cardsToTake;
-		// move cards into separate vector
-		cards.insert(cards.end(), std::make_move_iterator(cardIt), std::make_move_iterator(deck.end()));
-		// remove moved cards from deck
-		deck.erase(cardIt, deck.end());
-
-		CardStack stack(std::move(cards));
-		stack.flipTop();
-		centralStack[i] = std::move(stack);
+		auto game = GameFileIO::loadGame();
+		if (game)
+			return *game;
 	}
 
-	assert(deck.size() == 17);
-
-	CardStack closedStack(std::move(deck));    // closed stack are the left over cards
-
-	CardStack openStack{std::vector<Card>{}};
-	Game::Stacks state(std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack));
-
-	// create a fixed state for now
-	return Game(std::move(state));
-}
-
-Game createNearEndingGame()
-{
-	// start with a deck
-	auto deck = createDeck();
-
-	// Full end stack
-	std::array<CardStack, 4> endStack;
-	for (int suitIndex = 0; suitIndex < 4; ++suitIndex)
-	{
-		auto cardBegin = deck.begin();
-		std::advance(cardBegin, suitIndex * 13);
-		auto cardEnd = cardBegin;
-		std::advance(cardEnd, 13);
-		std::vector<Card> cards(cardBegin, cardEnd);
-		endStack[suitIndex] = CardStack(std::move(cards));
-		endStack[suitIndex].flipAll();
-	}
-
-	// Rest empty
-	std::array<CardStack, 7> centralStack;
-	CardStack closedStack;    // closed stack are the left over cards
-	CardStack openStack;
-	Game::Stacks state(std::move(endStack), std::move(centralStack), std::move(closedStack), std::move(openStack));
-
-	// create a fixed state for now
-	return Game(std::move(state));
+	return Game::createRandomGame();
 }
 
 std::unique_ptr<Console> consoleProxy()
@@ -187,35 +116,44 @@ int main()
 		if (!console)
 			return -1;
 
-		Layout gameLayout = createGameLayout();
-		Game game = createGame();
-		GameControl control(game, gameLayout);
-		GameRender render(game, control, gameLayout, *console);
+		Game game = loadOrCreateGame();
 
-		// Basic rendering cycle
+		App app;
+
+		Layout gameLayout = createGameLayout();
+		GameControl gameControl(game, gameLayout);
+
+		Layout menuLayout = createMenuLayout();
+		Menu menu{"Soliterminal",
+				  "",
+				  {{"Resume", [&app]() { app.setState(App::State::Game); }},
+				   {"Save and Exit",
+					[&app, &game]() {
+						GameFileIO::saveGame(game);
+						app.setState(App::State::Exit);
+					}},
+				   {"Exit without saving", [&app]() { app.setState(App::State::Exit); }}}};
+
+		MenuSelection menuSelection;
+		MenuControl menuControl(menu, menuLayout, menuSelection);
+		GameRender gameRender(game, gameControl, gameLayout, *console);
+		MenuRender menuRender(menu, menuSelection, menuLayout, *console);
+
+		AppControl appControl(app, AppControl::Controls{gameControl, menuControl});
+		AppRender appRender(app, AppRender::Renders{gameRender, menuRender});
+
+		// Basic application cycle
 		while (true)
 		{
-			GameAction action = UserInput::waitForInput();
-			if (action == GameAction::None)
-				continue;
-			if (action == GameAction::Reset)
-				game.reset(createGame());
-			if (action == GameAction::Exit)
-			{
-				console->clear();
-				return 0;
-			}
-
-			control.action(action);
-
-			render.update();
-
-			game.checkWin();
-			if (game.state() != Game::State::Playing)
-			{
+			if (app.state() == App::State::Exit)
 				break;
-			}
+
+			Action action = UserInput::waitForInput();
+			appControl.action(action);
+			appRender.update();
 		}
+
+		console->clear();
 	}
 	catch (std::runtime_error& e)
 	{

@@ -33,6 +33,10 @@ namespace panda
 
 		Game(Stacks&& state);
 
+		static Game createRandomGame();
+
+		static Game createNearEndingGame();
+
 		const std::vector<CardStack>& stacks() const { return m_stacks; }
 
 		// Returns the game state

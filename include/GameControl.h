@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameAction.h"
+#include "Action.h"
 
 #include <optional>
 #include <utility>
@@ -11,7 +11,7 @@ namespace panda
 	class Layout;
 	class Game;
 
-	class GameControl
+	class GameControl : public ActionListener
 	{
 	public:
 		enum class State
@@ -22,7 +22,7 @@ namespace panda
 
 		GameControl(Game& game, Layout& layout);
 
-		void action(GameAction action);
+		void action(const Action& action);
 
 		int stackIndex() const;
 		int cardIndex() const;

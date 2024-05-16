@@ -74,9 +74,9 @@ namespace panda
 		return true;
 	}
 
-	void GameControl::action(GameAction action)
+	void GameControl::action(const Action& action)
 	{
-		if (action == GameAction::Up)
+		if (action == Action::Up)
 		{
 			if (isCentralStack())
 			{
@@ -96,7 +96,7 @@ namespace panda
 				}
 			}
 		}
-		else if (action == GameAction::Down)
+		else if (action == Action::Down)
 		{
 			const CardStack& current = stack();
 			if (isCentralStack())
@@ -113,17 +113,17 @@ namespace panda
 				changeStack(m_layout.down(m_stackIndex));
 			}
 		}
-		else if (action == GameAction::Left)
+		else if (action == Action::Left)
 		{
 			// move to the left
 			changeStack(m_layout.left(m_stackIndex));
 		}
-		else if (action == GameAction::Right)
+		else if (action == Action::Right)
 		{
 			// move to the right
 			changeStack(m_layout.right(m_stackIndex));
 		}
-		else if (action == GameAction::Use)
+		else if (action == Action::Use)
 		{
 			if (m_state == State::Select)
 			{
@@ -153,6 +153,19 @@ namespace panda
 				m_markedCardIndex = 0;
 			}
 		}
+		else if (action == Action::Reset)
+		{
+			m_game.reset(Game::createRandomGame());
+			// also reset selections
+			m_state = State::Select;
+			m_cardIndex = 0;
+			m_stackIndex = 0;
+			m_markedCardIndex = 0;
+			m_markedStackIndex = 0;
+		}
+
+		// check if there is a win after every action
+		m_game.checkWin();
 	}
 
 	int GameControl::stackIndex() const { return m_stackIndex; }
