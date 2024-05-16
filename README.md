@@ -19,7 +19,7 @@ The classical Solitaire game, running in your terminal
 
 ## Roadmap
 - [x] Supporting saving and loading game
-- [ ] In-game menu
+- [x] In-game menu
 - [ ] Support Terminal
 - [ ] Support Powershell
 - [ ] Support Linux console
