@@ -5,10 +5,10 @@ namespace panda
 	class MenuSelection
 	{
 	public:
-		void setIndex(int index);
-		int index() const;
+		void setIndex(size_t index);
+		size_t index() const;
 
 	private:
-		int m_index = 0;
+		size_t m_index;
 	};
 }

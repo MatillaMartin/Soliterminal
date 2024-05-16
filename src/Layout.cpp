@@ -140,7 +140,7 @@ namespace panda
 	std::optional<std::pair<int, int>> Layout::indexToLayout(size_t index) const
 	{
 		if (auto node = m_graph.node(index))
-			return node->layout;
+			return std::pair<int,int>({static_cast<int>(node->layout.first), static_cast<int>(node->layout.second)});
 		return {};
 	}
 

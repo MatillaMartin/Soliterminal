@@ -38,7 +38,7 @@ namespace panda
 		int m_clearColor = 0x0;
 
 		// Returns the console position for each layout element
-		std::optional<std::pair<int, int>> layoutToConsole(int index);
+		std::optional<std::pair<int, int>> indexToConsole(size_t index);
 
 		int cardCenterX() const { return static_cast<int>(std::floor((m_cardWidth - 1) / 2.0)); }
 		int cardCenterY() const { return static_cast<int>(std::floor((m_cardHeight - 1) / 2.0)); }
@@ -47,7 +47,7 @@ namespace panda
 		void renderControlSelect();
 		void renderControlMark();
 
-		std::optional<vec2i> position(int stackIndex, int cardIndex);
+		std::optional<vec2i> position(size_t stackIndex, size_t cardIndex);
 
 		void drawCardSpread(const Card& card, vec2i pos);
 		void drawCard(const Card& card, vec2i pos);

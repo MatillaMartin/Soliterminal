@@ -2,7 +2,7 @@
 
 namespace panda
 {
-	void MenuSelection::setIndex(int index) { m_index = index; }
+	void MenuSelection::setIndex(size_t index) { m_index = index; }
 
-	int MenuSelection::index() const { return m_index; }
+	size_t MenuSelection::index() const { return m_index; }
 }

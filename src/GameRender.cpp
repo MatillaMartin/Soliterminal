@@ -22,7 +22,7 @@ namespace panda
 		update();
 	}
 
-	std::optional<vec2i> GameRender::layoutToConsole(int index)
+	std::optional<vec2i> GameRender::indexToConsole(size_t index)
 	{
 		auto layout = m_layout.indexToLayout(index);
 		if (!layout)
@@ -33,9 +33,9 @@ namespace panda
 		return {vec2i{outX, outY}};
 	}
 
-	std::optional<vec2i> GameRender::position(int stackIndex, int cardIndex)
+	std::optional<vec2i> GameRender::position(size_t stackIndex, size_t cardIndex)
 	{
-		auto layout = layoutToConsole(stackIndex);
+		auto layout = indexToConsole(stackIndex);
 		if (!layout)
 			return {};
 		auto [x, y] = *layout;
@@ -48,20 +48,20 @@ namespace panda
 			auto openCardIndex = stack.firstOpenCard();
 			if (!openCardIndex)    // all closed
 			{
-				y += cardIndex * m_cardSpreadHeight;
+				y += static_cast<int>(cardIndex) * m_cardSpreadHeight;
 			}
 			else    // some closed, some open
 			{
 				if (cardIndex > *openCardIndex)
 				{
 					// add up the closed cards
-					y += *openCardIndex * m_cardSpreadHeight;
+					y += static_cast<int>(*openCardIndex) * m_cardSpreadHeight;
 					// add up the open cards
-					y += (cardIndex - *openCardIndex) * m_cardHeight;
+					y += (static_cast<int>(cardIndex) - static_cast<int>(*openCardIndex)) * m_cardHeight;
 				}
 				else
 				{
-					y += cardIndex * m_cardSpreadHeight;
+					y += static_cast<int>(cardIndex) * m_cardSpreadHeight;
 				}
 			}
 		}

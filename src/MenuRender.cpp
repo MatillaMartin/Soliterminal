@@ -51,8 +51,8 @@ namespace panda
 		}
 
 		// draw control on top
-		int selectedOpt = m_selection.index();
-		int optWidth = m_menu.optionNames().at(selectedOpt).size();
+		size_t selectedOpt = m_selection.index();
+		int optWidth = static_cast<int>(m_menu.optionNames().at(selectedOpt).size());
 		drawControl({xLoc, yOptLocs[selectedOpt]}, optWidth);
 
 		m_console.end();
