@@ -21,6 +21,7 @@ namespace panda
 		};
 
 		GameControl(Game& game, Layout& layout);
+		void reset();
 
 		void action(const Action& action);
 

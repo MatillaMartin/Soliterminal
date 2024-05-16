@@ -22,6 +22,15 @@ namespace panda
 		m_cardIndex = 0;
 	}
 
+	void GameControl::reset()
+	{
+		m_state = State::Select;
+		m_cardIndex = 0;
+		m_stackIndex = 0;
+		m_markedCardIndex = 0;
+		m_markedStackIndex = 0;
+	}
+
 	bool GameControl::isCentralStack() { return m_game.isCentralStack(m_stackIndex); }
 
 	void GameControl::changeStack(size_t stackIndex)
@@ -152,16 +161,6 @@ namespace panda
 				m_markedStackIndex = 0;
 				m_markedCardIndex = 0;
 			}
-		}
-		else if (action == Action::Reset)
-		{
-			m_game.reset(Game::createRandomGame());
-			// also reset selections
-			m_state = State::Select;
-			m_cardIndex = 0;
-			m_stackIndex = 0;
-			m_markedCardIndex = 0;
-			m_markedStackIndex = 0;
 		}
 
 		// check if there is a win after every action

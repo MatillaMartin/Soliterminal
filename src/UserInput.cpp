@@ -27,8 +27,6 @@ namespace panda
 				return Action::Right;
 			if (c == ' ')
 				return Action::Use;
-			if (c == 'r')
-				return Action::Reset;
 			if (c == KEY_ESC)
 				return Action::Exit;
 		}

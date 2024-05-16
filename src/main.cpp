@@ -117,8 +117,9 @@ int main()
 				  "",
 				  {{"Resume", [&app]() { app.setState(App::State::Game); }},
 				   {"New Game",
-					[&app, &game]() {
+					[&app, &game, &gameControl]() {
 						game.reset(Game::createRandomGame());
+						gameControl.reset();
 						app.setState(App::State::Game);
 					}},
 				   {"Save and Exit",
