@@ -8,7 +8,7 @@
 namespace panda
 {
 	class Game;
-	class GameControl;
+	class GameSelection;
 	class Layout;
 	struct Card;
 	class Stack;
@@ -18,7 +18,7 @@ namespace panda
 	class GameRender : public Render
 	{
 	public:
-		GameRender(const Game& game, const GameControl& control, const Layout& layout, Console& console);
+		GameRender(const Game& game, const GameSelection& selection, const Layout& layout, Console& console);
 
 		// Updates the rendering output
 		void update();
@@ -60,7 +60,7 @@ namespace panda
 		void drawShade(int x, int y);
 
 		const Game& m_game;
-		const GameControl& m_control;
+		const GameSelection& m_selection;
 		const Layout& m_layout;
 		Console& m_console;
 	};

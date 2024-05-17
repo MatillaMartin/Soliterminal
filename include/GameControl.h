@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Action.h"
+#include "GameSelection.h"
 
 #include <optional>
 #include <utility>
@@ -14,12 +15,7 @@ namespace panda
 	class GameControl : public ActionListener
 	{
 	public:
-		enum class State
-		{
-			Select,
-			Move
-		};
-
+		
 		GameControl(Game& game, Layout& layout);
 		void reset();
 
@@ -28,10 +24,7 @@ namespace panda
 		size_t stackIndex() const;
 		size_t cardIndex() const;
 
-		size_t markedStackIndex() const;
-		size_t markedCardIndex() const;
-
-		State state() const;
+		const GameSelection& selection() const;
 
 	private:
 		const CardStack& stack();
@@ -42,11 +35,6 @@ namespace panda
 
 		Game& m_game;
 		const Layout& m_layout;
-		size_t m_cardIndex = 0;
-		size_t m_stackIndex = 0;
-
-		State m_state = State::Select;
-		size_t m_markedCardIndex = 0;
-		size_t m_markedStackIndex = 0;
+		GameSelection m_sel;
 	};
 }

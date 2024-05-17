@@ -130,7 +130,7 @@ int main()
 				   {"Exit without saving", [&app]() { app.setState(App::State::Exit); }}}};
 
 		MenuControl menuControl(menu);
-		GameRender gameRender(game, gameControl, gameLayout, *console);
+		GameRender gameRender(game, gameControl.selection(), gameLayout, *console);
 		MenuRender menuRender(menu, menuControl.selection(), *console);
 
 		AppControl appControl(app, AppControl::Controls{gameControl, menuControl});

@@ -12,9 +12,9 @@
 
 namespace panda
 {
-	GameRender::GameRender(const Game& game, const GameControl& control, const Layout& layout, Console& console)
+	GameRender::GameRender(const Game& game, const GameSelection& selection, const Layout& layout, Console& console)
 		: m_game(game)
-		, m_control(control)
+		, m_selection(selection)
 		, m_layout(layout)
 		, m_console(console)
 	{
@@ -127,7 +127,7 @@ namespace panda
 
 	void GameRender::renderControlSelect()
 	{
-		auto pos = position(m_control.stackIndex(), m_control.cardIndex());
+		auto pos = position(m_selection.stackIndex, m_selection.cardIndex);
 		if (!pos)
 			return;
 		drawControlSelect(*pos);
@@ -135,7 +135,7 @@ namespace panda
 
 	void GameRender::renderControlMark()
 	{
-		auto pos = position(m_control.markedStackIndex(), m_control.markedCardIndex());
+		auto pos = position(m_selection.markedStackIndex, m_selection.markedCardIndex);
 		if (!pos)
 			return;
 		drawControlMark(*pos);
@@ -150,7 +150,7 @@ namespace panda
 			// Draw control select always
 			renderControlSelect();
 
-			if (m_control.state() == GameControl::State::Move)
+			if (m_selection.state == GameSelection::State::Move)
 			{
 				renderControlMark();
 			}

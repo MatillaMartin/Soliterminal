@@ -12,6 +12,7 @@ set(Sources
 	src/GameControl.cpp
 	src/GameFileIO.cpp
 	src/GameRender.cpp
+	src/GameSelection.cpp
 	src/main.cpp
 	src/Menu.cpp
 	src/Layout.cpp
@@ -34,6 +35,7 @@ set(Headers
 	include/GameControl.h
 	include/GameFileIO.h
 	include/GameRender.h
+	include/GameSelection.h
 	include/Layout.h
 	include/Menu.h
 	include/MenuControl.h
